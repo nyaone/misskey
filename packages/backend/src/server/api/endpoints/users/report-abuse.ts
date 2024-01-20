@@ -106,7 +106,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 				const meta = await this.metaService.fetch();
 				if (meta.email) {
-					this.emailService.sendEmail(meta.email, 'New abuse report',
+					this.emailService.sendEmail(meta.email, '收到新的举报',
 						sanitizeHtml(ps.comment),
 						sanitizeHtml(ps.comment));
 				}
