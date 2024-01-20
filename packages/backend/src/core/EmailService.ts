@@ -58,11 +58,13 @@ export class EmailService {
 		} as any);
 
 		try {
+			const siteName = meta.name || this.config.host;
+
 			// TODO: htmlサニタイズ
 			const info = await transporter.sendMail({
 				from: meta.email!,
 				to: to,
-				subject: subject,
+				subject: `[${siteName}] ${subject}`,
 				text: text,
 				html: `<!doctype html>
 <html>
@@ -83,7 +85,7 @@ export class EmailService {
 
 			a {
 				text-decoration: none;
-				color: #86b300;
+				color: #62b6e7;
 			}
 			a:hover {
 				text-decoration: underline;
@@ -97,7 +99,7 @@ export class EmailService {
 			}
 				main > header {
 					padding: 32px;
-					background: #86b300;
+					background: #62b6e7;
 				}
 					main > header > img {
 						max-width: 128px;
@@ -136,11 +138,11 @@ export class EmailService {
 				<div>${ html }</div>
 			</article>
 			<footer>
-				<a href="${ emailSettingUrl }">${ 'Email setting' }</a>
+				<a href="${ emailSettingUrl }">${ '邮件设置' }</a>
 			</footer>
 		</main>
 		<nav>
-			<a href="${ this.config.url }">${ this.config.host }</a>
+			<a href="${ this.config.url }">${ siteName }</a>
 		</nav>
 	</body>
 </html>`,
