@@ -6341,6 +6341,10 @@ export interface Locale extends ILocale {
              */
             "canPublicNote": string;
             /**
+             * ノートの編集
+             */
+            "canEditNote": string;
+            /**
              * サーバー招待コードの発行
              */
             "canInvite": string;
