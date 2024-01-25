@@ -99,6 +99,19 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 			</div>
 			<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+
+			<div v-if="showingNoteHistoryRef" :class="$style.translation">
+				<b><MkTime :time="showingNoteHistoryRef.createdAt"/>: </b>
+				<div v-if="showingNoteHistoryRef.cw">
+					<p :class="$style.cw">
+						<Mfm style="margin-right: 8px;" :text="showingNoteHistoryRef.cw" :author="appearNote.user" :nyaize="'respect'"/>
+					</p>
+					<hr />
+				</div>
+				<div v-if="showingNoteHistoryRef.text">
+					<Mfm :text="showingNoteHistoryRef.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
+				</div>
+			</div>
 		</div>
 		<footer>
 			<div :class="$style.noteFooterInfo">
@@ -133,6 +146,9 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</button>
 			<button v-if="appearNote.myReaction != null" ref="reactButton" class="_button" :class="[$style.noteFooterButton, $style.reacted]" @click="undoReact(appearNote)">
 				<i class="ti ti-minus"></i>
+			</button>
+			<button v-if="appearNote.updatedAt" ref="historyMenuButton" class="_button" :class="$style.noteFooterButton" @mousedown="historyMenu()">
+				<i class="ti ti-history"></i>
 			</button>
 			<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown="clip()">
 				<i class="ti ti-paperclip"></i>
@@ -272,6 +288,7 @@ const renoteButton = shallowRef<HTMLElement>();
 const renoteTime = shallowRef<HTMLElement>();
 const reactButton = shallowRef<HTMLElement>();
 const clipButton = shallowRef<HTMLElement>();
+const historyMenuButton = shallowRef<HTMLElement>();
 const appearNote = computed(() => isRenote ? note.value.renote as Misskey.entities.Note : note.value);
 const isMyRenote = $i && ($i.id === note.value.userId);
 const showContent = ref(false);
@@ -285,6 +302,13 @@ const showTicker = (defaultStore.state.instanceTicker === 'always') || (defaultS
 const conversation = ref<Misskey.entities.Note[]>([]);
 const replies = ref<Misskey.entities.Note[]>([]);
 const canRenote = computed(() => ['public', 'home'].includes(appearNote.value.visibility) || appearNote.value.userId === $i.id);
+
+type ShowingNoteHistoryState = {
+	createdAt: string | null;
+	text: string | null;
+	cw?: string | null;
+} | null;
+const showingNoteHistoryRef = ref<ShowingNoteHistoryState>(null);
 
 const keymap = {
 	'r': () => reply(true),
@@ -436,6 +460,38 @@ function menu(viaKeyboard = false): void {
 	os.popupMenu(menu, menuButton.value, {
 		viaKeyboard,
 	}).then(focus).finally(cleanup);
+}
+
+const setCurrentNoteInfo = (state: ShowingNoteHistoryState) => {
+	// Set current showing
+	showingNoteHistoryRef.value = state;
+};
+
+const fullHistoryWithLatest = appearNote.value.updatedAt ? [{
+	createdAt: appearNote.value.updatedAt,
+	text: appearNote.value.text,
+	cw: appearNote.value.cw,
+	displayText: '最新',
+	clearState: true,
+}, ...appearNote.value.history
+	.map(h => ({
+		...h,
+		displayText: null,
+		clearState: false,
+	}))] : [];
+
+function historyMenu(viaKeyboard = false): void {
+	const currentNoteUpdatedAtDate = new Date(showingNoteHistoryRef.value?.createdAt || appearNote.value.updatedAt).getTime();
+	const menu = fullHistoryWithLatest
+		.sort((h1, h2) => new Date(h2.createdAt).getTime() - new Date(h1.createdAt).getTime())
+		.map(h => ({
+			active: new Date(h.createdAt).getTime() === currentNoteUpdatedAtDate,
+			text: h.displayText || new Date(h.createdAt).toISOString(),
+			action: () => setCurrentNoteInfo(h.clearState ? null : h),
+		}));
+	os.popupMenu(menu, historyMenuButton.value, {
+		viaKeyboard,
+	}).then(focus);
 }
 
 async function clip() {
