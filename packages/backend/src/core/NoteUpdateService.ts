@@ -72,7 +72,7 @@ export class NoteUpdateService {
 			throw new Error('update time is required');
 		}
 
-		if (note.history?.findIndex(h => h.createdAt === ps.updatedAt?.toISOString()) !== -1) {
+		if (note.history && note.history.findIndex(h => h.createdAt === ps.updatedAt?.toISOString()) !== -1) {
 			// Same history already exists, skip this
 			return;
 		}
