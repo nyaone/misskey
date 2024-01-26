@@ -317,17 +317,22 @@ export class ApNoteService {
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error('uri is null');
 
-		// Is from local
+		// Check if note is from local
 		if (uri.startsWith(`${this.config.url}/`)) throw new Error('uri points local');
 
 		const originNote = await this.notesRepository.findOneBy({ uri });
-		if (originNote == null) throw new Error('Note is not registered');
+		if (originNote === null) throw new Error('note is not registered');
 
 		// Process new note
 		const note = value as IPost;
 
+		// Check updated timestamp
+		if (!note.updated) {
+			throw new Error('note.updated field is required');
+		}
+
 		// Fetch note author
-		if (note.attributedTo == null) {
+		if (!note.attributedTo) {
 			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
 		}
 
@@ -345,12 +350,10 @@ export class ApNoteService {
 			text = this.apMfmService.htmlToMfm(note.content, note.tag);
 		}
 
-		const updatedAt = note.updated || new Date();
-
 		await this.noteUpdateService.update(actor, originNote, {
 			cw,
 			text,
-			updatedAt,
+			updatedAt: note.updated,
 		}, silent);
 	}
 

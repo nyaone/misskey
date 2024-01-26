@@ -70,6 +70,11 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchNote);
 			}
 
+			if (note.text === ps.text && note.cw === ps.cw) {
+				// The same as old note, nothing to do
+				return;
+			}
+
 			await this.noteUpdateService.update(await this.usersRepository.findOneByOrFail({ id: note.userId }), note, {
 				text: ps.text,
 				cw: ps.cw,

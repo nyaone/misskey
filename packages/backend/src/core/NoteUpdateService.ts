@@ -68,6 +68,15 @@ export class NoteUpdateService {
 	 * @param ps New note info
 	 */
 	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Pick<MiNote, 'text' | 'cw' | 'updatedAt'>, quiet = false, updater?: MiUser) {
+		if (!ps.updatedAt) {
+			throw new Error('update time is required');
+		}
+
+		if (note.history?.findIndex(h => h.createdAt === ps.updatedAt?.toISOString()) !== -1) {
+			// Same history already exists, skip this
+			return;
+		}
+
 		const newNote = {
 			...note,
 			...ps, // Overwrite updated fields
@@ -90,18 +99,33 @@ export class NoteUpdateService {
 			}
 		}
 
-		this.searchService.indexNote(newNote);
+		// Check if is latest or previous version
+		const history = [...(note.history || []), {
+			createdAt: (note.updatedAt || this.idService.parse(note.id).date).toISOString(),
+			cw: note.cw,
+			text: note.text,
+		}];
+		if (note.updatedAt && note.updatedAt >= ps.updatedAt) {
+			// Previous version, just update history
+			history.sort((h1, h2) => new Date(h1.createdAt).getTime() - new Date(h2.createdAt).getTime()); // earliest -> latest
 
-		await this.notesRepository.update({ id: note.id }, {
-			updatedAt: ps.updatedAt,
-			history: [...(note.history || []), {
-				createdAt: (note.updatedAt || this.idService.parse(note.id).date).toISOString(),
-				cw: note.cw,
-				text: note.text,
-			}],
-			cw: ps.cw,
-			text: ps.text,
-		});
+			await this.notesRepository.update({ id: note.id }, {
+				history,
+			});
+		} else {
+			// Latest version
+
+			// Update index
+			this.searchService.indexNote(newNote);
+
+			// Update note info
+			await this.notesRepository.update({ id: note.id }, {
+				updatedAt: ps.updatedAt,
+				history,
+				cw: ps.cw,
+				text: ps.text,
+			});
+		}
 
 		// Currently not implemented
 		// if (updater && (note.userId !== updater.id)) {
