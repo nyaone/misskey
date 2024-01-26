@@ -82,10 +82,7 @@ export class NoteUpdateService {
 						await this.apRendererService.renderNote(newNote, false), newNote,
 					),
 				);
-
-				// Add temporarily debug logs, simply print to console
-				console.log(JSON.stringify(content, null, 2));
-
+				
 				this.deliverToConcerned(user, newNote, content);
 			}
 		}
