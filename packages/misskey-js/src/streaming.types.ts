@@ -219,6 +219,7 @@ export type NoteUpdatedEvent = {
 	body: {
 		cw: string | null;
 		text: string;
+		updatedAt: string;
 	};
 } | {
 	type: 'pollVoted';

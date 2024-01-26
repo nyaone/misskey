@@ -118,6 +118,7 @@ export interface NoteEventTypes {
 	updated: {
 		cw: string | null;
 		text: string;
+		updatedAt: string;
 	};
 	reacted: {
 		reaction: string;

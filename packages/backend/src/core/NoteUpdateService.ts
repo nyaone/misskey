@@ -86,6 +86,7 @@ export class NoteUpdateService {
 			this.globalEventService.publishNoteStream(note.id, 'updated', {
 				cw: ps.cw,
 				text: ps.text ?? '', // prevent null
+				updatedAt: ps.updatedAt.toISOString(),
 			});
 
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
