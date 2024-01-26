@@ -147,7 +147,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<button v-if="appearNote.myReaction != null" ref="reactButton" class="_button" :class="[$style.noteFooterButton, $style.reacted]" @click="undoReact(appearNote)">
 				<i class="ti ti-minus"></i>
 			</button>
-			<button v-if="appearNote.updatedAt" ref="historyMenuButton" class="_button" :class="$style.noteFooterButton" @mousedown="historyMenu()">
+			<button
+				v-if="appearNote.updatedAt" ref="historyMenuButton" class="_button" :class="[
+					$style.noteFooterButton,
+					$style.noteFooterButtonHistoryMenu,
+					showingNoteHistoryRef ? $style.active : undefined,
+				]" @mousedown="historyMenu()"
+			>
 				<i class="ti ti-history"></i>
 			</button>
 			<button v-if="defaultStore.state.showClipButtonInNoteFooter" ref="clipButton" class="_button" :class="$style.noteFooterButton" @mousedown="clip()">
@@ -748,6 +754,12 @@ onMounted(() => {
 	opacity: 0.7;
 
 	&.reacted {
+		color: var(--accent);
+	}
+}
+
+.noteFooterButtonHistoryMenu {
+	&.active {
 		color: var(--accent);
 	}
 }
