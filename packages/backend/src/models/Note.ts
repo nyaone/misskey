@@ -15,6 +15,20 @@ export class MiNote {
 	@PrimaryColumn(id())
 	public id: string;
 
+	@Column('timestamp with time zone', {
+		default: null,
+	})
+	public updatedAt: Date | null;
+
+	@Column('jsonb', {
+		default: null,
+	})
+	public history: {
+		createdAt: string, // ISO string
+		text: string | null,
+		cw?: string | null,
+	}[] | null;
+
 	@Index()
 	@Column({
 		...id(),
