@@ -3,11 +3,10 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { Brackets, In } from 'typeorm';
 import { Injectable, Inject } from '@nestjs/common';
 import * as mfm from 'mfm-js';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import type { MiNote, IMentionedRemoteUsers } from '@/models/Note.js';
+import type { MiNote } from '@/models/Note.js';
 import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
@@ -68,7 +67,7 @@ export class NoteUpdateService {
 	 * @param note Note to update
 	 * @param ps New note info
 	 */
-	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Pick<MiNote, 'text' | 'cw'>, quiet = false, updater?: MiUser) {
+	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Pick<MiNote, 'text' | 'cw' | 'updatedAt'>, quiet = false, updater?: MiUser) {
 		const newNote = {
 			...note,
 			...ps, // Overwrite updated fields
@@ -94,7 +93,7 @@ export class NoteUpdateService {
 		this.searchService.indexNote(newNote);
 
 		await this.notesRepository.update({ id: note.id }, {
-			updatedAt: new Date(),
+			updatedAt: ps.updatedAt,
 			history: [...(note.history || []), {
 				createdAt: (note.updatedAt || this.idService.parse(note.id).date).toISOString(),
 				cw: note.cw,

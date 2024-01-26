@@ -345,9 +345,12 @@ export class ApNoteService {
 			text = this.apMfmService.htmlToMfm(note.content, note.tag);
 		}
 
+		const updatedAt = note.updated || new Date();
+
 		await this.noteUpdateService.update(actor, originNote, {
 			cw,
 			text,
+			updatedAt,
 		}, silent);
 	}
 

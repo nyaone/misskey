@@ -5,14 +5,12 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository, NotesRepository } from '@/models/_.js';
+import type { UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
-import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
-import { ApiError } from '../../error.js';
-import { IdService } from "@/core/IdService.js";
+import { ApiError } from '@/server/api/error.js';
 import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 
 export const meta = {
@@ -75,6 +73,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 			await this.noteUpdateService.update(await this.usersRepository.findOneByOrFail({ id: note.userId }), note, {
 				text: ps.text,
 				cw: ps.cw,
+				updatedAt: new Date(),
 			}, false, me);
 		});
 	}
