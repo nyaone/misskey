@@ -77,8 +77,13 @@ export class NoteUpdateService {
 			});
 
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-				const content = this.apRendererService.renderUpdateNote(await this.apRendererService.renderNote(newNote, false), newNote);
-				this.deliverToConcerned(user, note, content);
+				const content = this.apRendererService.addContext(
+					this.apRendererService.renderUpdateNote(
+						await this.apRendererService.renderNote(newNote, false), newNote,
+					),
+				);
+				
+				this.deliverToConcerned(user, newNote, content);
 			}
 		}
 
