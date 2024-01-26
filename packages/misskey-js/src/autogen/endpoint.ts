@@ -1,6 +1,6 @@
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.453Z
+ * version: 2024.2.0-beta.7
+ * generatedAt: 2024-01-26T15:43:30.688Z
  */
 
 import type {
@@ -392,6 +392,7 @@ import type {
 	NotesCreateRequest,
 	NotesCreateResponse,
 	NotesDeleteRequest,
+	NotesUpdateRequest,
 	NotesFavoritesCreateRequest,
 	NotesFavoritesDeleteRequest,
 	NotesFeaturedRequest,
@@ -821,6 +822,7 @@ export type Endpoints = {
 	'notes/conversation': { req: NotesConversationRequest; res: NotesConversationResponse };
 	'notes/create': { req: NotesCreateRequest; res: NotesCreateResponse };
 	'notes/delete': { req: NotesDeleteRequest; res: EmptyResponse };
+	'notes/update': { req: NotesUpdateRequest; res: EmptyResponse };
 	'notes/favorites/create': { req: NotesFavoritesCreateRequest; res: EmptyResponse };
 	'notes/favorites/delete': { req: NotesFavoritesDeleteRequest; res: EmptyResponse };
 	'notes/featured': { req: NotesFeaturedRequest; res: NotesFeaturedResponse };

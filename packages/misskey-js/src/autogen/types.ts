@@ -2,8 +2,8 @@
 /* eslint @typescript-eslint/no-explicit-any: 0 */
 
 /*
- * version: 2024.2.0-beta.6
- * generatedAt: 2024-01-24T07:32:10.370Z
+ * version: 2024.2.0-beta.7
+ * generatedAt: 2024-01-26T15:43:30.516Z
  */
 
 /**
@@ -2536,6 +2536,15 @@ export type paths = {
      */
     post: operations['notes/delete'];
   };
+  '/notes/update': {
+    /**
+     * notes/update
+     * @description No description provided.
+     *
+     * **Credential required**: *Yes* / **Permission**: *write:notes*
+     */
+    post: operations['notes/update'];
+  };
   '/notes/favorites/create': {
     /**
      * notes/favorites/create
@@ -3853,6 +3862,14 @@ export type components = {
       id: string;
       /** Format: date-time */
       createdAt: string;
+      /** Format: date-time */
+      updatedAt?: string | null;
+      history?: (({
+          /** Format: date-time */
+          createdAt: string;
+          text: string | null;
+          cw?: string | null;
+        })[]) | null;
       /** Format: date-time */
       deletedAt?: string | null;
       text: string | null;
@@ -19920,6 +19937,66 @@ export type operations = {
         'application/json': {
           /** Format: misskey:id */
           noteId: string;
+        };
+      };
+    };
+    responses: {
+      /** @description OK (without any results) */
+      204: {
+        content: never;
+      };
+      /** @description Client error */
+      400: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Authentication error */
+      401: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Forbidden error */
+      403: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description I'm Ai */
+      418: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description To many requests */
+      429: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+      /** @description Internal server error */
+      500: {
+        content: {
+          'application/json': components['schemas']['Error'];
+        };
+      };
+    };
+  };
+  /**
+   * notes/update
+   * @description No description provided.
+   *
+   * **Credential required**: *Yes* / **Permission**: *write:notes*
+   */
+  'notes/update': {
+    requestBody: {
+      content: {
+        'application/json': {
+          /** Format: misskey:id */
+          noteId: string;
+          text: string;
+          cw: string | null;
         };
       };
     };
