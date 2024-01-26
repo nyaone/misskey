@@ -7,7 +7,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository } from '@/models/_.js';
+import type { PollsRepository, EmojisRepository, NotesRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -17,6 +17,7 @@ import { MetaService } from '@/core/MetaService.js';
 import { AppLockService } from '@/core/AppLockService.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
+import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
 import { PollService } from '@/core/PollService.js';
@@ -52,6 +53,9 @@ export class ApNoteService {
 		@Inject(DI.emojisRepository)
 		private emojisRepository: EmojisRepository,
 
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
 		private idService: IdService,
 		private apMfmService: ApMfmService,
 		private apResolverService: ApResolverService,
@@ -69,6 +73,7 @@ export class ApNoteService {
 		private appLockService: AppLockService,
 		private pollService: PollService,
 		private noteCreateService: NoteCreateService,
+		private noteUpdateService: NoteUpdateService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
 	) {
@@ -305,6 +310,45 @@ export class ApNoteService {
 			}
 			return duplicate;
 		}
+	}
+
+	@bindThis
+	public async updateNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<void> {
+		const uri = typeof value === 'string' ? value : value.id;
+		if (uri == null) throw new Error('uri is null');
+
+		// Is from local
+		if (uri.startsWith(`${this.config.url}/`)) throw new Error('uri points local');
+
+		const originNote = await this.notesRepository.findOneBy({ uri });
+		if (originNote == null) throw new Error('Note is not registered');
+
+		// Process new note
+		const note = value as IPost;
+
+		// Fetch note author
+		if (note.attributedTo == null) {
+			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
+		}
+
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as MiRemoteUser;
+
+		const cw = note.summary || null;
+
+		// Text parsing
+		let text: string | null = null;
+		if (note.source?.mediaType === 'text/x.misskeymarkdown' && typeof note.source.content === 'string') {
+			text = note.source.content;
+		} else if (typeof note._misskey_content !== 'undefined') {
+			text = note._misskey_content;
+		} else if (typeof note.content === 'string') {
+			text = this.apMfmService.htmlToMfm(note.content, note.tag);
+		}
+
+		await this.noteUpdateService.update(actor, originNote, {
+			cw,
+			text,
+		}, silent);
 	}
 
 	/**

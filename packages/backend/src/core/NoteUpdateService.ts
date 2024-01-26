@@ -1,0 +1,146 @@
+/*
+ * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
+import { Brackets, In } from 'typeorm';
+import { Injectable, Inject } from '@nestjs/common';
+import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
+import type { MiNote, IMentionedRemoteUsers } from '@/models/Note.js';
+import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/_.js';
+import { RelayService } from '@/core/RelayService.js';
+import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
+import { DI } from '@/di-symbols.js';
+import type { Config } from '@/config.js';
+import NotesChart from '@/core/chart/charts/notes.js';
+import PerUserNotesChart from '@/core/chart/charts/per-user-notes.js';
+import InstanceChart from '@/core/chart/charts/instance.js';
+import { GlobalEventService } from '@/core/GlobalEventService.js';
+import { ApRendererService } from '@/core/activitypub/ApRendererService.js';
+import { ApDeliverManagerService } from '@/core/activitypub/ApDeliverManagerService.js';
+import { UserEntityService } from '@/core/entities/UserEntityService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
+import { bindThis } from '@/decorators.js';
+import { MetaService } from '@/core/MetaService.js';
+import { SearchService } from '@/core/SearchService.js';
+import { ModerationLogService } from '@/core/ModerationLogService.js';
+import { isPureRenote } from '@/misc/is-pure-renote.js';
+import { IdService } from '@/core/IdService.js';
+
+@Injectable()
+export class NoteUpdateService {
+	constructor(
+		@Inject(DI.config)
+		private config: Config,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
+
+		@Inject(DI.notesRepository)
+		private notesRepository: NotesRepository,
+
+		@Inject(DI.instancesRepository)
+		private instancesRepository: InstancesRepository,
+
+		private userEntityService: UserEntityService,
+		private noteEntityService: NoteEntityService,
+		private globalEventService: GlobalEventService,
+		private relayService: RelayService,
+		private federatedInstanceService: FederatedInstanceService,
+		private apRendererService: ApRendererService,
+		private apDeliverManagerService: ApDeliverManagerService,
+		private metaService: MetaService,
+		private searchService: SearchService,
+		private moderationLogService: ModerationLogService,
+		private notesChart: NotesChart,
+		private perUserNotesChart: PerUserNotesChart,
+		private instanceChart: InstanceChart,
+		private idService: IdService,
+	) {}
+
+	/**
+	 * Update note
+	 * @param user Note creator
+	 * @param note Note to update
+	 * @param ps New note info
+	 */
+	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Pick<MiNote, 'text' | 'cw'>, quiet = false, updater?: MiUser) {
+		const newNote = {
+			...note,
+			...ps, // Overwrite updated fields
+		};
+
+		if (!quiet) {
+			this.globalEventService.publishNoteStream(note.id, 'updated', {
+				cw: ps.cw,
+				text: ps.text ?? '', // prevent null
+			});
+
+			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
+				const content = this.apRendererService.renderUpdateNote(await this.apRendererService.renderNote(newNote, false), newNote);
+				this.deliverToConcerned(user, note, content);
+			}
+		}
+
+		this.searchService.indexNote(newNote);
+
+		await this.notesRepository.update({ id: note.id }, {
+			updatedAt: new Date(),
+			history: [...(note.history || []), {
+				createdAt: (note.updatedAt || this.idService.parse(note.id).date).toISOString(),
+				cw: note.cw,
+				text: note.text,
+			}],
+			cw: ps.cw,
+			text: ps.text,
+		});
+
+		// Currently not implemented
+		// if (updater && (note.userId !== updater.id)) {
+		// 	const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
+		// 	this.moderationLogService.log(updater, 'updateNote', {
+		// 		noteId: note.id,
+		// 		noteUserId: note.userId,
+		// 		noteUserUsername: user.username,
+		// 		noteUserHost: user.host,
+		// 		note: note,
+		// 	});
+		// }
+	}
+
+	@bindThis
+	private async getMentionedRemoteUsers(note: MiNote) {
+		const where = [] as any[];
+
+		// mention / reply / dm
+		const uris = (JSON.parse(note.mentionedRemoteUsers) as IMentionedRemoteUsers).map(x => x.uri);
+		if (uris.length > 0) {
+			where.push(
+				{ uri: In(uris) },
+			);
+		}
+
+		// renote / quote
+		if (note.renoteUserId) {
+			where.push({
+				id: note.renoteUserId,
+			});
+		}
+
+		if (where.length === 0) return [];
+
+		return await this.usersRepository.find({
+			where,
+		}) as MiRemoteUser[];
+	}
+
+	@bindThis
+	private async deliverToConcerned(user: { id: MiLocalUser['id']; host: null; }, note: MiNote, content: any) {
+		this.apDeliverManagerService.deliverToFollowers(user, content);
+		this.relayService.deliverToRelays(user, content);
+		const remoteUsers = await this.getMentionedRemoteUsers(note);
+		for (const remoteUser of remoteUsers) {
+			this.apDeliverManagerService.deliverToUser(user, content, remoteUser);
+		}
+	}
+}

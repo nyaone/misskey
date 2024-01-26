@@ -13,6 +13,7 @@ import { GlobalEventService } from '@/core/GlobalEventService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { ApiError } from '../../error.js';
 import { IdService } from "@/core/IdService.js";
+import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 
 export const meta = {
 	tags: ['notes'],
@@ -58,12 +59,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
 
-		@Inject(DI.notesRepository)
-		private notesRepository: NotesRepository,
-
 		private getterService: GetterService,
-		private globalEventService: GlobalEventService,
-		private idService: IdService,
+		private noteUpdateService: NoteUpdateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
 			const note = await this.getterService.getNote(ps.noteId).catch(err => {
@@ -75,21 +72,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchNote);
 			}
 
-			await this.notesRepository.update({ id: note.id }, {
-				updatedAt: new Date(),
-				history: [...(note.history || []), {
-					createdAt: (note.updatedAt || this.idService.parse(note.id).date).toISOString(),
-					cw: note.cw,
-					text: note.text,
-				}],
-				cw: ps.cw,
+			await this.noteUpdateService.update(await this.usersRepository.findOneByOrFail({ id: note.userId }), note, {
 				text: ps.text,
-			});
-
-			this.globalEventService.publishNoteStream(note.id, 'updated', {
 				cw: ps.cw,
-				text: ps.text,
-			});
+			}, false, me);
 		});
 	}
 }
