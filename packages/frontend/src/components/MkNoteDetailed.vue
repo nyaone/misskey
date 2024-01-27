@@ -473,22 +473,25 @@ const setCurrentNoteInfo = (state: ShowingNoteHistoryState) => {
 	showingNoteHistoryRef.value = state;
 };
 
-const fullHistoryWithLatest = appearNote.value.updatedAt ? [{
-	createdAt: appearNote.value.updatedAt,
-	text: appearNote.value.text,
-	cw: appearNote.value.cw,
-	displayText: '最新',
-	clearState: true,
-}, ...appearNote.value.history
-	.map(h => ({
-		...h,
-		displayText: null,
-		clearState: false,
-	}))] : [];
+const fullHistoryWithLatest = computed(() =>
+	appearNote.value.updatedAt ? [{
+		createdAt: appearNote.value.updatedAt,
+		text: appearNote.value.text,
+		cw: appearNote.value.cw,
+		displayText: i18n.ts.latestVersion,
+		clearState: true,
+	}, ...appearNote.value.history
+		.map(h => ({
+			...h,
+			displayText: null,
+			clearState: false,
+		})),
+	] : [],
+);
 
 function historyMenu(viaKeyboard = false): void {
 	const currentNoteUpdatedAtDate = new Date(showingNoteHistoryRef.value?.createdAt || appearNote.value.updatedAt).getTime();
-	const menu = fullHistoryWithLatest
+	const menu = fullHistoryWithLatest.value
 		.sort((h1, h2) => new Date(h2.createdAt).getTime() - new Date(h1.createdAt).getTime())
 		.map(h => ({
 			active: new Date(h.createdAt).getTime() === currentNoteUpdatedAtDate,

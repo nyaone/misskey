@@ -74,6 +74,14 @@ export function useNoteCapture(props: {
 			}
 
 			case 'updated': {
+				note.value.history = [
+					...note.value.history,
+					{
+						createdAt: note.value.updatedAt,
+						cw: note.value.cw,
+						text: note.value.text,
+					},
+				];
 				note.value.updatedAt = body.updatedAt;
 				note.value.cw = body.cw;
 				note.value.text = body.text;
