@@ -106,7 +106,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<p :class="$style.cw">
 						<Mfm style="margin-right: 8px;" :text="showingNoteHistoryRef.cw" :author="appearNote.user" :nyaize="'respect'"/>
 					</p>
-					<hr />
+					<hr/>
 				</div>
 				<div v-if="showingNoteHistoryRef.text">
 					<Mfm :text="showingNoteHistoryRef.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
