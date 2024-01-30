@@ -353,7 +353,7 @@ export class ApNoteService {
 		await this.noteUpdateService.update(actor, originNote, {
 			cw,
 			text,
-			updatedAt: note.updated,
+			updatedAt: new Date(note.updated),
 		}, silent);
 	}
 
