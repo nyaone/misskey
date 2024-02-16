@@ -1,3 +1,8 @@
+/*
+ * SPDX-FileCopyrightText: Nya Candy and NyaOne
+ * SPDX-License-Identifier: AGPL-3.0-only
+ */
+
 export class EditNoteNya1706162844037 {
     name = 'EditNoteNya1706162844037'
 

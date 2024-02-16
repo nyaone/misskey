@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: Nya Candy and NyaOne
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 

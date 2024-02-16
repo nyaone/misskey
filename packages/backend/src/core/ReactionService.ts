@@ -1,5 +1,5 @@
 /*
- * SPDX-FileCopyrightText: syuilo and other misskey contributors
+ * SPDX-FileCopyrightText: syuilo and misskey-project
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
@@ -35,7 +35,7 @@ const PER_NOTE_REACTION_USER_PAIR_CACHE_MAX = 16;
 
 const legacies: Record<string, string> = {
 	'like': '👍',
-	'love': '❤', // ここに記述する場合は異体字セレクタを入れない
+	'love': '\u2764', // ハート、異体字セレクタを入れない
 	'laugh': '😆',
 	'hmm': '🤔',
 	'surprise': '😮',

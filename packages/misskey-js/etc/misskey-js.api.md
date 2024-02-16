@@ -104,9 +104,6 @@ type AdminAvatarDecorationsUpdateRequest = operations['admin/avatar-decorations/
 type AdminDeleteAccountRequest = operations['admin/delete-account']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type AdminDeleteAccountResponse = operations['admin/delete-account']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type AdminDeleteAllFilesOfAUserRequest = operations['admin/delete-all-files-of-a-user']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -481,9 +478,6 @@ type BubbleGameRankingResponse = operations['bubble-game/ranking']['responses'][
 
 // @public (undocumented)
 type BubbleGameRegisterRequest = operations['bubble-game/register']['requestBody']['content']['application/json'];
-
-// @public (undocumented)
-type BubbleGameRegisterResponse = operations['bubble-game/register']['responses']['200']['content']['application/json'];
 
 // @public (undocumented)
 type Channel = components['schemas']['Channel'];
@@ -1210,7 +1204,6 @@ declare namespace entities {
         AdminUnsuspendUserRequest,
         AdminUpdateMetaRequest,
         AdminDeleteAccountRequest,
-        AdminDeleteAccountResponse,
         AdminUpdateUserNoteRequest,
         AdminRolesCreateRequest,
         AdminRolesCreateResponse,
@@ -1408,6 +1401,7 @@ declare namespace entities {
         HashtagsUsersResponse,
         IResponse,
         I2faDoneRequest,
+        I2faDoneResponse,
         I2faKeyDoneRequest,
         I2faKeyDoneResponse,
         I2faPasswordLessRequest,
@@ -1458,6 +1452,7 @@ declare namespace entities {
         IRegistryKeysWithTypeRequest,
         IRegistryKeysWithTypeResponse,
         IRegistryKeysRequest,
+        IRegistryKeysResponse,
         IRegistryRemoveRequest,
         IRegistryScopesWithDomainResponse,
         IRegistrySetRequest,
@@ -1662,11 +1657,9 @@ declare namespace entities {
         FetchExternalResourcesResponse,
         RetentionResponse,
         BubbleGameRegisterRequest,
-        BubbleGameRegisterResponse,
         BubbleGameRankingRequest,
         BubbleGameRankingResponse,
         ReversiCancelMatchRequest,
-        ReversiCancelMatchResponse,
         ReversiGamesRequest,
         ReversiGamesResponse,
         ReversiMatchRequest,
@@ -1713,6 +1706,12 @@ declare namespace entities {
         EmojiDetailed,
         Flash,
         Signin,
+        RoleCondFormulaLogics,
+        RoleCondFormulaValueNot,
+        RoleCondFormulaValueIsLocalOrRemote,
+        RoleCondFormulaValueCreated,
+        RoleCondFormulaFollowersOrFollowingOrNotes,
+        RoleCondFormulaValue,
         RoleLite,
         Role,
         RolePolicies,
@@ -1974,6 +1973,9 @@ type HashtagsUsersResponse = operations['hashtags/users']['responses']['200']['c
 type I2faDoneRequest = operations['i/2fa/done']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type I2faDoneResponse = operations['i/2fa/done']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type I2faKeyDoneRequest = operations['i/2fa/key-done']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2145,6 +2147,9 @@ type IRegistryGetResponse = operations['i/registry/get']['responses']['200']['co
 type IRegistryKeysRequest = operations['i/registry/keys']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
+type IRegistryKeysResponse = operations['i/registry/keys']['responses']['200']['content']['application/json'];
+
+// @public (undocumented)
 type IRegistryKeysWithTypeRequest = operations['i/registry/keys-with-type']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
@@ -2166,7 +2171,7 @@ type IResponse = operations['i']['responses']['200']['content']['application/jso
 type IRevokeTokenRequest = operations['i/revoke-token']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-function isAPIError(reason: any): reason is APIError;
+function isAPIError(reason: Record<PropertyKey, unknown>): reason is APIError;
 
 // @public (undocumented)
 type ISigninHistoryRequest = operations['i/signin-history']['requestBody']['content']['application/json'];
@@ -2664,9 +2669,6 @@ type RetentionResponse = operations['retention']['responses']['200']['content'][
 type ReversiCancelMatchRequest = operations['reversi/cancel-match']['requestBody']['content']['application/json'];
 
 // @public (undocumented)
-type ReversiCancelMatchResponse = operations['reversi/cancel-match']['responses']['200']['content']['application/json'];
-
-// @public (undocumented)
 type ReversiGameDetailed = components['schemas']['ReversiGameDetailed'];
 
 // @public (undocumented)
@@ -2704,6 +2706,24 @@ type ReversiVerifyResponse = operations['reversi/verify']['responses']['200']['c
 
 // @public (undocumented)
 type Role = components['schemas']['Role'];
+
+// @public (undocumented)
+type RoleCondFormulaFollowersOrFollowingOrNotes = components['schemas']['RoleCondFormulaFollowersOrFollowingOrNotes'];
+
+// @public (undocumented)
+type RoleCondFormulaLogics = components['schemas']['RoleCondFormulaLogics'];
+
+// @public (undocumented)
+type RoleCondFormulaValue = components['schemas']['RoleCondFormulaValue'];
+
+// @public (undocumented)
+type RoleCondFormulaValueCreated = components['schemas']['RoleCondFormulaValueCreated'];
+
+// @public (undocumented)
+type RoleCondFormulaValueIsLocalOrRemote = components['schemas']['RoleCondFormulaValueIsLocalOrRemote'];
+
+// @public (undocumented)
+type RoleCondFormulaValueNot = components['schemas']['RoleCondFormulaValueNot'];
 
 // @public (undocumented)
 type RoleLite = components['schemas']['RoleLite'];
