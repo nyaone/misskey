@@ -206,6 +206,14 @@ export class ApNoteService {
 				})
 			: null;
 
+		if (
+			actor.followersCount === 0 && // Nobody follow
+			!reply && // Not a reply
+			apMentions.length > 0 // Has mentions
+		) {
+			throw new Error('reject due to anti-spam policy');
+		}
+
 		// 引用
 		let quote: MiNote | undefined | null = null;
 
