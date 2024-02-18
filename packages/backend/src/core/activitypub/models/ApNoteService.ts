@@ -7,7 +7,7 @@ import { forwardRef, Inject, Injectable } from '@nestjs/common';
 import promiseLimit from 'promise-limit';
 import { In } from 'typeorm';
 import { DI } from '@/di-symbols.js';
-import type { PollsRepository, EmojisRepository, NotesRepository } from '@/models/_.js';
+import type { PollsRepository, EmojisRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import type { Config } from '@/config.js';
 import type { MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
@@ -55,6 +55,9 @@ export class ApNoteService {
 
 		@Inject(DI.notesRepository)
 		private notesRepository: NotesRepository,
+
+		@Inject(DI.usersRepository)
+		private usersRepository: UsersRepository,
 
 		private idService: IdService,
 		private apMfmService: ApMfmService,
@@ -206,8 +209,10 @@ export class ApNoteService {
 				})
 			: null;
 
+		// Anti-spam
+		const realtimeActor = await this.usersRepository.findOneByOrFail({ id: actor.id });
 		if (
-			actor.followersCount === 0 && // Nobody follow
+			realtimeActor.followersCount === 0 && // Nobody follow
 			!reply && // Not a reply
 			apMentions.some(u => u.host === null) // Has local mentions
 		) {
