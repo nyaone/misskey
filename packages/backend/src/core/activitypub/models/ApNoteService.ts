@@ -209,7 +209,7 @@ export class ApNoteService {
 		if (
 			actor.followersCount === 0 && // Nobody follow
 			!reply && // Not a reply
-			apMentions.length > 0 // Has mentions
+			apMentions.some(u => u.host === null) // Has local mentions
 		) {
 			throw new Error('reject due to anti-spam policy');
 		}
