@@ -121,16 +121,10 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</FormSection>
 				<FormSection>
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
-					<div :class="$style.patronsWithIcon">
-						<div v-for="patron in patronsWithIcon" :class="$style.patronWithIcon">
-							<img :src="patron.icon" :class="$style.patronIcon">
-							<span :class="$style.patronName">{{ patron.name }}</span>
-						</div>
-					</div>
-					<div style="margin-top: 16px; display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); grid-gap: 12px;">
-						<div v-for="patron in patrons" :key="patron">{{ patron }}</div>
-					</div>
-					<p>{{ i18n.ts._aboutMisskey.morePatrons }}</p>
+					<FormLink to="https://docs.nya.one/sponsor/#%E8%B5%9E%E5%8A%A9%E8%80%85%E4%BB%AC" external>
+						<template #icon><i class="ti ti-heart"></i></template>
+						<template #suffix>喵窝的赞助者们</template>
+					</FormLink>
 				</FormSection>
 			</div>
 		</MkSpacer>
