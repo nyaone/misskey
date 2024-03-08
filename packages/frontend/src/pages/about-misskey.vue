@@ -123,7 +123,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<template #label><Mfm text="$[jelly ❤]"/> {{ i18n.ts._aboutMisskey.patrons }}</template>
 					<FormLink to="https://docs.nya.one/sponsor/#%E8%B5%9E%E5%8A%A9%E8%80%85%E4%BB%AC" external>
 						<template #icon><i class="ti ti-heart"></i></template>
-						<template #suffix>喵窝的赞助者们</template>
+						喵窝的赞助者们
 					</FormLink>
 				</FormSection>
 			</div>
