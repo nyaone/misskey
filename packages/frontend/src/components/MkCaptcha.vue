@@ -97,13 +97,26 @@ function reset() {
 
 async function requestRender() {
 	if (captcha.value.render && captchaEl.value instanceof Element) {
-		captcha.value.render(captchaEl.value, {
-			sitekey: props.provider === 'nyacap' ? `${props.instanceUrl}/widget?sitekey=${props.sitekey}` : props.sitekey,
-			theme: defaultStore.state.darkMode ? 'dark' : 'light',
-			callback: callback,
-			'expired-callback': callback,
-			'error-callback': callback,
-		});
+		if (props.provider === 'nyacap') {
+			captcha.value.render(captchaEl.value, {
+				sitekey: `${props.instanceUrl}/widget?sitekey=${props.sitekey}`,
+				// theme: defaultStore.state.darkMode ? 'dark' : 'light',
+				callback: callback,
+				// 'expired-callback': callback, // Not now
+				'error-callback': callback,
+			});
+			document.head.appendChild(Object.assign(document.createElement('style'), {
+				innerText: '.nc-popup { z-index: 1000100; }', // Fix register form caused z-index cover issue
+			}));
+		} else {
+			captcha.value.render(captchaEl.value, {
+				sitekey: props.sitekey,
+				theme: defaultStore.state.darkMode ? 'dark' : 'light',
+				callback: callback,
+				'expired-callback': callback,
+				'error-callback': callback,
+			});
+		}
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
 		// @ts-expect-error avoid typecheck error
