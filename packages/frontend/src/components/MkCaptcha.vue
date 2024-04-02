@@ -72,7 +72,7 @@ const src = computed(() => {
 		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
 		case 'turnstile': return 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 		case 'mcaptcha': return null;
-		case 'nyacap': return 'https://unpkg.com/@nyacap/widget@latest/dist/widget.umd.cjs';
+		case 'nyacap': return 'https://nyawork.github.io/nyacap-widget/widget.umd.cjs';
 	}
 });
 
