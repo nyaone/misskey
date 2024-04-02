@@ -4845,6 +4845,7 @@ export type components = {
         hcaptcha: boolean;
         turnstile: boolean;
         recaptcha: boolean;
+        nyacap: boolean;
         objectStorage: boolean;
         serviceWorker: boolean;
         /** @default true */

@@ -290,6 +290,10 @@ export const packedMetaDetailedOnlySchema = {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},
+				nyacap: {
+					type: 'boolean',
+					optional: false, nullable: false,
+				},
 				objectStorage: {
 					type: 'boolean',
 					optional: false, nullable: false,
