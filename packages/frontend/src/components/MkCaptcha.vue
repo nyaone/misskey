@@ -106,7 +106,9 @@ async function requestRender() {
 				'error-callback': callback,
 			});
 			document.head.appendChild(Object.assign(document.createElement('style'), {
-				innerText: '.nc-popup { z-index: 1000100; }', // Fix register form caused z-index cover issue
+				innerText: '.nc-popup { z-index: 2147483646; }', // Fix register form caused z-index cover issue
+				// I have no idea why 1000100 cannot work twice, so maybe it's not too bad
+				// to use a value that large enough (just a little smaller than the known maximum 2147483647 )
 			}));
 		} else {
 			captcha.value.render(captchaEl.value, {
