@@ -91,7 +91,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				</MkInput>
 				<FormSlot v-if="nyacapSiteKey && nyacapInstanceUrl">
 					<template #label>{{ i18n.ts.preview }}</template>
-					<MkCaptcha provider="nyacap" :sitekey="nyacapSiteKey"/>
+					<MkCaptcha provider="nyacap" :sitekey="nyacapSiteKey" :instanceUrl="nyacapInstanceUrl"/>
 				</FormSlot>
 			</template>
 
