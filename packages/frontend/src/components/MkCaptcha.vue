@@ -97,28 +97,24 @@ function reset() {
 
 async function requestRender() {
 	if (captcha.value.render && captchaEl.value instanceof Element) {
+		let sitekey = props.sitekey;
+
 		if (props.provider === 'nyacap') {
-			captcha.value.render(captchaEl.value, {
-				sitekey: `${props.instanceUrl}/widget?sitekey=${props.sitekey}`,
-				// theme: defaultStore.state.darkMode ? 'dark' : 'light',
-				callback: callback,
-				// 'expired-callback': callback, // Not now
-				'error-callback': callback,
-			});
+			sitekey = `${props.instanceUrl}/widget?sitekey=${props.sitekey}`;
 			document.head.appendChild(Object.assign(document.createElement('style'), {
 				innerText: '.nc-popup { z-index: 2147483646; }', // Fix register form caused z-index cover issue
 				// I have no idea why 1000100 cannot work twice, so maybe it's not too bad
 				// to use a value that large enough (just a little smaller than the known maximum 2147483647 )
 			}));
-		} else {
-			captcha.value.render(captchaEl.value, {
-				sitekey: props.sitekey,
-				theme: defaultStore.state.darkMode ? 'dark' : 'light',
-				callback: callback,
-				'expired-callback': callback,
-				'error-callback': callback,
-			});
 		}
+
+		captcha.value.render(captchaEl.value, {
+			sitekey,
+			theme: defaultStore.state.darkMode ? 'dark' : 'light',
+			callback: callback,
+			'expired-callback': callback,
+			'error-callback': callback,
+		});
 	} else if (props.provider === 'mcaptcha' && props.instanceUrl && props.sitekey) {
 		const { default: Widget } = await import('@mcaptcha/vanilla-glue');
 		// @ts-expect-error avoid typecheck error
