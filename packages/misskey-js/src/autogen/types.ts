@@ -4796,6 +4796,9 @@ export type components = {
       recaptchaSiteKey: string | null;
       enableTurnstile: boolean;
       turnstileSiteKey: string | null;
+      enableNyaCap: boolean;
+      nyacapSiteKey: string | null;
+      nyacapInstanceUrl: string | null;
       swPublickey: string | null;
       /** @default /assets/ai.png */
       mascotImageUrl: string;
@@ -4892,6 +4895,9 @@ export type operations = {
             recaptchaSiteKey: string | null;
             enableTurnstile: boolean;
             turnstileSiteKey: string | null;
+            enableNyaCap: boolean;
+            nyacapSiteKey: string | null;
+            nyacapInstanceUrl: string | null;
             swPublickey: string | null;
             /** @default /assets/ai.png */
             mascotImageUrl: string | null;
@@ -4917,6 +4923,7 @@ export type operations = {
             mcaptchaSecretKey: string | null;
             recaptchaSecretKey: string | null;
             turnstileSecretKey: string | null;
+            nyacapSecretKey: string | null;
             sensitiveMediaDetection: string;
             sensitiveMediaDetectionSensitivity: string;
             setSensitiveFlagAutomatically: boolean;
@@ -8866,6 +8873,10 @@ export type operations = {
           enableTurnstile?: boolean;
           turnstileSiteKey?: string | null;
           turnstileSecretKey?: string | null;
+          enableNyaCap?: boolean;
+          nyacapSiteKey?: string | null;
+          nyacapInstanceUrl?: string | null;
+          nyacapSecretKey?: string | null;
           /** @enum {string} */
           sensitiveMediaDetection?: 'none' | 'all' | 'local' | 'remote';
           /** @enum {string} */

@@ -29,7 +29,7 @@ export type Captcha = {
 	getResponse(id: string): string;
 };
 
-export type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile' | 'mcaptcha';
+export type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile' | 'mcaptcha' | 'nyacap';
 
 type CaptchaContainer = {
 	readonly [_ in CaptchaProvider]?: Captcha;
@@ -60,6 +60,7 @@ const variable = computed(() => {
 		case 'recaptcha': return 'grecaptcha';
 		case 'turnstile': return 'turnstile';
 		case 'mcaptcha': return 'mcaptcha';
+		case 'nyacap': return 'nyacap';
 	}
 });
 
@@ -71,6 +72,7 @@ const src = computed(() => {
 		case 'recaptcha': return 'https://www.recaptcha.net/recaptcha/api.js?render=explicit';
 		case 'turnstile': return 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 		case 'mcaptcha': return null;
+		case 'nyacap': return 'https://unpkg.com/@nyacap/widget@latest/dist/widget.umd.cjs';
 	}
 });
 
@@ -96,7 +98,7 @@ function reset() {
 async function requestRender() {
 	if (captcha.value.render && captchaEl.value instanceof Element) {
 		captcha.value.render(captchaEl.value, {
-			sitekey: props.sitekey,
+			sitekey: props.provider === 'nyacap' ? `${props.instanceUrl}/widget?sitekey=${props.sitekey}` : props.sitekey,
 			theme: defaultStore.state.darkMode ? 'dark' : 'light',
 			callback: callback,
 			'expired-callback': callback,

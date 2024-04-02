@@ -13,6 +13,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<option value="mcaptcha">mCaptcha</option>
 				<option value="recaptcha">reCAPTCHA</option>
 				<option value="turnstile">Turnstile</option>
+				<option value="nyacap">NyaCap</option>
 			</MkRadios>
 
 			<template v-if="provider === 'hcaptcha'">
@@ -75,6 +76,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<MkCaptcha provider="turnstile" :sitekey="turnstileSiteKey || '1x00000000000000000000AA'"/>
 				</FormSlot>
 			</template>
+			<template v-else-if="provider === 'nyacap'">
+				<MkInput v-model="nyacapSiteKey">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>NyaCap Site Key</template>
+				</MkInput>
+				<MkInput v-model="nyacapSecretKey">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>NyaCap Site Secret</template>
+				</MkInput>
+				<MkInput v-model="nyacapInstanceUrl">
+					<template #prefix><i class="ti ti-link"></i></template>
+					<template #label>NyaCap Instance URL</template>
+				</MkInput>
+				<FormSlot v-if="nyacapSiteKey && nyacapInstanceUrl">
+					<template #label>{{ i18n.ts.preview }}</template>
+					<MkCaptcha provider="nyacap" :sitekey="nyacapSiteKey"/>
+				</FormSlot>
+			</template>
 
 			<MkButton primary @click="save"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
 		</div>
@@ -107,6 +126,9 @@ const recaptchaSiteKey = ref<string | null>(null);
 const recaptchaSecretKey = ref<string | null>(null);
 const turnstileSiteKey = ref<string | null>(null);
 const turnstileSecretKey = ref<string | null>(null);
+const nyacapSiteKey = ref<string | null>(null);
+const nyacapSecretKey = ref<string | null>(null);
+const nyacapInstanceUrl = ref<string | null>(null);
 
 async function init() {
 	const meta = await misskeyApi('admin/meta');
@@ -119,11 +141,15 @@ async function init() {
 	recaptchaSecretKey.value = meta.recaptchaSecretKey;
 	turnstileSiteKey.value = meta.turnstileSiteKey;
 	turnstileSecretKey.value = meta.turnstileSecretKey;
+	nyacapSiteKey.value = meta.nyacapSiteKey;
+	nyacapSecretKey.value = meta.nyacapSecretKey;
+	nyacapInstanceUrl.value = meta.nyacapInstanceUrl;
 
 	provider.value = meta.enableHcaptcha ? 'hcaptcha' :
 		meta.enableRecaptcha ? 'recaptcha' :
 		meta.enableTurnstile ? 'turnstile' :
-		meta.enableMcaptcha ? 'mcaptcha' : null;
+		meta.enableMcaptcha ? 'mcaptcha' :
+		meta.enableNyaCap ? 'nyacap' : null;
 }
 
 function save() {
@@ -141,6 +167,10 @@ function save() {
 		enableTurnstile: provider.value === 'turnstile',
 		turnstileSiteKey: turnstileSiteKey.value,
 		turnstileSecretKey: turnstileSecretKey.value,
+		enableNyaCap: provider.value === 'nyacap',
+		nyacapSiteKey: nyacapSiteKey.value,
+		nyacapSecretKey: nyacapSecretKey.value,
+		nyacapInstanceUrl: nyacapInstanceUrl.value,
 	}).then(() => {
 		fetchInstance(true);
 	});

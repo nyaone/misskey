@@ -58,7 +58,7 @@ const view = ref(null);
 const el = ref<HTMLDivElement | null>(null);
 const pageProps = ref({});
 let noMaintainerInformation = isEmpty(instance.maintainerName) || isEmpty(instance.maintainerEmail);
-let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile;
+let noBotProtection = !instance.disableRegistration && !instance.enableHcaptcha && !instance.enableRecaptcha && !instance.enableTurnstile && !instance.enableNyaCap;
 let noEmailServer = !instance.enableEmail;
 const thereIsUnresolvedAbuseReport = ref(false);
 const currentPage = computed(() => router.currentRef.value.child);

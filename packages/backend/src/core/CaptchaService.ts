@@ -119,5 +119,22 @@ export class CaptchaService {
 			throw new Error(`turnstile-failed: ${errorCodes}`);
 		}
 	}
+
+	@bindThis
+	public async verifyNyaCap(secret: string, instanceHost: string, response: string | null | undefined): Promise<void> {
+		if (response == null) {
+			throw new Error('nyacap-failed: no response provided');
+		}
+
+		const endpointUrl = new URL('/captcha/verify', instanceHost);
+		const result = await this.getCaptchaResponse(endpointUrl.toString(), secret, response).catch(err => {
+			throw new Error(`nyacap-request-failed: ${err}`);
+		});
+
+		if (result.success !== true) {
+			const errorCodes = result['error-codes'] ? result['error-codes'].join(', ') : '';
+			throw new Error(`nyacap-failed: ${errorCodes}`);
+		}
+	}
 }
 

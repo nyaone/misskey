@@ -115,6 +115,18 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		enableNyaCap: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
+		nyacapSiteKey: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
+		nyacapInstanceUrl: {
+			type: 'string',
+			optional: false, nullable: true,
+		},
 		swPublickey: {
 			type: 'string',
 			optional: false, nullable: true,
