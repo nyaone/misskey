@@ -333,8 +333,11 @@ export class ApNoteService {
 		}
 	}
 
-	@bindThis
+	@bindThis // TODO: Merge with note create
 	public async updateNote(value: string | IObject, resolver?: Resolver, silent = false): Promise<void> {
+		// eslint-disable-next-line no-param-reassign
+		if (resolver == null) resolver = this.apResolverService.createResolver();
+
 		const uri = typeof value === 'string' ? value : value.id;
 		if (uri == null) throw new Error('uri is null');
 
@@ -359,6 +362,9 @@ export class ApNoteService {
 
 		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as MiRemoteUser;
 
+		const apMentions = await this.apMentionService.extractApMentions(note.tag, resolver);
+		const apHashtags = extractApHashtags(note.tag);
+
 		const cw = note.summary || null;
 
 		// Text parsing
@@ -371,10 +377,31 @@ export class ApNoteService {
 			text = this.apMfmService.htmlToMfm(note.content, note.tag);
 		}
 
+		// Update emojis
+		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
+			this.logger.info(`extractEmojis: ${e}`);
+			return [];
+		});
+
+		const apEmojis = emojis.map(emoji => emoji.name);
+
+		// Update files
+		const limit = promiseLimit<MiDriveFile>(2);
+		const files = (await Promise.all(toArray(note.attachment).map(attach => (
+			limit(() => this.apImageService.resolveImage(actor, {
+				...attach,
+				sensitive: note.sensitive, // Noteがsensitiveなら添付もsensitiveにする
+			}))
+		))));
+
 		await this.noteUpdateService.update(actor, originNote, {
-			cw,
-			text,
 			updatedAt: new Date(note.updated),
+			text,
+			cw,
+			files,
+			apEmojis,
+			apMentions,
+			apHashtags,
 		}, silent);
 	}
 
