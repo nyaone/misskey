@@ -3,19 +3,11 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-import { setImmediate } from 'node:timers/promises';
 import { Injectable, Inject } from '@nestjs/common';
 import * as mfm from 'mfm-js';
-import { In, DataSource, IsNull, LessThan } from 'typeorm';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
-import { MiNote } from '@/models/Note.js';
-import type {
-	InstancesRepository,
-	MiDriveFile,
-	NotesRepository,
-	UserProfilesRepository,
-	UsersRepository,
-} from '@/models/_.js';
+import type { MiNote } from '@/models/Note.js';
+import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/_.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -36,38 +28,9 @@ import { IdService } from '@/core/IdService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
-import { extractHashtags } from '@/misc/extract-hashtags.js';
-import type { IMentionedRemoteUsers } from '@/models/Note.js';
-import { extractCustomEmojisFromMfm } from '@/misc/extract-custom-emojis-from-mfm.js';
-import { IdentifiableError } from '@/misc/identifiable-error.js';
-import { RoleService } from '@/core/RoleService.js';
-import { normalizeForSearch } from '@/misc/normalize-for-search.js';
-import { HashtagService } from '@/core/HashtagService.js';
-
-type MinimumUser = {
-	id: MiUser['id'];
-	host: MiUser['host'];
-	username: MiUser['username'];
-	uri: MiUser['uri'];
-};
-
-type Option = {
-	updatedAt?: Date | null;
-	text?: string | null;
-	files?: MiDriveFile[] | null;
-	// poll?: IPoll | null;
-	cw?: string | null;
-	// visibility?: string;
-	// visibleUsers?: MinimumUser[] | null;
-	apEmojis?: string[] | null;
-	apMentions?: MinimumUser[] | null;
-	apHashtags?: string[] | null;
-}
 
 @Injectable()
 export class NoteUpdateService {
-	#shutdownController = new AbortController();
-
 	constructor(
 		@Inject(DI.config)
 		private config: Config,
@@ -81,19 +44,14 @@ export class NoteUpdateService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
-		@Inject(DI.userProfilesRepository)
-		private userProfilesRepository: UserProfilesRepository,
-
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private globalEventService: GlobalEventService,
 		private relayService: RelayService,
 		private federatedInstanceService: FederatedInstanceService,
-		private hashtagService: HashtagService,
 		private remoteUserResolveService: RemoteUserResolveService,
-		private apDeliverManagerService: ApDeliverManagerService,
 		private apRendererService: ApRendererService,
-		private roleService: RoleService,
+		private apDeliverManagerService: ApDeliverManagerService,
 		private metaService: MetaService,
 		private searchService: SearchService,
 		private moderationLogService: ModerationLogService,
@@ -107,18 +65,39 @@ export class NoteUpdateService {
 	 * Update note
 	 * @param user Note creator
 	 * @param note Note to update
-	 * @param data New note info
-	 * @param silent Skip broadcast to frontend message stream
-	 * @param updater Who update this note (by user or admin)
+	 * @param ps New note info
 	 */
-	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, data: Option, silent = false, updater?: MiUser) {
-		if (!data.updatedAt) {
+	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Pick<MiNote, 'text' | 'cw' | 'updatedAt'>, quiet = false, updater?: MiUser) {
+		if (!ps.updatedAt) {
 			throw new Error('update time is required');
 		}
 
-		if (note.history && note.history.findIndex(h => h.createdAt === data.updatedAt?.toISOString()) !== -1) {
+		if (note.history && note.history.findIndex(h => h.createdAt === ps.updatedAt?.toISOString()) !== -1) {
 			// Same history already exists, skip this
 			return;
+		}
+
+		const newNote = {
+			...note,
+			...ps, // Overwrite updated fields
+		};
+
+		if (!quiet) {
+			this.globalEventService.publishNoteStream(note.id, 'updated', {
+				cw: ps.cw,
+				text: ps.text ?? '', // prevent null
+				updatedAt: ps.updatedAt.toISOString(),
+			});
+
+			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
+				const content = this.apRendererService.addContext(
+					this.apRendererService.renderUpdateNote(
+						await this.apRendererService.renderNote(newNote, false), newNote,
+					),
+				);
+
+				this.deliverToConcerned(user, newNote, content);
+			}
 		}
 
 		// Check if is latest or previous version
@@ -127,7 +106,7 @@ export class NoteUpdateService {
 			cw: note.cw,
 			text: note.text,
 		}];
-		if (note.updatedAt && note.updatedAt >= data.updatedAt) {
+		if (note.updatedAt && note.updatedAt >= ps.updatedAt) {
 			// Previous version, just update history
 			history.sort((h1, h2) => new Date(h1.createdAt).getTime() - new Date(h2.createdAt).getTime()); // earliest -> latest
 
@@ -137,92 +116,29 @@ export class NoteUpdateService {
 		} else {
 			// Latest version
 
-			let tags = data.apHashtags;
-			let emojis = data.apEmojis;
-			let mentionedUsers = data.apMentions;
+			// Update index
+			this.searchService.indexNote(newNote);
 
-			// Parse MFM if needed
-			if (!tags || !emojis || !mentionedUsers) {
-				const tokens = (data.text ? mfm.parse(data.text)! : []);
-				const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
-				// const choiceTokens = ps.poll && ps.poll.choices
-				// 	? concat(ps.poll.choices.map(choice => mfm.parse(choice)!))
-				// 	: [];
-
-				const combinedTokens = tokens.concat(cwTokens)/*.concat(choiceTokens)*/;
-
-				tags = data.apHashtags ?? extractHashtags(combinedTokens);
-
-				emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
-
-				mentionedUsers = data.apMentions ?? await this.extractMentionedUsers(user, combinedTokens);
-			}
-
-			tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);
-
-			if (note.reply && (user.id !== note.reply.userId) && !mentionedUsers.some(u => u.id === note.reply!.userId)) {
-				mentionedUsers.push(await this.usersRepository.findOneByOrFail({ id: note.reply!.userId }));
-			}
-
-			if (note.visibility === 'specified') {
-				for (const uid of note.visibleUserIds) {
-					if (!mentionedUsers.some(x => x.id === uid)) {
-						mentionedUsers.push(await this.usersRepository.findOneByOrFail({ id: uid }));
-					}
-				}
-
-				// if (note.reply && !note.visibleUserIds.some(uid => uid === note.reply!.userId)) {
-				// 	visibleUsers.push(await this.usersRepository.findOneByOrFail({ id: note.reply!.userId }));
-				// }
-			}
-
-			if (mentionedUsers.length > 0 && mentionedUsers.length > (await this.roleService.getUserPolicies(user.id)).mentionLimit) {
-				throw new IdentifiableError('9f466dab-c856-48cd-9e65-ff90ff750580', 'Note contains too many mentions');
-			}
-
-			const newNote = await this.updateNote(user, note, data, tags, emojis, history, mentionedUsers);
-
-			setImmediate('post updated', { signal: this.#shutdownController.signal }).then(
-				() => this.postNoteUpdated(newNote, user, data, silent, tags!, mentionedUsers!),
-				() => { /* aborted, ignore this */ },
-			);
-		}
-	}
-
-	@bindThis
-	private async updateNote(user: { id: MiUser['id']; host: MiUser['host']; }, note: MiNote, data: Option, tags: string[], emojis: string[], history: MiNote['history'], mentionedUsers: MinimumUser[]) {
-		const update = new MiNote({
-			updatedAt: data.updatedAt,
-			fileIds: data.files ? data.files.map(file => file.id) : [],
-			history,
-			cw: data.cw,
-			text: data.text,
-			tags: tags.map(tag => normalizeForSearch(tag)),
-			emojis,
-
-			attachedFileTypes: data.files ? data.files.map(file => file.type) : [],
-		});
-
-		// Append mentions data
-		if (mentionedUsers.length > 0) {
-			update.mentions = mentionedUsers.map(u => u.id);
-			const profiles = await this.userProfilesRepository.findBy({ userId: In(update.mentions) });
-			update.mentionedRemoteUsers = JSON.stringify(mentionedUsers.filter(u => this.userEntityService.isRemoteUser(u)).map(u => {
-				const profile = profiles.find(p => p.userId === u.id);
-				const url = profile != null ? profile.url : null;
-				return {
-					uri: u.uri,
-					url: url ?? undefined,
-					username: u.username,
-					host: u.host,
-				} as IMentionedRemoteUsers[0];
-			}));
+			// Update note info
+			await this.notesRepository.update({ id: note.id }, {
+				updatedAt: ps.updatedAt,
+				history,
+				cw: ps.cw,
+				text: ps.text,
+			});
 		}
 
-		// Update note
-		await this.notesRepository.update({ id: note.id }, update);
-
-		return update;
+		// Currently not implemented
+		// if (updater && (note.userId !== updater.id)) {
+		// 	const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
+		// 	this.moderationLogService.log(updater, 'updateNote', {
+		// 		noteId: note.id,
+		// 		noteUserId: note.userId,
+		// 		noteUserUsername: user.username,
+		// 		noteUserHost: user.host,
+		// 		note: note,
+		// 	});
+		// }
 	}
 
 	@bindThis
@@ -240,54 +156,6 @@ export class NoteUpdateService {
 		);
 
 		return mentionedUsers;
-	}
-
-	@bindThis
-	private async postNoteUpdated(note: MiNote, user: {
-		id: MiUser['id'];
-		// username: MiUser['username'];
-		host: MiUser['host'];
-		isBot: MiUser['isBot'];
-	}, data: Option, silent: boolean, tags: string[], mentionedUsers: MinimumUser[]) {
-		// ハッシュタグ更新
-		if (note.visibility === 'public' || note.visibility === 'home') {
-			this.hashtagService.updateHashtags(user, tags);
-		}
-
-		if (!silent) {
-			this.globalEventService.publishNoteStream(note.id, 'updated', {
-				cw: note.cw ?? null,
-				text: note.text ?? '',
-				updatedAt: note.updatedAt!.toISOString(),
-			});
-
-			//#region AP deliver
-			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
-				const content = this.apRendererService.addContext(
-					this.apRendererService.renderUpdateNote(
-						await this.apRendererService.renderNote(note, false), note,
-					),
-				);
-
-				this.deliverToConcerned(user, note, content);
-			}
-			//#endregion
-		}
-
-		// Register to search database
-		this.index(note);
-
-		// Currently not implemented
-		// if (updater && (note.userId !== updater.id)) {
-		// 	const user = await this.usersRepository.findOneByOrFail({ id: note.userId });
-		// 	this.moderationLogService.log(updater, 'updateNote', {
-		// 		noteId: note.id,
-		// 		noteUserId: note.userId,
-		// 		noteUserUsername: user.username,
-		// 		noteUserHost: user.host,
-		// 		note: note,
-		// 	});
-		// }
 	}
 
 	@bindThis
@@ -343,12 +211,5 @@ export class NoteUpdateService {
 		}
 
 		trackPromise(dm.execute());
-	}
-
-	@bindThis
-	private index(note: MiNote) {
-		if (note.text == null && note.cw == null) return;
-
-		this.searchService.indexNote(note);
 	}
 }
