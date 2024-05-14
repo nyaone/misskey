@@ -31,7 +31,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="videoEl"
 			:class="$style.video"
 			:poster="video.thumbnailUrl ?? undefined"
-			:title="video.comment ?? undefined"
+			:title="video.comment || video.name"
 			:alt="video.comment"
 			preload="metadata"
 			controls
@@ -51,7 +51,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			ref="videoEl"
 			:class="$style.video"
 			:poster="video.thumbnailUrl ?? undefined"
-			:title="video.comment ?? undefined"
+			:title="video.comment || video.name"
 			:alt="video.comment"
 			preload="metadata"
 			playsinline
