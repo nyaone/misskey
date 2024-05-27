@@ -4458,7 +4458,6 @@ export type components = {
       caseSensitive: boolean;
       /** @default false */
       localOnly: boolean;
-      notify: boolean;
       /** @default false */
       excludeBots: boolean;
       /** @default false */
@@ -9778,7 +9777,6 @@ export type operations = {
           excludeBots?: boolean;
           withReplies: boolean;
           withFile: boolean;
-          notify: boolean;
         };
       };
     };
@@ -10060,7 +10058,6 @@ export type operations = {
           excludeBots?: boolean;
           withReplies?: boolean;
           withFile?: boolean;
-          notify?: boolean;
         };
       };
     };
