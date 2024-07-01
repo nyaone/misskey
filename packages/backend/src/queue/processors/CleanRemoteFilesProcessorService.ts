@@ -54,7 +54,12 @@ export class CleanRemoteFilesProcessorService {
 
 			cursor = files.at(-1)?.id ?? null;
 
-			await Promise.all(files.map(file => this.driveService.deleteFileSync(file, true)));
+			try {
+				await Promise.all(files.map(file => this.driveService.deleteFileSync(file, true)));
+			} catch (err) {
+				// 打印错误日志，但不终止执行
+				this.logger.error('Failed to delete some cached remote files:' + (err as Error).toString());
+			}
 
 			deletedCount += 8;
 
