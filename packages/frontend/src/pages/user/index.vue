@@ -142,9 +142,10 @@ definePageMetadata(() => ({
 }));
 
 if (!$i) {
-	watch(user, (u) => {
+	const stopWatch = watch(user, (u) => {
 		if (u && u.host != null) {
 			// 未登录用户访问远程用户页面时，停止加载并跳转至原始页面
+			stopWatch();
 			user.value = null;
 			window.location.href = u.url ?? u.uri!;
 		}
