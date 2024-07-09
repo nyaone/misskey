@@ -61,6 +61,7 @@ import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
+import { $i } from '@/account.js';
 
 const props = defineProps<{
 	noteId: string;
@@ -152,6 +153,15 @@ definePageMetadata(() => ({
 		},
 	} : {},
 }));
+
+if (!$i) {
+	watch(note, (n) => {
+		if (n && n.user.host != null) {
+			// 未登录用户访问远程帖文页面时，跳转至原始页面
+			window.location.href = n.url ?? n.uri!;
+		}
+	});
+}
 </script>
 
 <style lang="scss" module>

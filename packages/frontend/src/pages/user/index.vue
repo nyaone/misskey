@@ -140,4 +140,13 @@ definePageMetadata(() => ({
 		},
 	} : {},
 }));
+
+if (!$i) {
+	watch(user, (u) => {
+		if (u && u.host != null) {
+			// 未登录用户访问远程用户页面时，跳转至原始页面
+			window.location.href = u.url ?? u.uri!;
+		}
+	});
+}
 </script>
