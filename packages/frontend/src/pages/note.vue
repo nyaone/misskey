@@ -157,7 +157,8 @@ definePageMetadata(() => ({
 if (!$i) {
 	watch(note, (n) => {
 		if (n && n.user.host != null) {
-			// 未登录用户访问远程帖文页面时，跳转至原始页面
+			// 未登录用户访问远程帖文页面时，停止加载并跳转至原始页面
+			note.value = null;
 			window.location.href = n.url ?? n.uri!;
 		}
 	});
