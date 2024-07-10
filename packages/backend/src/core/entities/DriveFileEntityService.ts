@@ -91,6 +91,9 @@ export class DriveFileEntityService {
 			if (file.thumbnailUrl) return file.thumbnailUrl;
 
 			return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url);
+		} else if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
+			// 動画ではなくリモートかつメディアプロキシ
+			return this.getProxiedUrl(file.uri, 'static');
 		}
 
 		if (file.uri != null && file.isLink && this.config.proxyRemoteFiles) {
@@ -107,6 +110,11 @@ export class DriveFileEntityService {
 
 	@bindThis
 	public getPublicUrl(file: MiDriveFile, mode?: 'avatar'): string { // static = thumbnail
+		// リモートかつメディアプロキシ
+		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
+			return this.getProxiedUrl(file.uri, mode);
+		}
+
 		// リモートかつ期限切れはローカルプロキシを試みる
 		if (file.uri != null && file.isLink && this.config.proxyRemoteFiles) {
 			const key = file.webpublicAccessKey;
