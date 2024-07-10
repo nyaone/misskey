@@ -41,6 +41,7 @@ export const paramDef = {
 		sinceId: { type: 'string', format: 'misskey:id' },
 		untilId: { type: 'string', format: 'misskey:id' },
 		limit: { type: 'integer', minimum: 1, maximum: 100, default: 10 },
+		localHostOnly: { type: 'boolean', default: false },
 
 		tag: { type: 'string', minLength: 1 },
 		query: {
@@ -131,6 +132,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				} else {
 					query.andWhere('note.hasPoll = FALSE');
 				}
+			}
+
+			if (ps.localHostOnly) {
+				query.andWhere('note.userHost IS NULL');
 			}
 
 			// Search notes

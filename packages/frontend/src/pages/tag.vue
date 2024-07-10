@@ -38,6 +38,7 @@ const pagination = {
 	limit: 10,
 	params: computed(() => ({
 		tag: props.tag,
+		localHostOnly: !$i,
 	})),
 };
 const notes = ref<InstanceType<typeof MkNotes>>();
