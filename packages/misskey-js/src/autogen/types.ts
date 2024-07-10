@@ -21592,8 +21592,6 @@ export type operations = {
           untilId?: string;
           /** @default 10 */
           limit?: number;
-          /** @default false */
-          localHostOnly?: boolean;
           tag?: string;
           /** @description The outer arrays are chained with OR, the inner arrays are chained with AND. */
           query?: string[][];
