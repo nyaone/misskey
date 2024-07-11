@@ -141,6 +141,7 @@ import { ApQuestionService } from './activitypub/models/ApQuestionService.js';
 import { QueueModule } from './QueueModule.js';
 import { QueueService } from './QueueService.js';
 import { LoggerService } from './LoggerService.js';
+import { SignProxyURLService } from './SignProxyURLService.js';
 import type { Provider } from '@nestjs/common';
 
 //#region 文字列ベースでのinjection用(循環参照対応のため)
@@ -279,6 +280,8 @@ const $ApMentionService: Provider = { provide: 'ApMentionService', useExisting: 
 const $ApNoteService: Provider = { provide: 'ApNoteService', useExisting: ApNoteService };
 const $ApPersonService: Provider = { provide: 'ApPersonService', useExisting: ApPersonService };
 const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting: ApQuestionService };
+
+const $SignProxyURLService: Provider = { provide: 'SignProxyURLService', useExisting: SignProxyURLService };
 //#endregion
 
 @Module({
@@ -423,6 +426,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ApQuestionService,
 		QueueService,
 
+		SignProxyURLService,
+
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
 		$AccountMoveService,
@@ -560,6 +565,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ApPersonService,
 		$ApQuestionService,
 		//#endregion
+
+		$SignProxyURLService,
 	],
 	exports: [
 		QueueModule,
@@ -699,6 +706,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		ApQuestionService,
 		QueueService,
 
+		SignProxyURLService,
+
 		//#region 文字列ベースでのinjection用(循環参照対応のため)
 		$LoggerService,
 		$AccountMoveService,
@@ -835,6 +844,8 @@ const $ApQuestionService: Provider = { provide: 'ApQuestionService', useExisting
 		$ApPersonService,
 		$ApQuestionService,
 		//#endregion
+
+		$SignProxyURLService,
 	],
 })
 export class CoreModule { }
