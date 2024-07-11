@@ -47,6 +47,8 @@ import { RoleTimelineChannelService } from './api/stream/channels/role-timeline.
 import { ReversiChannelService } from './api/stream/channels/reversi.js';
 import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js';
 
+import { SignProxyURLService } from "@/core/SignProxyURLService.js";
+
 @Module({
 	imports: [
 		EndpointsModule,
@@ -92,6 +94,7 @@ import { ReversiGameChannelService } from './api/stream/channels/reversi-game.js
 		UserListChannelService,
 		OpenApiServerService,
 		OAuth2ProviderService,
+		SignProxyURLService,
 	],
 	exports: [
 		ServerService,
