@@ -8,22 +8,27 @@ import { url } from '@/config.js';
 import { instance } from '@/instance.js';
 
 export function getProxiedImageUrl(imageUrl: string, type?: 'preview' | 'emoji' | 'avatar', mustOrigin = false, noFallback = false): string {
-	const localProxy = `${url}/proxy`;
+	// 因为这个函数是由前端调用的，无法进行签名，所以只能绕过。
+	return imageUrl;
 
-	if (imageUrl.startsWith(instance.mediaProxy + '/') || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(localProxy + '/')) {
-		// もう既にproxyっぽそうだったらurlを取り出す
-		imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
-	}
+	// 这里全部都不会调用到了
 
-	return `${mustOrigin ? localProxy : instance.mediaProxy}/${
-		type === 'preview' ? 'preview.webp'
-		: 'image.webp'
-	}?${query({
-		url: imageUrl,
-		...(!noFallback ? { 'fallback': '1' } : {}),
-		...(type ? { [type]: '1' } : {}),
-		...(mustOrigin ? { origin: '1' } : {}),
-	})}`;
+	// const localProxy = `${url}/proxy`;
+	//
+	// if (imageUrl.startsWith(instance.mediaProxy + '/') || imageUrl.startsWith('/proxy/') || imageUrl.startsWith(localProxy + '/')) {
+	// 	// もう既にproxyっぽそうだったらurlを取り出す
+	// 	imageUrl = (new URL(imageUrl)).searchParams.get('url') ?? imageUrl;
+	// }
+	//
+	// return `${mustOrigin ? localProxy : instance.mediaProxy}/${
+	// 	type === 'preview' ? 'preview.webp'
+	// 	: 'image.webp'
+	// }?${query({
+	// 	url: imageUrl,
+	// 	...(!noFallback ? { 'fallback': '1' } : {}),
+	// 	...(type ? { [type]: '1' } : {}),
+	// 	...(mustOrigin ? { origin: '1' } : {}),
+	// })}`;
 }
 
 export function getProxiedImageUrlNullable(imageUrl: string | null | undefined, type?: 'preview'): string | null {
@@ -46,8 +51,13 @@ export function getStaticImageUrl(baseUrl: string): string {
 		return u.href;
 	}
 
-	return `${instance.mediaProxy}/static.webp?${query({
-		url: u.href,
-		static: '1',
-	})}`;
+	// 这里没法对请求签名，就只能绕过了
+	return u.href;
+
+	// 这里全部都不会调用到了
+
+	// return `${instance.mediaProxy}/static.webp?${query({
+	// 	url: u.href,
+	// 	static: '1',
+	// })}`;
 }
