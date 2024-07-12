@@ -17,7 +17,6 @@ import { bindThis } from '@/decorators.js';
 import { ApiError } from '@/server/api/error.js';
 import { MiMeta } from '@/models/Meta.js';
 import type { FastifyRequest, FastifyReply } from 'fastify';
-import { SignProxyURLService } from "@/core/SignProxyURLService.js";
 
 @Injectable()
 export class UrlPreviewService {
@@ -30,7 +29,6 @@ export class UrlPreviewService {
 		private metaService: MetaService,
 		private httpRequestService: HttpRequestService,
 		private loggerService: LoggerService,
-		private signProxyURLService: SignProxyURLService,
 	) {
 		this.logger = this.loggerService.getLogger('url-preview');
 	}
@@ -39,12 +37,10 @@ export class UrlPreviewService {
 	private wrap(url?: string | null): string | null {
 		return url != null
 			? url.match(/^https?:\/\//)
-				? this.signProxyURLService.signProxyURL(
-						`${this.config.mediaProxy}/preview.webp?${query({
-						url,
-						preview: '1',
-					})}`
-				)
+				? `${this.config.mediaProxy}/preview.webp?${query({
+					url,
+					preview: '1',
+				})}`
 				: url
 			: null;
 	}

@@ -32,7 +32,6 @@ import { HealthServerService } from './HealthServerService.js';
 import { ClientServerService } from './web/ClientServerService.js';
 import { OpenApiServerService } from './api/openapi/OpenApiServerService.js';
 import { OAuth2ProviderService } from './oauth/OAuth2ProviderService.js';
-import { SignProxyURLService } from "@/core/SignProxyURLService.js";
 
 const _dirname = fileURLToPath(new URL('.', import.meta.url));
 
@@ -68,7 +67,6 @@ export class ServerService implements OnApplicationShutdown {
 		private globalEventService: GlobalEventService,
 		private loggerService: LoggerService,
 		private oauth2ProviderService: OAuth2ProviderService,
-		private signProxyURLService: SignProxyURLService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
 	}
@@ -168,7 +166,7 @@ export class ServerService implements OnApplicationShutdown {
 
 			return await reply.redirect(
 				301,
-				this.signProxyURLService.signProxyURL(url.toString()),
+				url.toString(),
 			);
 		});
 

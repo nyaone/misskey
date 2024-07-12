@@ -29,7 +29,6 @@ import { isMimeImage } from '@/misc/is-mime-image.js';
 import { correctFilename } from '@/misc/correct-filename.js';
 import { handleRequestRedirectToOmitSearch } from '@/misc/fastify-hook-handlers.js';
 import type { FastifyInstance, FastifyRequest, FastifyReply, FastifyPluginOptions } from 'fastify';
-import { SignProxyURLService } from "@/core/SignProxyURLService.js";
 
 const _filename = fileURLToPath(import.meta.url);
 const _dirname = dirname(_filename);
@@ -53,7 +52,6 @@ export class FileServerService {
 		private videoProcessingService: VideoProcessingService,
 		private internalStorageService: InternalStorageService,
 		private loggerService: LoggerService,
-		private signProxyURLService: SignProxyURLService,
 	) {
 		this.logger = this.loggerService.getLogger('server', 'gray', false);
 
@@ -149,7 +147,7 @@ export class FileServerService {
 						url.searchParams.set('static', '1');
 
 						file.cleanup();
-						return await reply.redirect(301, this.signProxyURLService.signProxyURL(url.toString()));
+						return await reply.redirect(301, url.toString());
 					} else if (file.mime.startsWith('video/')) {
 						const externalThumbnail = this.videoProcessingService.getExternalVideoThumbnailUrl(file.url);
 						if (externalThumbnail) {
@@ -169,7 +167,7 @@ export class FileServerService {
 						url.searchParams.set('url', file.url);
 
 						file.cleanup();
-						return await reply.redirect(301, this.signProxyURLService.signProxyURL(url.toString()));
+						return await reply.redirect(301, url.toString());
 					}
 				}
 
@@ -301,12 +299,6 @@ export class FileServerService {
 			return;
 		}
 
-		// 检查签名是否符合
-		if (!this.signProxyURLService.verifySignedProxyURL(request.url)) {
-			reply.code(401);
-			return;
-		}
-
 		// アバタークロップなど、どうしてもオリジンである必要がある場合
 		const mustOrigin = 'origin' in request.query;
 
@@ -323,7 +315,7 @@ export class FileServerService {
 
 			return await reply.redirect(
 				301,
-				this.signProxyURLService.signProxyURL(url.toString()),
+				url.toString(),
 			);
 		}
 

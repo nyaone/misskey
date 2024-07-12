@@ -22,7 +22,6 @@ import { UtilityService } from '../UtilityService.js';
 import { VideoProcessingService } from '../VideoProcessingService.js';
 import { UserEntityService } from './UserEntityService.js';
 import { DriveFolderEntityService } from './DriveFolderEntityService.js';
-import { SignProxyURLService } from "@/core/SignProxyURLService.js";
 
 type PackOptions = {
 	detail?: boolean,
@@ -47,7 +46,6 @@ export class DriveFileEntityService {
 		private driveFolderEntityService: DriveFolderEntityService,
 		private videoProcessingService: VideoProcessingService,
 		private idService: IdService,
-		private signProxyURLService: SignProxyURLService,
 	) {
 	}
 
@@ -78,13 +76,13 @@ export class DriveFileEntityService {
 
 	@bindThis
 	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string {
-		return this.signProxyURLService.signProxyURL(appendQuery(
+		return appendQuery(
 			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
 			query({
 				url,
 				...(mode ? { [mode]: '1' } : {}),
 			}),
-		));
+		);
 	}
 
 	@bindThis
