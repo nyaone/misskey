@@ -1231,6 +1231,7 @@ export const endpointReqTypes: Record<keyof Endpoints, 'application/json' | 'mul
 	'notes/conversation': 'application/json',
 	'notes/create': 'application/json',
 	'notes/delete': 'application/json',
+	'notes/update': 'application/json',
 	'notes/favorites/create': 'application/json',
 	'notes/favorites/delete': 'application/json',
 	'notes/featured': 'application/json',
