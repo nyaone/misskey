@@ -29,7 +29,8 @@
 
 	let forceError = localStorage.getItem('forceError');
 	if (forceError != null) {
-		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.')
+		renderError('FORCED_ERROR', 'This error is forced by having forceError in local storage.');
+		return;
 	}
 
 	//#region Detect language & fetch translations
@@ -155,7 +156,12 @@
 		document.head.appendChild(css);
 	}
 
-	function renderError(code, details) {
+	async function renderError(code, details) {
+		// Cannot set property 'innerHTML' of null を回避
+		if (document.readyState === 'loading') {
+			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
+		}
+
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
@@ -167,7 +173,7 @@
 			</svg>
 			<h1>加载失败</h1>
 			<button class="button-big" onclick="location.reload(true);">
-				<span class="button-label-big">刷新</span>
+				<span class="button-label-big">重新载入</span>
 			</button>
 			<p><b>以下操作或许可以解决这个问题。</b></p>
 			<p>清除浏览器缓存</p>
@@ -314,7 +320,6 @@
 			#errorInfo {
 				width: 50%;
 			}
-        }
-		`)
+		}`)
 	}
 })();
