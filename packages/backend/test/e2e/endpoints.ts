@@ -301,7 +301,7 @@ describe('Endpoints', () => {
 			assert.strictEqual(res.status, 204);
 		});
 
-		test('空文字列のリアクションは\u2764にフォールバックされる', async () => {
+		test('空文字列のリアクションは⭐にフォールバックされる', async () => {
 			const bobNote = await post(bob, { text: 'hi' });
 
 			const res = await api('notes/reactions/create', {
@@ -316,10 +316,10 @@ describe('Endpoints', () => {
 			});
 
 			assert.strictEqual(reaction.body.length, 1);
-			assert.strictEqual(reaction.body[0].type, '\u2764');
+			assert.strictEqual(reaction.body[0].type, '⭐');
 		});
 
-		test('絵文字ではない文字列のリアクションは\u2764にフォールバックされる', async () => {
+		test('絵文字ではない文字列のリアクションは⭐にフォールバックされる', async () => {
 			const bobNote = await post(bob, { text: 'hi' });
 
 			const res = await api('notes/reactions/create', {
@@ -334,7 +334,7 @@ describe('Endpoints', () => {
 			});
 
 			assert.strictEqual(reaction.body.length, 1);
-			assert.strictEqual(reaction.body[0].type, '\u2764');
+			assert.strictEqual(reaction.body[0].type, '⭐');
 		});
 
 		test('空のパラメータで怒られる', async () => {
