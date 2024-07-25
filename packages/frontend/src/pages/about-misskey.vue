@@ -234,6 +234,21 @@ const patronsWithIcon = [{
 }, {
 	name: '越貝鯛丸',
 	icon: 'https://assets.misskey-hub.net/patrons/86c7374de37849b882d8ebbc833dc968.jpg',
+}, {
+	name: '☔あめ🍬(灬˘╰╯˘灬)',
+	icon: 'https://assets.misskey-hub.net/patrons/676eea72d4884d3f89aababbb62533fb.jpg',
+}, {
+	name: '貯水よび',
+	icon: 'https://assets.misskey-hub.net/patrons/2974506d53244bbe94a67707b27099e2.jpg',
+}, {
+	name: 'はるかさ',
+	icon: 'https://assets.misskey-hub.net/patrons/26ce2432739a400aa3aa0de0ef67a107.jpg',
+}, {
+	name: '天鈴のあ',
+	icon: 'https://assets.misskey-hub.net/patrons/995cdbb00bd6421184461a883adfe1d9.jpg',
+}, {
+	name: 'えとゔぁす',
+	icon: 'https://assets.misskey-hub.net/patrons/2578f441b82a44cfaa55ba83a318b26e.jpg',
 }];
 
 const patrons = [
@@ -338,6 +353,7 @@ const patrons = [
 	'SHO SEKIGUCHI',
 	'塩キャベツ',
 	'はとぽぷさん',
+	'100の人 (エスパー・イーシア)',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
