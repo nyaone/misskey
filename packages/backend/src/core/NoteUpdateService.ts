@@ -31,6 +31,7 @@ import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
 import { extractHashtags } from "@/misc/extract-hashtags.js";
 import { extractCustomEmojisFromMfm } from "@/misc/extract-custom-emojis-from-mfm.js";
 import { UtilityService } from "@/core/UtilityService.js";
+import { CustomEmojiService } from "@/core/CustomEmojiService.js";
 
 type Option = Pick<MiNote, 'text' | 'cw' | 'updatedAt'> & {
 	apHashtags?: string[] | null;
@@ -52,6 +53,7 @@ export class NoteUpdateService {
 		@Inject(DI.instancesRepository)
 		private instancesRepository: InstancesRepository,
 
+		private customEmojiService: CustomEmojiService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private globalEventService: GlobalEventService,
@@ -128,8 +130,8 @@ export class NoteUpdateService {
 				cw: ps.cw,
 				text: ps.text ?? '', // prevent null
 				updatedAt: ps.updatedAt.toISOString(),
-				tags,
-				emojis,
+				tags: tags.length > 0 ? tags : undefined,
+				emojis: note.userHost != null ? await this.customEmojiService.populateEmojis(emojis, note.userHost) : undefined,
 			});
 
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
