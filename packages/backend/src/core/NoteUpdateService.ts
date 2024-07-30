@@ -166,6 +166,8 @@ export class NoteUpdateService {
 				history,
 				cw: ps.cw,
 				text: ps.text,
+				tags,
+				emojis,
 			});
 		}
 
