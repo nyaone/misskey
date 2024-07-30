@@ -353,7 +353,7 @@ export class ApNoteService {
 			throw new Error('invalid note.attributedTo: ' + note.attributedTo);
 		}
 
-		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as MiRemoteUser;
+		const apHashtags = extractApHashtags(note.tag);
 
 		const cw = note.summary || null;
 
@@ -367,9 +367,20 @@ export class ApNoteService {
 			text = this.apMfmService.htmlToMfm(note.content, note.tag);
 		}
 
+		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as MiRemoteUser;
+
+		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
+			this.logger.info(`extractEmojis: ${e}`);
+			return [];
+		});
+
+		const apEmojis = emojis.map(emoji => emoji.name);
+
 		await this.noteUpdateService.update(actor, originNote, {
 			cw,
 			text,
+			apHashtags,
+			apEmojis,
 			updatedAt: new Date(note.updated),
 		}, silent);
 	}

@@ -28,6 +28,14 @@ import { IdService } from '@/core/IdService.js';
 import { trackPromise } from '@/misc/promise-tracker.js';
 import { extractMentions } from '@/misc/extract-mentions.js';
 import { RemoteUserResolveService } from '@/core/RemoteUserResolveService.js';
+import { extractHashtags } from "@/misc/extract-hashtags.js";
+import { extractCustomEmojisFromMfm } from "@/misc/extract-custom-emojis-from-mfm.js";
+import { UtilityService } from "@/core/UtilityService.js";
+
+type Option = Pick<MiNote, 'text' | 'cw' | 'updatedAt'> & {
+	apHashtags?: string[] | null;
+	apEmojis?: string[] | null;
+}
 
 @Injectable()
 export class NoteUpdateService {
@@ -59,6 +67,7 @@ export class NoteUpdateService {
 		private perUserNotesChart: PerUserNotesChart,
 		private instanceChart: InstanceChart,
 		private idService: IdService,
+		private utilityService: UtilityService,
 	) {}
 
 	/**
@@ -67,7 +76,7 @@ export class NoteUpdateService {
 	 * @param note Note to update
 	 * @param ps New note info
 	 */
-	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Pick<MiNote, 'text' | 'cw' | 'updatedAt'>, quiet = false, updater?: MiUser) {
+	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Option, quiet = false, updater?: MiUser) {
 		if (!ps.updatedAt) {
 			throw new Error('update time is required');
 		}
@@ -77,9 +86,41 @@ export class NoteUpdateService {
 			return;
 		}
 
+		// Parse tags & emojis
+		const data = ps;
+
+		const meta = await this.metaService.fetch();
+
+		let tags = data.apHashtags;
+		let emojis = data.apEmojis;
+
+		// Parse MFM if needed
+		if (!tags || !emojis) {
+			const tokens = (data.text ? mfm.parse(data.text)! : []);
+			const cwTokens = data.cw ? mfm.parse(data.cw)! : [];
+			// Not include poll data
+
+			const combinedTokens = tokens.concat(cwTokens);
+
+			tags = data.apHashtags ?? extractHashtags(combinedTokens);
+
+			emojis = data.apEmojis ?? extractCustomEmojisFromMfm(combinedTokens);
+		}
+
+		// if the host is media-silenced, custom emojis are not allowed
+		if (this.utilityService.isMediaSilencedHost(meta.mediaSilencedHosts, user.host)) emojis = [];
+
+		tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);
+
 		const newNote = {
 			...note,
-			...ps, // Overwrite updated fields
+
+			// Overwrite updated fields
+			text: ps.text,
+			cw: ps.cw,
+			updatedAt: ps.updatedAt,
+			tags,
+			emojis,
 		};
 
 		if (!quiet) {
