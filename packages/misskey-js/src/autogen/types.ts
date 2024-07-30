@@ -4107,7 +4107,7 @@ export type components = {
       }) | null;
       localOnly?: boolean;
       /** @enum {string|null} */
-      reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote';
+      reactionAcceptance: 'likeOnly' | 'likeOnlyForRemote' | 'nonSensitiveOnly' | 'nonSensitiveOnlyForLocalLikeOnlyForRemote' | null;
       reactionEmojis: {
         [key: string]: string;
       };
@@ -4960,6 +4960,11 @@ export type components = {
       serverRules: string[];
       themeColor: string | null;
       policies: components['schemas']['RolePolicies'];
+      /**
+       * @default local
+       * @enum {string}
+       */
+      noteSearchableScope: 'local' | 'global';
     };
     MetaDetailedOnly: {
       features?: {
@@ -6117,6 +6122,11 @@ export type operations = {
           untilId?: string;
           /** Format: misskey:id */
           userId?: string | null;
+          /**
+           * @default active
+           * @enum {string}
+           */
+          status?: 'all' | 'active' | 'archived';
         };
       };
     };
