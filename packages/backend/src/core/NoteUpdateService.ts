@@ -128,6 +128,8 @@ export class NoteUpdateService {
 				cw: ps.cw,
 				text: ps.text ?? '', // prevent null
 				updatedAt: ps.updatedAt.toISOString(),
+				tags,
+				emojis,
 			});
 
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {

@@ -87,6 +87,8 @@ export function useNoteCapture(props: {
 				note.value.updatedAt = body.updatedAt;
 				note.value.cw = body.cw;
 				note.value.text = body.text;
+				note.value.tags = body.tags;
+				note.value.emojis = body.emojis;
 				break;
 			}
 

@@ -121,6 +121,8 @@ export interface NoteEventTypes {
 		cw: string | null;
 		text: string;
 		updatedAt: string;
+		tags: string[];
+		emojis: string[];
 	};
 	reacted: {
 		reaction: string;
