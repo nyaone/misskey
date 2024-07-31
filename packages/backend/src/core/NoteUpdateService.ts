@@ -32,8 +32,8 @@ import { extractHashtags } from "@/misc/extract-hashtags.js";
 import { extractCustomEmojisFromMfm } from "@/misc/extract-custom-emojis-from-mfm.js";
 import { UtilityService } from "@/core/UtilityService.js";
 import { CustomEmojiService } from "@/core/CustomEmojiService.js";
+import { DriveFileEntityService } from "@/core/entities/DriveFileEntityService.js";
 import { awaitAll } from "@/misc/prelude/await-all.js";
-import type { DriveFileEntityService } from "@/core/entities/DriveFileEntityService.js";
 
 type Option = {
 	updatedAt?: Date | null;
