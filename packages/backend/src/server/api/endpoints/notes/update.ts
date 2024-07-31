@@ -5,7 +5,7 @@
 
 import ms from 'ms';
 import { Inject, Injectable } from '@nestjs/common';
-import type { UsersRepository } from '@/models/_.js';
+import type { DriveFilesRepository, MiDriveFile, UsersRepository } from '@/models/_.js';
 import { Endpoint } from '@/server/api/endpoint-base.js';
 import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
@@ -33,6 +33,12 @@ export const meta = {
 			code: 'NO_SUCH_NOTE',
 			id: 'a6584e14-6e01-4ad3-b566-851e7bf0d474',
 		},
+
+		noSuchFile: {
+			message: 'Some files are not found.',
+			code: 'NO_SUCH_FILE',
+			id: 'b6992544-63e7-67f0-fa7f-32444b1b5306',
+		},
 	},
 } as const;
 
@@ -46,6 +52,20 @@ export const paramDef = {
 			maxLength: MAX_NOTE_TEXT_LENGTH,
 			nullable: false,
 		},
+		fileIds: {
+			type: 'array',
+			uniqueItems: true,
+			minItems: 1,
+			maxItems: 16,
+			items: { type: 'string', format: 'misskey:id' },
+		},
+		mediaIds: {
+			type: 'array',
+			uniqueItems: true,
+			minItems: 1,
+			maxItems: 16,
+			items: { type: 'string', format: 'misskey:id' },
+		},
 		cw: { type: 'string', nullable: true, maxLength: 100 },
 	},
 	required: ['noteId', 'text', 'cw'],
@@ -56,6 +76,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 	constructor(
 		@Inject(DI.usersRepository)
 		private usersRepository: UsersRepository,
+
+		@Inject(DI.driveFilesRepository)
+		private driveFilesRepository: DriveFilesRepository,
 
 		private getterService: GetterService,
 		private noteUpdateService: NoteUpdateService,
@@ -70,7 +93,24 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				throw new ApiError(meta.errors.noSuchNote);
 			}
 
-			if (note.text === ps.text && note.cw === ps.cw) {
+			let files: MiDriveFile[] = [];
+			const fileIds = ps.fileIds ?? ps.mediaIds ?? null;
+			if (fileIds != null) {
+				files = await this.driveFilesRepository.createQueryBuilder('file')
+					.where('file.userId = :userId AND file.id IN (:...fileIds)', {
+						userId: me.id,
+						fileIds,
+					})
+					.orderBy('array_position(ARRAY[:...fileIds], "id"::text)')
+					.setParameters({ fileIds })
+					.getMany();
+
+				if (files.length !== fileIds.length) {
+					throw new ApiError(meta.errors.noSuchFile);
+				}
+			}
+
+			if (note.text === ps.text && note.cw === ps.cw && note.fileIds === fileIds) {
 				// The same as old note, nothing to do
 				return;
 			}
@@ -79,6 +119,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				text: ps.text,
 				cw: ps.cw,
 				updatedAt: new Date(),
+				files,
 			}, false, me);
 		});
 	}

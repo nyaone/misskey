@@ -7,7 +7,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import * as mfm from 'mfm-js';
 import type { MiUser, MiLocalUser, MiRemoteUser } from '@/models/User.js';
 import type { MiNote } from '@/models/Note.js';
-import type { InstancesRepository, NotesRepository, UsersRepository } from '@/models/_.js';
+import type { InstancesRepository, MiDriveFile, NotesRepository, UsersRepository } from '@/models/_.js';
 import { RelayService } from '@/core/RelayService.js';
 import { FederatedInstanceService } from '@/core/FederatedInstanceService.js';
 import { DI } from '@/di-symbols.js';
@@ -32,8 +32,14 @@ import { extractHashtags } from "@/misc/extract-hashtags.js";
 import { extractCustomEmojisFromMfm } from "@/misc/extract-custom-emojis-from-mfm.js";
 import { UtilityService } from "@/core/UtilityService.js";
 import { CustomEmojiService } from "@/core/CustomEmojiService.js";
+import { awaitAll } from "@/misc/prelude/await-all.js";
+import type { DriveFileEntityService } from "@/core/entities/DriveFileEntityService.js";
 
-type Option = Pick<MiNote, 'text' | 'cw' | 'updatedAt'> & {
+type Option = {
+	updatedAt?: Date | null;
+	text: string | null;
+	files?: MiDriveFile[] | null;
+	cw: string | null;
 	apHashtags?: string[] | null;
 	apEmojis?: string[] | null;
 }
@@ -54,6 +60,7 @@ export class NoteUpdateService {
 		private instancesRepository: InstancesRepository,
 
 		private customEmojiService: CustomEmojiService,
+		private driveFileEntityService: DriveFileEntityService,
 		private userEntityService: UserEntityService,
 		private noteEntityService: NoteEntityService,
 		private globalEventService: GlobalEventService,
@@ -76,21 +83,19 @@ export class NoteUpdateService {
 	 * Update note
 	 * @param user Note creator
 	 * @param note Note to update
-	 * @param ps New note info
+	 * @param data New note info
 	 */
-	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, ps: Option, quiet = false, updater?: MiUser) {
-		if (!ps.updatedAt) {
+	async update(user: { id: MiUser['id']; uri: MiUser['uri']; host: MiUser['host']; isBot: MiUser['isBot']; }, note: MiNote, data: Option, quiet = false, updater?: MiUser) {
+		if (!data.updatedAt) {
 			throw new Error('update time is required');
 		}
 
-		if (note.history && note.history.findIndex(h => h.createdAt === ps.updatedAt?.toISOString()) !== -1) {
+		if (note.history && note.history.findIndex(h => h.createdAt === data.updatedAt?.toISOString()) !== -1) {
 			// Same history already exists, skip this
 			return;
 		}
 
 		// Parse tags & emojis
-		const data = ps;
-
 		const meta = await this.metaService.fetch();
 
 		let tags = data.apHashtags;
@@ -114,25 +119,28 @@ export class NoteUpdateService {
 
 		tags = tags.filter(tag => Array.from(tag).length <= 128).splice(0, 32);
 
-		const newNote = {
+		const newNote: MiNote = {
 			...note,
 
 			// Overwrite updated fields
-			text: ps.text,
-			cw: ps.cw,
-			updatedAt: ps.updatedAt,
+			text: data.text,
+			cw: data.cw,
+			updatedAt: data.updatedAt,
 			tags,
 			emojis,
+			fileIds: data.files ? data.files.map(file => file.id) : [],
 		};
 
 		if (!quiet) {
-			this.globalEventService.publishNoteStream(note.id, 'updated', {
-				cw: ps.cw,
-				text: ps.text ?? '', // prevent null
-				updatedAt: ps.updatedAt.toISOString(),
+			this.globalEventService.publishNoteStream(note.id, 'updated', await awaitAll({
+				fileIds: newNote.fileIds,
+				files: this.driveFileEntityService.packManyByIds(newNote.fileIds),
+				cw: data.cw,
+				text: data.text ?? '', // prevent null
+				updatedAt: data.updatedAt.toISOString(),
 				tags: tags.length > 0 ? tags : undefined,
-				emojis: note.userHost != null ? await this.customEmojiService.populateEmojis(emojis, note.userHost) : undefined,
-			});
+				emojis: note.userHost != null ? this.customEmojiService.populateEmojis(emojis, note.userHost) : undefined,
+			}));
 
 			if (this.userEntityService.isLocalUser(user) && !note.localOnly) {
 				const content = this.apRendererService.addContext(
@@ -151,7 +159,7 @@ export class NoteUpdateService {
 			cw: note.cw,
 			text: note.text,
 		}];
-		if (note.updatedAt && note.updatedAt >= ps.updatedAt) {
+		if (note.updatedAt && note.updatedAt >= data.updatedAt) {
 			// Previous version, just update history
 			history.sort((h1, h2) => new Date(h1.createdAt).getTime() - new Date(h2.createdAt).getTime()); // earliest -> latest
 
@@ -166,10 +174,11 @@ export class NoteUpdateService {
 
 			// Update note info
 			await this.notesRepository.update({ id: note.id }, {
-				updatedAt: ps.updatedAt,
+				updatedAt: data.updatedAt,
+				fileIds: newNote.fileIds,
 				history,
-				cw: ps.cw,
-				text: ps.text,
+				cw: data.cw,
+				text: data.text,
 				tags,
 				emojis,
 			});

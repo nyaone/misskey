@@ -369,6 +369,15 @@ export class ApNoteService {
 
 		const actor = await this.apPersonService.resolvePerson(getOneApId(note.attributedTo), resolver) as MiRemoteUser;
 
+		// 添付ファイル
+		const files: MiDriveFile[] = [];
+
+		for (const attach of toArray(note.attachment)) {
+			attach.sensitive ??= note.sensitive;
+			const file = await this.apImageService.resolveImage(actor, attach);
+			if (file) files.push(file);
+		}
+
 		const emojis = await this.extractEmojis(note.tag ?? [], actor.host).catch(e => {
 			this.logger.info(`extractEmojis: ${e}`);
 			return [];
@@ -377,6 +386,7 @@ export class ApNoteService {
 		const apEmojis = emojis.map(emoji => emoji.name);
 
 		await this.noteUpdateService.update(actor, originNote, {
+			files,
 			cw,
 			text,
 			apHashtags,
