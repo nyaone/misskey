@@ -231,17 +231,18 @@ export async function mainBoot() {
 			claimAchievement('client60min');
 		}, 1000 * 60 * 60);
 
-		const lastUsed = miLocalStorage.getItem('lastUsed');
-		if (lastUsed) {
-			const lastUsedDate = parseInt(lastUsed, 10);
-			// 二時間以上前なら
-			if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
-				toast(i18n.tsx.welcomeBackWithName({
-					name: $i.name || $i.username,
-				}));
-			}
-		}
-		miLocalStorage.setItem('lastUsed', Date.now().toString());
+		// 邪魔
+		//const lastUsed = miLocalStorage.getItem('lastUsed');
+		//if (lastUsed) {
+		//	const lastUsedDate = parseInt(lastUsed, 10);
+		//	// 二時間以上前なら
+		//	if (Date.now() - lastUsedDate > 1000 * 60 * 60 * 2) {
+		//		toast(i18n.tsx.welcomeBackWithName({
+		//			name: $i.name || $i.username,
+		//		}));
+		//	}
+		//}
+		//miLocalStorage.setItem('lastUsed', Date.now().toString());
 
 		/* // 不要一上来就弹捐款消息，弄得像是拦路抢劫一样
 		const latestDonationInfoShownAt = miLocalStorage.getItem('latestDonationInfoShownAt');
