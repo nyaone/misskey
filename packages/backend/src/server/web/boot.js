@@ -3,17 +3,6 @@
  * SPDX-License-Identifier: AGPL-3.0-only
  */
 
-/**
- * BOOT LOADER
- * サーバーからレスポンスされるHTMLに埋め込まれるスクリプトで、以下の役割を持ちます。
- * - 翻訳ファイルをフェッチする。
- * - バージョンに基づいて適切なメインスクリプトを読み込む。
- * - キャッシュされたコンパイル済みテーマを適用する。
- * - クライアントの設定値に基づいて対応するHTMLクラス等を設定する。
- * テーマをこの段階で設定するのは、メインスクリプトが読み込まれる間もテーマを適用したいためです。
- * 注: webpackは介さないため、このファイルではrequireやimportは使えません。
- */
-
 'use strict';
 
 // ブロックの中に入れないと、定義した変数がブラウザのグローバルスコープに登録されてしまい邪魔なので
@@ -166,7 +155,7 @@
 
 		if (!errorsElement) {
 			document.body.innerHTML = `
-			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" class="icon icon-tabler icon-tabler-alert-triangle" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
+			<svg class="icon-warning" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor" fill="none" stroke-linecap="round" stroke-linejoin="round">
 				<path stroke="none" d="M0 0h24v24H0z" fill="none"></path>
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
@@ -176,9 +165,9 @@
 				<span class="button-label-big">重新载入</span>
 			</button>
 			<p><b>以下操作或许可以解决这个问题。</b></p>
-			<p>清除浏览器缓存</p>
 			<p>更新您的操作系统和浏览器</p>
 			<p>停用广告拦截器</p>
+			<p>清除浏览器缓存</p>
 			<p>&#40;Tor Browser&#41; 将 dom.webaudio.enabled 设置为 true</p>
 			<details style="color: #62b6e7;">
 				<summary>其他选项</summary>
@@ -212,7 +201,7 @@
 		<summary>
 			<code>错误代码: ${code}</code>
 		</summary>
-		<code>${JSON.stringify(details)}</code>`;
+		<code>${details.toString()} ${JSON.stringify(details)}</code>`;
 		errorsElement.appendChild(detailsElement);
 		addStyle(`
 		* {
@@ -320,6 +309,6 @@
 			#errorInfo {
 				width: 50%;
 			}
-		}`)
+		}`);
 	}
 })();
