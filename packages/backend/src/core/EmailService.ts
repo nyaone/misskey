@@ -5,6 +5,7 @@
 
 import { URLSearchParams } from 'node:url';
 import * as nodemailer from 'nodemailer';
+import juice from 'juice';
 import { Inject, Injectable } from '@nestjs/common';
 import { validate as validateEmail } from 'deep-email-validator';
 import { MetaService } from '@/core/MetaService.js';
@@ -60,17 +61,10 @@ export class EmailService {
 				pass: meta.smtpPass,
 			} : undefined,
 		} as any);
+		
+		const siteName = meta.name || this.config.host;
 
-		try {
-			const siteName = meta.name || this.config.host;
-
-			// TODO: htmlサニタイズ
-			const info = await transporter.sendMail({
-				from: meta.email!,
-				to: to,
-				subject: `[${siteName}] ${subject}`,
-				text: text,
-				html: `<!doctype html>
+		const htmlContent = `<!doctype html>
 <html>
 	<head>
 		<meta charset="utf-8">
@@ -149,7 +143,18 @@ export class EmailService {
 			<a href="${ this.config.url }">${ siteName }</a>
 		</nav>
 	</body>
-</html>`,
+</html>`;
+
+		const inlinedHtml = juice(htmlContent);
+
+		try {
+			// TODO: htmlサニタイズ
+			const info = await transporter.sendMail({
+				from: meta.email!,
+				to: to,
+				subject: `[${siteName}] ${subject}`,
+				text: text,
+				html: inlinedHtml,
 			});
 
 			this.logger.info(`Message sent: ${info.messageId}`);
