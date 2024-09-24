@@ -11,6 +11,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<template v-else-if="botProtectionForm.savedState.provider === 'mcaptcha'" #suffix>mCaptcha</template>
 	<template v-else-if="botProtectionForm.savedState.provider === 'recaptcha'" #suffix>reCAPTCHA</template>
 	<template v-else-if="botProtectionForm.savedState.provider === 'turnstile'" #suffix>Turnstile</template>
+	<template v-else-if="botProtectionForm.savedState.provider === 'nyacap'" #suffix>NyaCap</template>
 	<template v-else #suffix>{{ i18n.ts.none }} ({{ i18n.ts.notRecommended }})</template>
 	<template v-if="botProtectionForm.modified.value" #footer>
 		<MkFormFooter :form="botProtectionForm"/>
@@ -23,6 +24,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<option value="mcaptcha">mCaptcha</option>
 			<option value="recaptcha">reCAPTCHA</option>
 			<option value="turnstile">Turnstile</option>
+			<option value="nyacap">NyaCap</option>
 		</MkRadios>
 
 		<template v-if="botProtectionForm.state.provider === 'hcaptcha'">
@@ -85,6 +87,24 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkCaptcha provider="turnstile" :sitekey="botProtectionForm.state.turnstileSiteKey || '1x00000000000000000000AA'"/>
 			</FormSlot>
 		</template>
+		<template v-else-if="botProtectionForm.state.provider === 'nyacap'">
+				<MkInput v-model="botProtectionForm.state.nyacapSiteKey">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>NyaCap Site Key</template>
+				</MkInput>
+				<MkInput v-model="botProtectionForm.state.nyacapSecretKey">
+					<template #prefix><i class="ti ti-key"></i></template>
+					<template #label>NyaCap Site Secret</template>
+				</MkInput>
+				<MkInput v-model="botProtectionForm.state.nyacapInstanceUrl">
+					<template #prefix><i class="ti ti-link"></i></template>
+					<template #label>NyaCap Instance URL</template>
+				</MkInput>
+				<FormSlot v-if="botProtectionForm.state.nyacapSiteKey && botProtectionForm.state.nyacapInstanceUrl">
+					<template #label>{{ i18n.ts.preview }}</template>
+					<MkCaptcha provider="nyacap" :sitekey="botProtectionForm.state.nyacapSiteKey" :instanceUrl="botProtectionForm.state.nyacapInstanceUrl"/>
+				</FormSlot>
+			</template>
 	</div>
 </MkFolder>
 </template>
@@ -115,7 +135,9 @@ const botProtectionForm = useForm({
 				? 'turnstile'
 				: meta.enableMcaptcha
 					? 'mcaptcha'
-					: null,
+					: meta.enableNyaCap
+						? 'nyacap'
+						: null,
 	hcaptchaSiteKey: meta.hcaptchaSiteKey,
 	hcaptchaSecretKey: meta.hcaptchaSecretKey,
 	mcaptchaSiteKey: meta.mcaptchaSiteKey,
@@ -125,6 +147,9 @@ const botProtectionForm = useForm({
 	recaptchaSecretKey: meta.recaptchaSecretKey,
 	turnstileSiteKey: meta.turnstileSiteKey,
 	turnstileSecretKey: meta.turnstileSecretKey,
+	nyacapSiteKey: meta.nyacapSiteKey,
+	nyacapSecretKey: meta.nyacapSecretKey,
+	nyacapInstanceUrl: meta.nyacapInstanceUrl,
 }, async (state) => {
 	await os.apiWithDialog('admin/update-meta', {
 		enableHcaptcha: state.provider === 'hcaptcha',
@@ -140,6 +165,10 @@ const botProtectionForm = useForm({
 		enableTurnstile: state.provider === 'turnstile',
 		turnstileSiteKey: state.turnstileSiteKey,
 		turnstileSecretKey: state.turnstileSecretKey,
+		enableNyaCap: state.provider === 'nyacap',
+		nyacapSiteKey: state.nyacapSiteKey,
+		nyacapSecretKey: state.nyacapSecretKey,
+		nyacapInstanceUrl: state.nyacapInstanceUrl,
 	});
 	fetchInstance(true);
 });
