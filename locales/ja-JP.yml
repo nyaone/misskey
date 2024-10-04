@@ -1283,6 +1283,7 @@ signinWithPasskey: "パスキーでログイン"
 unknownWebAuthnKey: "登録されていないパスキーです。"
 passkeyVerificationFailed: "パスキーの検証に失敗しました。"
 passkeyVerificationSucceededButPasswordlessLoginDisabled: "パスキーの検証に成功しましたが、パスワードレスログインが無効になっています。"
+messageToFollower: "フォロワーへのメッセージ"
 
 _delivery:
   status: "配信状態"
@@ -2451,6 +2452,7 @@ _notification:
   followedBySomeUsers: "{n}人にフォローされました"
   flushNotification: "通知の履歴をリセットする"
   exportOfXCompleted: "{x}のエクスポートが完了しました"
+  login: "ログインがありました"
 
   _types:
     all: "すべて"
@@ -2467,6 +2469,7 @@ _notification:
     roleAssigned: "ロールが付与された"
     achievementEarned: "実績の獲得"
     exportCompleted: "エクスポートが完了した"
+    login: "ログイン"
     test: "通知のテスト"
     app: "連携アプリからの通知"
 
