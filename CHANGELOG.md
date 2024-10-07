@@ -21,11 +21,14 @@
 ### Client
 - Enhance: デザインの調整
 - Enhance: ログイン画面の認証フローを改善
+- Fix: クライアント上での時間ベースの実績獲得動作が実績獲得後も発動していた問題を修正  
+  (Cherry-picked from https://activitypub.software/TransFem-org/Sharkey/-/merge_requests/657)
 
 ### Server
 - Enhance: セキュリティ向上のため、ログイン時にメール通知を行うように
 - Enhance: 自分とモデレーター以外のユーザーから二要素認証関連のデータが取得できないように
 - Enhance: 通報および通報解決時に送出されるSystemWebhookにユーザ情報を含めるように ( #14697 )
+- Fix: `admin/abuse-user-reports`エンドポイントのスキーマが間違っていた問題を修正
 
 ## 2024.9.0
 
