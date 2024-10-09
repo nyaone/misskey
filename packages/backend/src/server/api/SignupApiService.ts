@@ -101,8 +101,8 @@ export class SignupApiService {
 				});
 			}
 
-			if (instance.enableNyaCap && instance.nyacapSecretKey && instance.nyacapInstanceUrl) {
-				await this.captchaService.verifyNyaCap(instance.nyacapSecretKey, instance.nyacapInstanceUrl, body['nyacap-response']).catch(err => {
+			if (this.meta.enableNyaCap && this.meta.nyacapSecretKey && this.meta.nyacapInstanceUrl) {
+				await this.captchaService.verifyNyaCap(this.meta.nyacapSecretKey, this.meta.nyacapInstanceUrl, body['nyacap-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}
