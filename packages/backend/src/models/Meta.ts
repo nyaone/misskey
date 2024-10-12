@@ -261,6 +261,11 @@ export class MiMeta {
 	@Column('boolean', {
 		default: false,
 	})
+	public enableTestcaptcha: boolean;
+
+	@Column('boolean', {
+		default: false,
+	})
 	public enableNyaCap: boolean;
 
 	@Column('varchar', {

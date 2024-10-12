@@ -69,6 +69,10 @@ export const meta = {
 				type: 'string',
 				optional: false, nullable: true,
 			},
+			enableTestcaptcha: {
+				type: 'boolean',
+				optional: false, nullable: false,
+			},
 			enableNyaCap: {
 				type: 'boolean',
 				optional: false, nullable: false,
@@ -571,6 +575,7 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				recaptchaSiteKey: instance.recaptchaSiteKey,
 				enableTurnstile: instance.enableTurnstile,
 				turnstileSiteKey: instance.turnstileSiteKey,
+				enableTestcaptcha: instance.enableTestcaptcha,
 				enableNyaCap: instance.enableNyaCap,
 				nyacapSiteKey: instance.nyacapSiteKey,
 				nyacapInstanceUrl: instance.nyacapInstanceUrl,

@@ -78,6 +78,7 @@ export const paramDef = {
 		enableTurnstile: { type: 'boolean' },
 		turnstileSiteKey: { type: 'string', nullable: true },
 		turnstileSecretKey: { type: 'string', nullable: true },
+		enableTestcaptcha: { type: 'boolean' },
 		enableNyaCap: { type: 'boolean' },
 		nyacapSiteKey: { type: 'string', nullable: true },
 		nyacapInstanceUrl: { type: 'string', nullable: true },
@@ -359,6 +360,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.turnstileSecretKey !== undefined) {
 				set.turnstileSecretKey = ps.turnstileSecretKey;
+			}
+
+			if (ps.enableTestcaptcha !== undefined) {
+				set.enableTestcaptcha = ps.enableTestcaptcha;
 			}
 
 			if (ps.enableNyaCap !== undefined) {

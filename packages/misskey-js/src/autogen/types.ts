@@ -4990,6 +4990,7 @@ export type components = {
       recaptchaSiteKey: string | null;
       enableTurnstile: boolean;
       turnstileSiteKey: string | null;
+      enableTestcaptcha: boolean;
       enableNyaCap: boolean;
       nyacapSiteKey: string | null;
       nyacapInstanceUrl: string | null;
@@ -5124,6 +5125,7 @@ export type operations = {
             recaptchaSiteKey: string | null;
             enableTurnstile: boolean;
             turnstileSiteKey: string | null;
+            enableTestcaptcha: boolean;
             enableNyaCap: boolean;
             nyacapSiteKey: string | null;
             nyacapInstanceUrl: string | null;
@@ -9517,6 +9519,7 @@ export type operations = {
           enableTurnstile?: boolean;
           turnstileSiteKey?: string | null;
           turnstileSecretKey?: string | null;
+          enableTestcaptcha?: boolean;
           enableNyaCap?: boolean;
           nyacapSiteKey?: string | null;
           nyacapInstanceUrl?: string | null;

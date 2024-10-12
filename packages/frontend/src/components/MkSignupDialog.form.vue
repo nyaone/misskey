@@ -66,7 +66,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<MkCaptcha v-if="instance.enableMcaptcha" ref="mcaptcha" v-model="mCaptchaResponse" :class="$style.captcha" provider="mcaptcha" :sitekey="instance.mcaptchaSiteKey" :instanceUrl="instance.mcaptchaInstanceUrl"/>
 			<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" :class="$style.captcha" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 			<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" :class="$style.captcha" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
-			<MkCaptcha v-if="instance.enableNyaCap" ref="nyacap" v-model="nyacapResponse" :class="$style.captcha" provider="nyacap" :sitekey="instance.nyacapSiteKey" :instance-url="instance.nyacapInstanceUrl"/>
+			<MkCaptcha v-if="instance.enableTestcaptcha" ref="testcaptcha" v-model="testcaptchaResponse" :class="$style.captcha" provider="testcaptcha"/>
+			<MkCaptcha v-if="instance.enableNyaCap" ref="nyacap" v-model="nyacapResponse" :class="$style.captcha" provider="nyacap" :sitekey="instance.nyacapSiteKey" :instanceUrl="instance.nyacapInstanceUrl"/>
 			<MkButton type="submit" :disabled="shouldDisableSubmitting" large gradate rounded data-cy-signup-submit style="margin: 0 auto;">
 				<template v-if="submitting">
 					<MkLoading :em="true" :colored="false"/>
@@ -109,6 +110,8 @@ const hcaptcha = ref<Captcha | undefined>();
 const mcaptcha = ref<Captcha | undefined>();
 const recaptcha = ref<Captcha | undefined>();
 const turnstile = ref<Captcha | undefined>();
+const testcaptcha = ref<Captcha | undefined>();
+const nyacap = ref<Captcha | undefined>();
 
 const username = ref<string>('');
 const password = ref<string>('');
@@ -124,6 +127,7 @@ const hCaptchaResponse = ref<string | null>(null);
 const mCaptchaResponse = ref<string | null>(null);
 const reCaptchaResponse = ref<string | null>(null);
 const turnstileResponse = ref<string | null>(null);
+const testcaptchaResponse = ref<string | null>(null);
 const nyacapResponse = ref<string | null>(null);
 const usernameAbortController = ref<null | AbortController>(null);
 const emailAbortController = ref<null | AbortController>(null);
@@ -134,6 +138,7 @@ const shouldDisableSubmitting = computed((): boolean => {
 		instance.enableMcaptcha && !mCaptchaResponse.value ||
 		instance.enableRecaptcha && !reCaptchaResponse.value ||
 		instance.enableTurnstile && !turnstileResponse.value ||
+		instance.enableTestcaptcha && !testcaptchaResponse.value ||
 		instance.enableNyaCap && !nyacapResponse.value ||
 		instance.emailRequiredForSignup && emailState.value !== 'ok' ||
 		usernameState.value !== 'ok' ||
@@ -262,6 +267,7 @@ async function onSubmit(): Promise<void> {
 		'm-captcha-response': mCaptchaResponse.value,
 		'g-recaptcha-response': reCaptchaResponse.value,
 		'turnstile-response': turnstileResponse.value,
+		'testcaptcha-response': testcaptchaResponse.value,
 		'nyacap-response': nyacapResponse.value,
 	};
 
@@ -305,6 +311,8 @@ function onSignupApiError() {
 	mcaptcha.value?.reset?.();
 	recaptcha.value?.reset?.();
 	turnstile.value?.reset?.();
+	testcaptcha.value?.reset?.();
+	nyacap.value?.reset?.();
 
 	os.alert({
 		type: 'error',

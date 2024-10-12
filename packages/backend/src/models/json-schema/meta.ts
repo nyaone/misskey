@@ -115,6 +115,10 @@ export const packedMetaLiteSchema = {
 			type: 'string',
 			optional: false, nullable: true,
 		},
+		enableTestcaptcha: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		enableNyaCap: {
 			type: 'boolean',
 			optional: false, nullable: false,

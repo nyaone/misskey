@@ -258,6 +258,8 @@ export type SignupRequest = {
 	'g-recaptcha-response'?: string | null;
 	'turnstile-response'?: string | null;
 	'm-captcha-response'?: string | null;
+	'testcaptcha-response'?: string | null;
+	'nyacap-response'?: string | null;
 }
 
 export type SignupResponse = MeDetailed & {
@@ -282,6 +284,8 @@ export type SigninFlowRequest = {
 	'g-recaptcha-response'?: string | null;
 	'turnstile-response'?: string | null;
 	'm-captcha-response'?: string | null;
+	'testcaptcha-response'?: string | null;
+	'nyacap-response'?: string | null;
 };
 
 export type SigninFlowResponse = {

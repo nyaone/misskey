@@ -121,6 +121,19 @@ export class CaptchaService {
 	}
 
 	@bindThis
+	public async verifyTestcaptcha(response: string | null | undefined): Promise<void> {
+		if (response == null) {
+			throw new Error('testcaptcha-failed: no response provided');
+		}
+
+		const success = response === 'testcaptcha-passed';
+
+		if (!success) {
+			throw new Error('testcaptcha-failed');
+		}
+	}
+
+	@bindThis
 	public async verifyNyaCap(secret: string, instanceHost: string, response: string | null | undefined): Promise<void> {
 		if (response == null) {
 			throw new Error('nyacap-failed: no response provided');
