@@ -97,7 +97,7 @@ export function applyTheme(theme: Theme, persist = true) {
 	}
 
 	for (const [k, v] of Object.entries(props)) {
-		document.documentElement.style.setProperty(`--${k}`, v.toString());
+		document.documentElement.style.setProperty(`--MI_THEME-${k}`, v.toString());
 	}
 
 	document.documentElement.style.setProperty('color-scheme', colorScheme);
