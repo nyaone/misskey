@@ -1,3 +1,23 @@
+## 2024.10.2
+
+### General
+- Feat: コンテンツの表示にログインを必須にできるように
+- Feat: 過去のノートを非公開化/フォロワーのみ表示可能にできるように
+
+### Client
+- Enhance: Bull DashboardでRelationship Queueの状態も確認できるように  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/751)
+- Enhance: ドライブでソートができるように 
+- Enhance: 投稿フォームでEscキーを押したときIME入力中ならフォームを閉じないように（ #10866 ）  
+- Fix: 通知の範囲指定の設定項目が必要ない通知設定でも範囲指定の設定がでている問題を修正
+- Fix: Turnstileが失敗・期限切れした際にも成功扱いとなってしまう問題を修正  
+  (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/768)
+- Fix: デッキのタイムラインカラムで「センシティブなファイルを含むノートを表示」設定が使用できなかった問題を修正
+
+### Server
+-
+
+
 ## 2024.10.1
 
 ### Note

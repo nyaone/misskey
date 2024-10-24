@@ -62,6 +62,7 @@ import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
 import { $i } from '@/account.js';
+import { pleaseLogin } from '@/scripts/please-login.js';
 
 const props = defineProps<{
 	noteId: string;
@@ -129,6 +130,11 @@ function fetchNote() {
 			});
 		}
 	}).catch(err => {
+		if (err.id === '8e75455b-738c-471d-9f80-62693f33372e') {
+			pleaseLogin({
+				message: i18n.ts.thisContentsAreMarkedAsSigninRequiredByAuthor,
+			});
+		}
 		error.value = err;
 	});
 }
