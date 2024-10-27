@@ -59,7 +59,7 @@ export class EmailService {
 			} : undefined,
 		} as any);
 		
-		const siteName = meta.name || this.config.host;
+		const siteName = this.meta.name || this.config.host;
 
 		const htmlContent = `<!doctype html>
 <html>
