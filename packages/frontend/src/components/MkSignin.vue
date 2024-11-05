@@ -188,7 +188,6 @@ async function onPasswordSubmitted(pw: PwResponse) {
 			'g-recaptcha-response': pw.captcha.reCaptchaResponse,
 			'turnstile-response': pw.captcha.turnstileResponse,
 			'testcaptcha-response': pw.captcha.testcaptchaResponse,
-			'nyacap-response': pw.captcha.nyacapResponse,
 		});
 	}
 }

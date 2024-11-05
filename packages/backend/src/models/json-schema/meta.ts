@@ -119,18 +119,6 @@ export const packedMetaLiteSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		enableNyaCap: {
-			type: 'boolean',
-			optional: false, nullable: false,
-		},
-		nyacapSiteKey: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
-		nyacapInstanceUrl: {
-			type: 'string',
-			optional: false, nullable: true,
-		},
 		swPublickey: {
 			type: 'string',
 			optional: false, nullable: true,
@@ -309,10 +297,6 @@ export const packedMetaDetailedOnlySchema = {
 					optional: false, nullable: false,
 				},
 				recaptcha: {
-					type: 'boolean',
-					optional: false, nullable: false,
-				},
-				nyacap: {
 					type: 'boolean',
 					optional: false, nullable: false,
 				},

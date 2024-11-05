@@ -4994,9 +4994,6 @@ export type components = {
       enableTurnstile: boolean;
       turnstileSiteKey: string | null;
       enableTestcaptcha: boolean;
-      enableNyaCap: boolean;
-      nyacapSiteKey: string | null;
-      nyacapInstanceUrl: string | null;
       swPublickey: string | null;
       /** @default /assets/ai.png */
       mascotImageUrl: string;
@@ -5051,7 +5048,6 @@ export type components = {
         hcaptcha: boolean;
         turnstile: boolean;
         recaptcha: boolean;
-        nyacap: boolean;
         objectStorage: boolean;
         serviceWorker: boolean;
         /** @default true */
@@ -5129,9 +5125,6 @@ export type operations = {
             enableTurnstile: boolean;
             turnstileSiteKey: string | null;
             enableTestcaptcha: boolean;
-            enableNyaCap: boolean;
-            nyacapSiteKey: string | null;
-            nyacapInstanceUrl: string | null;
             swPublickey: string | null;
             /** @default /assets/ai.png */
             mascotImageUrl: string | null;
@@ -5159,7 +5152,6 @@ export type operations = {
             mcaptchaSecretKey: string | null;
             recaptchaSecretKey: string | null;
             turnstileSecretKey: string | null;
-            nyacapSecretKey: string | null;
             sensitiveMediaDetection: string;
             sensitiveMediaDetectionSensitivity: string;
             setSensitiveFlagAutomatically: boolean;
@@ -9539,10 +9531,6 @@ export type operations = {
           turnstileSiteKey?: string | null;
           turnstileSecretKey?: string | null;
           enableTestcaptcha?: boolean;
-          enableNyaCap?: boolean;
-          nyacapSiteKey?: string | null;
-          nyacapInstanceUrl?: string | null;
-          nyacapSecretKey?: string | null;
           /** @enum {string} */
           sensitiveMediaDetection?: 'none' | 'all' | 'local' | 'remote';
           /** @enum {string} */

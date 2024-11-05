@@ -72,7 +72,6 @@ export class SigninApiService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 				'testcaptcha-response'?: string;
-				'nyacap-response'?: string;
 			};
 		}>,
 		reply: FastifyReply,

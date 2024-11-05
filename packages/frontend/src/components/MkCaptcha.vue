@@ -40,7 +40,7 @@ export type Captcha = {
 	getResponse(id: string): string;
 };
 
-export type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile' | 'mcaptcha' | 'testcaptcha' | 'nyacap';
+export type CaptchaProvider = 'hcaptcha' | 'recaptcha' | 'turnstile' | 'mcaptcha' | 'testcaptcha';
 
 type CaptchaContainer = {
 	readonly [_ in CaptchaProvider]?: Captcha;
@@ -75,7 +75,6 @@ const variable = computed(() => {
 		case 'turnstile': return 'turnstile';
 		case 'mcaptcha': return 'mcaptcha';
 		case 'testcaptcha': return 'testcaptcha';
-		case 'nyacap': return 'nyacap';
 	}
 });
 
@@ -88,7 +87,6 @@ const src = computed(() => {
 		case 'turnstile': return 'https://challenges.cloudflare.com/turnstile/v0/api.js?render=explicit';
 		case 'mcaptcha': return null;
 		case 'testcaptcha': return null;
-		case 'nyacap': return 'https://w.nyacap.com/widget.umd.js';
 	}
 });
 
@@ -116,15 +114,6 @@ function reset() {
 async function requestRender() {
 	if (captcha.value.render && captchaEl.value instanceof Element) {
 		let sitekey = props.sitekey;
-
-		if (props.provider === 'nyacap') {
-			sitekey = `${props.instanceUrl}/widget?sitekey=${props.sitekey}`;
-			document.head.appendChild(Object.assign(document.createElement('style'), {
-				innerText: '.nc-popup { z-index: 2147483646; }', // Fix register form caused z-index cover issue
-				// I have no idea why 1000100 cannot work twice, so maybe it's not too bad
-				// to use a value that large enough (just a little smaller than the known maximum 2147483647 )
-			}));
-		}
 
 		captcha.value.render(captchaEl.value, {
 			sitekey,

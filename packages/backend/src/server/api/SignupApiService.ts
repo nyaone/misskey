@@ -68,7 +68,6 @@ export class SignupApiService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 				'testcaptcha-response'?: string;
-				'nyacap-response'?: string;
 			}
 		}>,
 		reply: FastifyReply,
@@ -104,12 +103,6 @@ export class SignupApiService {
 
 			if (this.meta.enableTestcaptcha) {
 				await this.captchaService.verifyTestcaptcha(body['testcaptcha-response']).catch(err => {
-					throw new FastifyReplyError(400, err);
-				});
-			}
-
-			if (this.meta.enableNyaCap && this.meta.nyacapSecretKey && this.meta.nyacapInstanceUrl) {
-				await this.captchaService.verifyNyaCap(this.meta.nyacapSecretKey, this.meta.nyacapInstanceUrl, body['nyacap-response']).catch(err => {
 					throw new FastifyReplyError(400, err);
 				});
 			}

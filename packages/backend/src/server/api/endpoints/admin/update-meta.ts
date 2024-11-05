@@ -84,10 +84,6 @@ export const paramDef = {
 		turnstileSiteKey: { type: 'string', nullable: true },
 		turnstileSecretKey: { type: 'string', nullable: true },
 		enableTestcaptcha: { type: 'boolean' },
-		enableNyaCap: { type: 'boolean' },
-		nyacapSiteKey: { type: 'string', nullable: true },
-		nyacapInstanceUrl: { type: 'string', nullable: true },
-		nyacapSecretKey: { type: 'string', nullable: true },
 		sensitiveMediaDetection: { type: 'string', enum: ['none', 'all', 'local', 'remote'] },
 		sensitiveMediaDetectionSensitivity: { type: 'string', enum: ['medium', 'low', 'high', 'veryLow', 'veryHigh'] },
 		setSensitiveFlagAutomatically: { type: 'boolean' },
@@ -373,22 +369,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (ps.enableTestcaptcha !== undefined) {
 				set.enableTestcaptcha = ps.enableTestcaptcha;
-			}
-
-			if (ps.enableNyaCap !== undefined) {
-				set.enableNyaCap = ps.enableNyaCap;
-			}
-
-			if (ps.nyacapSiteKey !== undefined) {
-				set.nyacapSiteKey = ps.nyacapSiteKey;
-			}
-
-			if (ps.nyacapInstanceUrl !== undefined) {
-				set.nyacapInstanceUrl = ps.nyacapInstanceUrl;
-			}
-
-			if (ps.nyacapSecretKey !== undefined) {
-				set.nyacapSecretKey = ps.nyacapSecretKey;
 			}
 
 			if (ps.sensitiveMediaDetection !== undefined) {

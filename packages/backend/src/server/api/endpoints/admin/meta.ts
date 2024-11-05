@@ -73,18 +73,6 @@ export const meta = {
 				type: 'boolean',
 				optional: false, nullable: false,
 			},
-			enableNyaCap: {
-				type: 'boolean',
-				optional: false, nullable: false,
-			},
-			nyacapSiteKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			nyacapInstanceUrl: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
 			swPublickey: {
 				type: 'string',
 				optional: false, nullable: true,
@@ -224,10 +212,6 @@ export const meta = {
 				optional: false, nullable: true,
 			},
 			turnstileSecretKey: {
-				type: 'string',
-				optional: false, nullable: true,
-			},
-			nyacapSecretKey: {
 				type: 'string',
 				optional: false, nullable: true,
 			},
@@ -587,9 +571,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				enableTurnstile: instance.enableTurnstile,
 				turnstileSiteKey: instance.turnstileSiteKey,
 				enableTestcaptcha: instance.enableTestcaptcha,
-				enableNyaCap: instance.enableNyaCap,
-				nyacapSiteKey: instance.nyacapSiteKey,
-				nyacapInstanceUrl: instance.nyacapInstanceUrl,
 				swPublickey: instance.swPublicKey,
 				themeColor: instance.themeColor,
 				mascotImageUrl: instance.mascotImageUrl,
@@ -622,7 +603,6 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				mcaptchaSecretKey: instance.mcaptchaSecretKey,
 				recaptchaSecretKey: instance.recaptchaSecretKey,
 				turnstileSecretKey: instance.turnstileSecretKey,
-				nyacapSecretKey: instance.nyacapSecretKey,
 				sensitiveMediaDetection: instance.sensitiveMediaDetection,
 				sensitiveMediaDetectionSensitivity: instance.sensitiveMediaDetectionSensitivity,
 				setSensitiveFlagAutomatically: instance.setSensitiveFlagAutomatically,

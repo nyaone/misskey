@@ -3075,7 +3075,6 @@ type SigninFlowRequest = {
     'turnstile-response'?: string | null;
     'm-captcha-response'?: string | null;
     'testcaptcha-response'?: string | null;
-    'nyacap-response'?: string | null;
 };
 
 // @public (undocumented)
@@ -3134,7 +3133,6 @@ type SignupRequest = {
     'turnstile-response'?: string | null;
     'm-captcha-response'?: string | null;
     'testcaptcha-response'?: string | null;
-    'nyacap-response'?: string | null;
 };
 
 // @public (undocumented)

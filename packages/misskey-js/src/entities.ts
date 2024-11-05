@@ -259,7 +259,6 @@ export type SignupRequest = {
 	'turnstile-response'?: string | null;
 	'm-captcha-response'?: string | null;
 	'testcaptcha-response'?: string | null;
-	'nyacap-response'?: string | null;
 }
 
 export type SignupResponse = MeDetailed & {
@@ -285,7 +284,6 @@ export type SigninFlowRequest = {
 	'turnstile-response'?: string | null;
 	'm-captcha-response'?: string | null;
 	'testcaptcha-response'?: string | null;
-	'nyacap-response'?: string | null;
 };
 
 export type SigninFlowResponse = {

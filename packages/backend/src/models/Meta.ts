@@ -268,29 +268,6 @@ export class MiMeta {
 	})
 	public enableTestcaptcha: boolean;
 
-	@Column('boolean', {
-		default: false,
-	})
-	public enableNyaCap: boolean;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public nyacapSiteKey: string | null;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public nyacapSecretKey: string | null;
-
-	@Column('varchar', {
-		length: 1024,
-		nullable: true,
-	})
-	public nyacapInstanceUrl: string | null;
-
 	// chaptcha系を追加した際にはnodeinfoのレスポンスに追加するのを忘れないようにすること
 
 	@Column('enum', {

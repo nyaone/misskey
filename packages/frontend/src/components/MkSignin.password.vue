@@ -29,7 +29,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<MkCaptcha v-if="instance.enableRecaptcha" ref="recaptcha" v-model="reCaptchaResponse" provider="recaptcha" :sitekey="instance.recaptchaSiteKey"/>
 				<MkCaptcha v-if="instance.enableTurnstile" ref="turnstile" v-model="turnstileResponse" provider="turnstile" :sitekey="instance.turnstileSiteKey"/>
 				<MkCaptcha v-if="instance.enableTestcaptcha" ref="testcaptcha" v-model="testcaptchaResponse" provider="testcaptcha"/>
-				<MkCaptcha v-if="instance.enableNyaCap" ref="nyacap" v-model="nyacapResponse" provider="nyacap" :sitekey="instance.nyacapSiteKey" :instanceUrl="instance.nyacapInstanceUrl"/>
 			</div>
 
 			<MkButton type="submit" :disabled="needCaptcha && captchaFailed" large primary rounded style="margin: 0 auto;" data-cy-signin-page-password-continue>{{ i18n.ts.continue }} <i class="ti ti-arrow-right"></i></MkButton>
@@ -47,7 +46,6 @@ export type PwResponse = {
 		reCaptchaResponse: string | null;
 		turnstileResponse: string | null;
 		testcaptchaResponse: string | null;
-		nyacapResponse: string | null;
 	};
 };
 </script>
@@ -80,14 +78,12 @@ const mCaptcha = useTemplateRef('mcaptcha');
 const reCaptcha = useTemplateRef('recaptcha');
 const turnstile = useTemplateRef('turnstile');
 const testcaptcha = useTemplateRef('testcaptcha');
-const nyacap = useTemplateRef('nyacap');
 
 const hCaptchaResponse = ref<string | null>(null);
 const mCaptchaResponse = ref<string | null>(null);
 const reCaptchaResponse = ref<string | null>(null);
 const turnstileResponse = ref<string | null>(null);
 const testcaptchaResponse = ref<string | null>(null);
-const nyacapResponse = ref<string | null>(null);
 
 const captchaFailed = computed((): boolean => {
 	return (
@@ -95,8 +91,7 @@ const captchaFailed = computed((): boolean => {
 		(instance.enableMcaptcha && !mCaptchaResponse.value) ||
 		(instance.enableRecaptcha && !reCaptchaResponse.value) ||
 		(instance.enableTurnstile && !turnstileResponse.value) ||
-		(instance.enableTestcaptcha && !testcaptchaResponse.value) ||
-		(instance.enableNyaCap && !nyacapResponse.value)
+		(instance.enableTestcaptcha && !testcaptchaResponse.value)
 	);
 });
 
@@ -115,7 +110,6 @@ function onSubmit() {
 			reCaptchaResponse: reCaptchaResponse.value,
 			turnstileResponse: turnstileResponse.value,
 			testcaptchaResponse: testcaptchaResponse.value,
-			nyacapResponse: nyacapResponse.value,
 		},
 	});
 }
@@ -126,7 +120,6 @@ function resetCaptcha() {
 	reCaptcha.value?.reset();
 	turnstile.value?.reset();
 	testcaptcha.value?.reset();
-	nyacap.value?.reset();
 }
 
 defineExpose({

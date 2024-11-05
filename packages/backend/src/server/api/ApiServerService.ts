@@ -120,7 +120,6 @@ export class ApiServerService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 				'testcaptcha-response'?: string;
-				'nyacap-response'?: string;
 			}
 		}>('/signup', (request, reply) => this.signupApiService.signup(request, reply));
 
@@ -135,7 +134,6 @@ export class ApiServerService {
 				'turnstile-response'?: string;
 				'm-captcha-response'?: string;
 				'testcaptcha-response'?: string;
-				'nyacap-response'?: string;
 			};
 		}>('/signin-flow', (request, reply) => this.signinApiService.signin(request, reply));
 
