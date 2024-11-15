@@ -263,6 +263,9 @@ const patronsWithIcon = [{
 }, {
 	name: 'Yatoigawa',
 	icon: 'https://assets.misskey-hub.net/patrons/505e3568885a4a488431a8f22b4553d0.jpg',
+}, {
+	name: '秋瀬カヲル',
+	icon: 'https://assets.misskey-hub.net/patrons/0f22aeb866484f4fa51db6721e3f9847.jpg',
 }];
 
 const patrons = [
@@ -371,6 +374,7 @@ const patrons = [
 	'ケモナーのケシン',
 	'こまつぶり',
 	'まゆつな空高',
+	'asata',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
