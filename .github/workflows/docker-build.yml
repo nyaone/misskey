@@ -3,25 +3,27 @@ on:
   push:
     branches:
       - 'nyaone'
+      - 'nyadev'
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Docker Buildx
-        uses: docker/setup-buildx-action@v2
+        uses: docker/setup-buildx-action@v3
 
       - name: Login to Registry
-        uses: docker/login-action@v2
+        uses: docker/login-action@v3
         with:
           registry: ghcr.io
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Build and push
-        uses: docker/build-push-action@v4
+      - name: Build and push (latest)
+        uses: docker/build-push-action@v6
+        if: startsWith(github.event.ref, 'refs/heads/nyaone')
         with:
           context: .
           file: ./Dockerfile
@@ -29,5 +31,21 @@ jobs:
           push: true
           tags: ghcr.io/nyaone/misskey:latest
 
-      - name: Send success webhook
-        run: curl ${{ secrets.DOCKER_BUILD_SUCCESS_WEBHOOK }}?subject=%E5%96%B5%E7%AA%9D%20Misskey%20%E9%95%9C%E5%83%8F
+      - name: Build and push (dev)
+        uses: docker/build-push-action@v6
+        if: startsWith(github.event.ref, 'refs/heads/nyadev')
+        with:
+          context: .
+          file: ./Dockerfile
+          platforms: linux/amd64
+          push: true
+          tags: ghcr.io/nyaone/misskey:dev
+
+      - name: Send success webhook (latest)
+        if: startsWith(github.event.ref, 'refs/heads/nyaone')
+        run: curl ${{ secrets.DOCKER_BUILD_SUCCESS_WEBHOOK }}?subject=%E5%96%B5%E7%AA%9D%20Misskey%20%E9%95%9C%E5%83%8F%20(latest)
+
+
+      - name: Send success webhook (dev)
+        if: startsWith(github.event.ref, 'refs/heads/nyadev')
+        run: curl ${{ secrets.DOCKER_BUILD_SUCCESS_WEBHOOK }}?subject=%E5%96%B5%E7%AA%9D%20Misskey%20%E9%95%9C%E5%83%8F%20(dev)
