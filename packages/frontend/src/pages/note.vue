@@ -62,7 +62,6 @@ import { i18n } from '@/i18n.js';
 import { dateString } from '@/filters/date.js';
 import MkClipPreview from '@/components/MkClipPreview.vue';
 import { defaultStore } from '@/store.js';
-import { $i } from '@/account.js';
 import { pleaseLogin } from '@/scripts/please-login.js';
 import { serverContext, assertServerContext } from '@/server-context.js';
 import { $i } from '@/account.js';
