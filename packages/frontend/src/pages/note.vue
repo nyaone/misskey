@@ -131,6 +131,12 @@ function fetchNote() {
 	misskeyApi('notes/show', {
 		noteId: props.noteId,
 	}).then(res => {
+		// 未登录用户访问远程帖文页面时，停止加载并跳转至原始页面
+		if (!$i && res.user.host != null) {
+			window.location.href = res.url ?? res.uri!;
+			return;
+		}
+
 		note.value = res;
 		// 古いノートは被クリップ数をカウントしていないので、2023-10-01以前のものは強制的にnotes/clipsを叩く
 		if (note.value.clippedCount > 0 || new Date(note.value.createdAt).getTime() < new Date('2023-10-01').getTime()) {
@@ -175,17 +181,6 @@ definePageMetadata(() => ({
 		},
 	} : {},
 }));
-
-if (!$i) {
-	const stopWatch = watch(note, (n) => {
-		if (n && n.user.host != null) {
-			// 未登录用户访问远程帖文页面时，停止加载并跳转至原始页面
-			stopWatch();
-			note.value = null;
-			window.location.href = n.url ?? n.uri!;
-		}
-	});
-}
 </script>
 
 <style lang="scss" module>

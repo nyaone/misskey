@@ -83,6 +83,12 @@ function fetchUser(): void {
 		username,
 		host,
 	}).then(u => {
+		// 未登录用户访问远程用户页面时，停止加载并跳转至原始页面
+		if (!$i && u.host != null) {
+			window.location.href = u.url ?? u.uri!;
+			return;
+		}
+
 		user.value = u;
 	}).catch(err => {
 		error.value = err;
@@ -155,15 +161,4 @@ definePageMetadata(() => ({
 		},
 	} : {},
 }));
-
-if (!$i) {
-	const stopWatch = watch(user, (u) => {
-		if (u && u.host != null) {
-			// 未登录用户访问远程用户页面时，停止加载并跳转至原始页面
-			stopWatch();
-			user.value = null;
-			window.location.href = u.url ?? u.uri!;
-		}
-	});
-}
 </script>
