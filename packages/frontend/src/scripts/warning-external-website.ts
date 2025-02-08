@@ -21,10 +21,10 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 	// 	} else if (expression.includes(' ')) return expression.split(' ').every(keyword => url.includes(keyword));
 	// 	else return domain.endsWith(expression);
 	// });
-	// const isTrusted = defaultStore.reactiveState.trustedExternalWebsites.value.includes(domain);
+	const isTrusted = !domain || defaultStore.reactiveState.trustedExternalWebsites.value.includes(domain);
 
 	// if (!self && !isWellKnownWebsite && !isTrusted) {
-	if (!self) {
+	if (!self && !isTrusted) {
 		ev.preventDefault();
 		ev.stopPropagation();
 
