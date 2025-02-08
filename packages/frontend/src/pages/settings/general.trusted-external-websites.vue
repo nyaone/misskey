@@ -8,7 +8,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	<div>
 		<MkTextarea v-model="trustedExternalWebsites">
 			<span>信任的域名</span>
-			<template #caption>一行一个域名<br>支持使用斜线包裹的正则表达式</template>
+			<template #caption>一行一个域名</template>
 		</MkTextarea>
 	</div>
 	<MkButton primary inline :disabled="!changed" @click="save()"><i class="ti ti-device-floppy"></i> {{ i18n.ts.save }}</MkButton>
@@ -19,7 +19,6 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { ref, watch } from 'vue';
 import MkTextarea from '@/components/MkTextarea.vue';
 import MkButton from '@/components/MkButton.vue';
-import * as os from '@/os.js';
 import { i18n } from '@/i18n.js';
 
 const props = defineProps<{
@@ -44,27 +43,27 @@ async function save() {
 		// split into lines, remove empty lines and unnecessary whitespace
 		let lines = trusted.trim().split('\n').map(line => line.trim()).filter(line => line !== '');
 
-		// check each line if it is a RegExp or not
-		for (let i = 0; i < lines.length; i++) {
-			const line = lines[i];
-			const regexp = line.match(/^\/(.+)\/(.*)$/);
-			if (regexp) {
-				// check that the RegExp is valid
-				try {
-					new RegExp(regexp[1], regexp[2]);
-					// note that regex lines will not be split by spaces!
-				} catch (err: any) {
-					// invalid syntax: do not save, do not reset changed flag
-					os.alert({
-						type: 'error',
-						title: i18n.ts.regexpError,
-						text: i18n.tsx.regexpErrorDescription({ tab: 'website trust', line: i + 1 }) + '\n' + err.toString(),
-					});
-					// re-throw error so these invalid settings are not saved
-					throw err;
-				}
-			}
-		}
+		// // check each line if it is a RegExp or not
+		// for (let i = 0; i < lines.length; i++) {
+		// 	const line = lines[i];
+		// 	const regexp = line.match(/^\/(.+)\/(.*)$/);
+		// 	if (regexp) {
+		// 		// check that the RegExp is valid
+		// 		try {
+		// 			new RegExp(regexp[1], regexp[2]);
+		// 			// note that regex lines will not be split by spaces!
+		// 		} catch (err: any) {
+		// 			// invalid syntax: do not save, do not reset changed flag
+		// 			os.alert({
+		// 				type: 'error',
+		// 				title: i18n.ts.regexpError,
+		// 				text: i18n.tsx.regexpErrorDescription({ tab: 'website trust', line: i + 1 }) + '\n' + err.toString(),
+		// 			});
+		// 			// re-throw error so these invalid settings are not saved
+		// 			throw err;
+		// 		}
+		// 	}
+		// }
 
 		return lines;
 	};
