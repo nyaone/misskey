@@ -245,6 +245,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<FormLink to="/settings/custom-css"><template #icon><i class="ti ti-code"></i></template>{{ i18n.ts.customCss }}</FormLink>
 		</div>
 	</FormSection>
+
+	<MkFolder>
+		<template #icon><i class="ti ti-world-check"></i></template>
+		<template #label>信任的网站</template>
+
+		<div class="_gaps_m">
+			<MkInfo>信任的网站列表，打开这些外部链接时不会弹出安全提示。</MkInfo>
+			<XTrustedExternalWebsites :trusted="defaultStore.reactiveState.trustedExternalWebsites.value" @save="saveTrustedExternalWebsites"/>
+		</div>
+	</MkFolder>
 </div>
 </template>
 
@@ -252,6 +262,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 import { computed, ref, watch } from 'vue';
 import * as Misskey from 'misskey-js';
 import { langs } from '@@/js/config.js';
+import XTrustedExternalWebsites from './general.trusted-external-websites.vue';
 import MkSwitch from '@/components/MkSwitch.vue';
 import MkSelect from '@/components/MkSelect.vue';
 import MkRadios from '@/components/MkRadios.vue';
@@ -472,6 +483,10 @@ function disableAllDataSaver() {
 	Object.keys(g).forEach((key) => { g[key] = false; });
 
 	dataSaver.value = g;
+}
+
+function saveTrustedExternalWebsites(trustedExternalWebsites: string[]) {
+	defaultStore.set('trustedExternalWebsites', trustedExternalWebsites);
 }
 
 watch(dataSaver, (to) => {

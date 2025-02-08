@@ -44,7 +44,14 @@ SPDX-License-Identifier: AGPL-3.0-only
 	</div>
 </template>
 <div v-else>
-	<component :is="self ? 'MkA' : 'a'" :class="[$style.link, { [$style.compact]: compact }]" :[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" :target="target" :title="url">
+	<component 
+		:is="self ? 'MkA' : 'a'" 
+		:class="[$style.link, { [$style.compact]: compact }]" 
+		:[attr]="self ? url.substring(local.length) : url" rel="nofollow noopener" 
+		:target="target" 
+		:title="url"
+		@click="(ev: MouseEvent) => warningExternalWebsite(ev, url)"
+	>
 		<div v-if="thumbnail && !sensitive" :class="$style.thumbnail" :style="defaultStore.state.dataSaver.urlPreview ? '' : `background-image: url('${thumbnail}')`">
 		</div>
 		<article :class="$style.body">
@@ -93,6 +100,7 @@ import { deviceKind } from '@/scripts/device-kind.js';
 import MkButton from '@/components/MkButton.vue';
 import { transformPlayerUrl } from '@/scripts/player-url-transform.js';
 import { defaultStore } from '@/store.js';
+import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 

@@ -111,6 +111,7 @@ const defaultStoreSaveKeys: (keyof typeof defaultStore['state'])[] = [
 	'sound_note',
 	'sound_noteMy',
 	'sound_notification',
+	'trustedExternalWebsites',
 ];
 const coldDeviceStorageSaveKeys: (keyof typeof ColdDeviceStorage.default)[] = [
 	'lightTheme',
