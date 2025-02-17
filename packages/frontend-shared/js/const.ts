@@ -70,6 +70,7 @@ export const notificationTypes = [
 	'achievementEarned',
 	'exportCompleted',
 	'login',
+	'createToken',
 	'test',
 	'app',
 ] as const;

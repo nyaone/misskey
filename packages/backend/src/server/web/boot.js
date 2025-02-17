@@ -151,6 +151,22 @@
 			await new Promise(resolve => window.addEventListener('DOMContentLoaded', resolve));
 		}
 
+		const locale = JSON.parse(localStorage.getItem('locale') || '{}');
+
+		const messages = Object.assign({
+			title: 'Failed to initialize Misskey',
+			solution: 'The following actions may solve the problem.',
+			solution1: 'Update your os and browser',
+			solution2: 'Disable an adblocker',
+			solution3: 'Clear the browser cache',
+			solution4: '(Tor Browser) Set dom.webaudio.enabled to true',
+			otherOption: 'Other options',
+			otherOption1: 'Clear preferences and cache',
+			otherOption2: 'Start the simple client',
+			otherOption3: 'Start the repair tool',
+		}, locale?._bootErrors || {});
+		const reload = locale?.reload || 'Reload';
+
 		let errorsElement = document.getElementById('errors');
 
 		if (!errorsElement) {
@@ -160,32 +176,32 @@
 				<path d="M12 9v2m0 4v.01"></path>
 				<path d="M5 19h14a2 2 0 0 0 1.84 -2.75l-7.1 -12.25a2 2 0 0 0 -3.5 0l-7.1 12.25a2 2 0 0 0 1.75 2.75"></path>
 			</svg>
-			<h1>加载失败</h1>
+			<h1>${messages.title}</h1>
 			<button class="button-big" onclick="location.reload(true);">
-				<span class="button-label-big">重新载入</span>
+				<span class="button-label-big">${reload}</span>
 			</button>
-			<p><b>以下操作或许可以解决这个问题。</b></p>
-			<p>更新您的操作系统和浏览器</p>
-			<p>停用广告拦截器</p>
-			<p>清除浏览器缓存</p>
-			<p>&#40;Tor Browser&#41; 将 dom.webaudio.enabled 设置为 true</p>
-			<details style="color: #62b6e7;">
-				<summary>其他选项</summary>
+			<p><b>${messages.solution}</b></p>
+			<p>${messages.solution1}</p>
+			<p>${messages.solution2}</p>
+			<p>${messages.solution3}</p>
+			<p>${messages.solution4}</p>
+			<details style="color: #86b300;">
+				<summary>${messages.otherOption}</summary>
 				<a href="/flush">
 					<button class="button-small">
-						<span class="button-label-small">清理偏好设置与缓存</span>
+						<span class="button-label-small">${messages.otherOption1}</span>
 					</button>
 				</a>
 				<br>
 				<a href="/cli">
 					<button class="button-small">
-						<span class="button-label-small">启动简单客户端</span>
+						<span class="button-label-small">${messages.otherOption2}</span>
 					</button>
 				</a>
 				<br>
 				<a href="/bios">
 					<button class="button-small">
-						<span class="button-label-small">启动修复工具</span>
+						<span class="button-label-small">${messages.otherOption3}</span>
 					</button>
 				</a>
 			</details>
