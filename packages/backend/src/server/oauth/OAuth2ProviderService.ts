@@ -97,7 +97,6 @@ interface ClientInformation {
 	redirectUris: string[];
 	name: string;
 	secret?: string;
-	logo: string | null;
 }
 
 // https://indieauth.spec.indieweb.org/#client-information-discovery
@@ -127,19 +126,11 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 		redirectUris.push(...[...fragment.querySelectorAll<HTMLLinkElement>('link[rel=redirect_uri][href]')].map(el => el.href));
 
 		let name = id;
-		let logo: string | null = null;
 		if (text) {
 			const microformats = mf2(text, { baseUrl: res.url });
-			const correspondingProperties = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url.includes(id));
-			if (correspondingProperties) {
-				const nameProperty = correspondingProperties.properties.name[0];
-				if (typeof nameProperty === 'string') {
-					name = nameProperty;
-				}
-				const logoProperty = correspondingProperties.properties.logo[0];
-				if (typeof logoProperty === 'string') {
-					logo = logoProperty;
-				}
+			const nameProperty = microformats.items.find(item => item.type?.includes('h-app') && item.properties.url.includes(id))?.properties.name[0];
+			if (typeof nameProperty === 'string') {
+				name = nameProperty;
 			}
 		}
 
@@ -148,7 +139,6 @@ async function discoverClientInformation(logger: Logger, httpRequestService: Htt
 			registered: false,
 			redirectUris: redirectUris.map(uri => new URL(uri, res.url).toString()),
 			name: typeof name === 'string' ? name : id,
-			logo,
 		};
 	} catch (err) {
 		console.error(err);
@@ -426,7 +416,6 @@ export class OAuth2ProviderService {
 			return await reply.view('oauth', {
 				transactionId: oauth2.transactionID,
 				clientName: oauth2.client.name,
-				clientLogo: oauth2.client.logo,
 				scope: oauth2.req.scope.join(' '),
 			});
 		});
@@ -475,7 +464,6 @@ export class OAuth2ProviderService {
 						redirectUris: [clientApp.callbackUrl],
 						name: clientApp.name,
 						secret: clientApp.secret,
-						logo: null,
 					};
 
 					// TODO: Check whether can be skipped -> if already authorized, not revoked, and request no more scopes
