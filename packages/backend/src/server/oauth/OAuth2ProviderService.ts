@@ -475,6 +475,7 @@ export class OAuth2ProviderService {
 						redirectUris: [clientApp.callbackUrl],
 						name: clientApp.name,
 						secret: clientApp.secret,
+						logo: null,
 					};
 
 					// TODO: Check whether can be skipped -> if already authorized, not revoked, and request no more scopes
