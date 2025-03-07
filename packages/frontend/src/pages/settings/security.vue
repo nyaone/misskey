@@ -44,6 +44,16 @@ SPDX-License-Identifier: AGPL-3.0-only
 				<template #caption>{{ i18n.ts.regenerateLoginTokenDescription }}</template>
 			</FormSlot>
 		</FormSection>
+
+		<MkFolder>
+			<template #icon><i class="ti ti-world-check"></i></template>
+			<template #label>信任的网站</template>
+
+			<div class="_gaps_m">
+				<MkInfo>信任的网站列表，打开这些外部链接时不会弹出安全提示。</MkInfo>
+				<XTrustedExternalWebsites :trusted="defaultStore.reactiveState.trustedExternalWebsites.value" @save="saveTrustedExternalWebsites"/>
+			</div>
+		</MkFolder>
 	</div>
 </SearchMarker>
 </template>
@@ -55,10 +65,12 @@ import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import XTrustedExternalWebsites from './security.trusted-external-websites.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
 import { i18n } from '@/i18n.js';
 import { definePageMetadata } from '@/scripts/page-metadata.js';
+import { defaultStore } from '@/store.js';
 
 const pagination = {
 	endpoint: 'i/signin-history' as const,
@@ -106,6 +118,10 @@ async function regenerateToken() {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
+}
+
+function saveTrustedExternalWebsites(trustedExternalWebsites: string[]) {
+	defaultStore.set('trustedExternalWebsites', trustedExternalWebsites);
 }
 
 const headerActions = computed(() => []);
