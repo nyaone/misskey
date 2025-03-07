@@ -45,15 +45,17 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</FormSlot>
 		</FormSection>
 
-		<MkFolder>
-			<template #icon><i class="ti ti-world-check"></i></template>
-			<template #label>信任的网站</template>
+		<SearchMarker :keywords="['trust', 'site']">
+			<MkFolder>
+				<template #icon><i class="ti ti-world-check"></i></template>
+				<template #label>信任的网站</template>
 
-			<div class="_gaps_m">
-				<MkInfo>信任的网站列表，打开这些外部链接时不会弹出安全提示。</MkInfo>
-				<XTrustedExternalWebsites :trusted="defaultStore.reactiveState.trustedExternalWebsites.value" @save="saveTrustedExternalWebsites"/>
-			</div>
-		</MkFolder>
+				<div class="_gaps_m">
+					<MkInfo>信任的网站列表，打开这些外部链接时不会弹出安全提示。</MkInfo>
+					<XTrustedExternalWebsites :trusted="defaultStore.reactiveState.trustedExternalWebsites.value" @save="saveTrustedExternalWebsites"/>
+				</div>
+			</MkFolder>
+		</SearchMarker>
 	</div>
 </SearchMarker>
 </template>
@@ -65,6 +67,7 @@ import FormSection from '@/components/form/section.vue';
 import FormSlot from '@/components/form/slot.vue';
 import MkButton from '@/components/MkButton.vue';
 import MkPagination from '@/components/MkPagination.vue';
+import MkFolder from '@/components/MkFolder.vue';
 import XTrustedExternalWebsites from './security.trusted-external-websites.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/scripts/misskey-api.js';
