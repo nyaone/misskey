@@ -1,13 +1,16 @@
 ## 2025.3.1
 
 ### General
--
+- pnpmをv10に更新
+- Corepackを削除
 
 ### Client
-- Enhance: 設定の検索を追加(実験的)
+- Feat: 設定の検索を追加(実験的)
+- Enhance: 設定項目の再配置
 
 ### Server
 - Fix: DBマイグレーション際にシステムアカウントのユーザーID判定が正しくない問題を修正
+- Fix: user.featured列が状況によってJSON文字列になっていたのを修正
 
 
 ## 2025.3.0
