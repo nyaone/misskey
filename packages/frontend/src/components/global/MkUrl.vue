@@ -33,7 +33,7 @@ import type { MkABehavior } from '@/components/global/MkA.vue';
 import * as os from '@/os.js';
 import { useTooltip } from '@/utility/use-tooltip.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
+import { warningExternalWebsite } from '@/utility/warning-external-website.js';
 
 function safeURIDecode(str: string): string {
 	try {

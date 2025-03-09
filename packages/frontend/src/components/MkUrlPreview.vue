@@ -94,6 +94,7 @@ import MkButton from '@/components/MkButton.vue';
 import { transformPlayerUrl } from '@/utility/player-url-transform.js';
 import { store } from '@/store.js';
 import { prefer } from '@/preferences.js';
+import { warningExternalWebsite } from '@/utility/warning-external-website.js';
 
 type SummalyResult = Awaited<ReturnType<typeof summaly>>;
 

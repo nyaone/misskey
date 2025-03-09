@@ -21,7 +21,7 @@ import { url as local } from '@@/js/config.js';
 import { useTooltip } from '@/utility/use-tooltip.js';
 import * as os from '@/os.js';
 import { isEnabledUrlPreview } from '@/instance.js';
-import { warningExternalWebsite } from '@/scripts/warning-external-website.js';
+import { warningExternalWebsite } from '@/utility/warning-external-website.js';
 
 const props = withDefaults(defineProps<{
 	url: string;
