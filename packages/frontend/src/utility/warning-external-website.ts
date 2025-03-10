@@ -21,7 +21,7 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 	// 	} else if (expression.includes(' ')) return expression.split(' ').every(keyword => url.includes(keyword));
 	// 	else return domain.endsWith(expression);
 	// });
-	const isTrusted = !domain || store.reactiveState.trustedExternalWebsites.value.includes(domain);
+	const isTrusted = !domain || store.s.trustedExternalWebsites.includes(domain);
 
 	// if (!self && !isWellKnownWebsite && !isTrusted) {
 	if (!self && !isTrusted) {
@@ -53,7 +53,7 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 		if (confirm.result === 'no') return false;
 
 		if (confirm.result === 'trust') {
-			await store.set('trustedExternalWebsites', [...store.reactiveState.trustedExternalWebsites.value, domain]);
+			await store.set('trustedExternalWebsites', [...store.s.trustedExternalWebsites, domain]);
 		}
 
 		window.open(url, '_blank', 'noopener');

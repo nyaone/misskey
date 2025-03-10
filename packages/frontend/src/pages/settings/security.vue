@@ -52,7 +52,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 
 				<div class="_gaps_m">
 					<MkInfo>信任的网站列表，打开这些外部链接时不会弹出安全提示。</MkInfo>
-					<XTrustedExternalWebsites :trusted="store.reactiveState.trustedExternalWebsites.value" @save="saveTrustedExternalWebsites"/>
+					<XTrustedExternalWebsites :trusted="store.s.trustedExternalWebsites" @save="saveTrustedExternalWebsites"/>
 				</div>
 			</MkFolder>
 		</SearchMarker>
@@ -72,7 +72,7 @@ import XTrustedExternalWebsites from './security.trusted-external-websites.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
-import { definePageMetadata } from '@/utility/page-metadata.js';
+import { definePage } from '@/page.js';
 import { store } from '@/store.js';
 
 const pagination = {
@@ -131,7 +131,7 @@ const headerActions = computed(() => []);
 
 const headerTabs = computed(() => []);
 
-definePageMetadata(() => ({
+definePage(() => ({
 	title: i18n.ts.security,
 	icon: 'ti ti-lock',
 }));
