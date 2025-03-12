@@ -1,6 +1,5 @@
 // Modified from https://github.com/MisskeyIO/misskey/blob/io/packages/frontend/src/scripts/warning-external-website.ts
 
-// import { url as local } from '@/config.js';
 import { store } from '@/store.js';
 // import { instance } from '@/instance.js';
 import { i18n } from '@/i18n.js';
@@ -13,7 +12,7 @@ export async function warningExternalWebsite(ev: MouseEvent, url: string) {
 	const local = window.location.host;
 
 	const domain = extractDomain.exec(url)?.[4];
-	const self = !domain || url.startsWith(local);
+	const self = !domain || domain === local;
 	// const isWellKnownWebsite = self || instance.wellKnownWebsites.some(expression => {
 	// 	const r = isRegExp.exec(expression);
 	// 	if (r) {
