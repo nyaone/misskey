@@ -92,11 +92,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/emoji-picker',
 		active: currentPage.value?.route.name === 'emojiPicker',
 	}, {
-		icon: 'ti ti-cloud',
-		text: i18n.ts.drive,
-		to: '/settings/drive',
-		active: currentPage.value?.route.name === 'drive',
-	}, {
 		icon: 'ti ti-bell',
 		text: i18n.ts.notifications,
 		to: '/settings/notifications',
@@ -146,6 +141,11 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 	}],
 }, {
 	items: [{
+		icon: 'ti ti-cloud',
+		text: i18n.ts.drive,
+		to: '/settings/drive',
+		active: currentPage.value?.route.name === 'drive',
+	}, {
 		icon: 'ti ti-badges',
 		text: i18n.ts.roles,
 		to: '/settings/roles',
@@ -156,20 +156,15 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		to: '/settings/mute-block',
 		active: currentPage.value?.route.name === 'mute-block',
 	}, {
-		icon: 'ti ti-api',
-		text: 'API',
-		to: '/settings/api',
-		active: currentPage.value?.route.name === 'api',
-	}, {
-		icon: 'ti ti-webhook',
-		text: 'Webhook',
-		to: '/settings/webhook',
-		active: currentPage.value?.route.name === 'webhook',
+		icon: 'ti ti-link',
+		text: i18n.ts._settings.serviceConnection,
+		to: '/settings/connect',
+		active: currentPage.value?.route.name === 'connect',
 	}, {
 		icon: 'ti ti-package',
-		text: i18n.ts.importAndExport,
-		to: '/settings/import-export',
-		active: currentPage.value?.route.name === 'import-export',
+		text: i18n.ts._settings.accountData,
+		to: '/settings/account-data',
+		active: currentPage.value?.route.name === 'account-data',
 	}, {
 		icon: 'ti ti-dots',
 		text: i18n.ts.other,
