@@ -4,10 +4,10 @@
  */
 
 import { v4 as uuid } from 'uuid';
-import type { PreferencesProfile, StorageProvider } from '@/preferences/profile.js';
+import type { PreferencesProfile, StorageProvider } from '@/preferences/manager.js';
 import { cloudBackup } from '@/preferences/utility.js';
 import { miLocalStorage } from '@/local-storage.js';
-import { isSameCond, ProfileManager } from '@/preferences/profile.js';
+import { isSameCond, ProfileManager } from '@/preferences/manager.js';
 import { store } from '@/store.js';
 import { $i } from '@/account.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
@@ -50,7 +50,7 @@ const storageProvider: StorageProvider = {
 				value: target[1],
 			};
 		} catch (err: any) {
-			if (err.code === 'NO_SUCH_KEY') {
+			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
 				return null;
 			} else {
 				throw err;
@@ -66,7 +66,7 @@ const storageProvider: StorageProvider = {
 				key: syncGroup + ':' + ctx.key,
 			}) as [any, any][];
 		} catch (err: any) {
-			if (err.code === 'NO_SUCH_KEY') {
+			if (err.code === 'NO_SUCH_KEY') { // TODO: いちいちエラーキャッチするのは面倒なのでキーが無くてもエラーにならない maybe-get のようなエンドポイントをバックエンドに実装する
 				cloudData = [];
 			} else {
 				throw err;

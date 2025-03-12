@@ -13,6 +13,7 @@ import { $i } from '@/account.js';
 import { copyToClipboard } from '@/utility/copy-to-clipboard.js';
 import { i18n } from '@/i18n.js';
 import * as os from '@/os.js';
+import { deepEqual } from '@/utility/deep-equal.js';
 
 // NOTE: 明示的な設定値のひとつとして null もあり得るため、設定が存在しないかどうかを判定する目的で null で比較したり ?? を使ってはいけない
 
@@ -84,6 +85,12 @@ export type StorageProvider = {
 	cloudSet: <K extends keyof PREF>(ctx: { key: K; cond: Cond; value: ValueOf<K>; }) => Promise<void>;
 };
 
+export type PreferencesDefinition = Record<string, {
+	default: any;
+	accountDependent?: boolean;
+	serverDependent?: boolean;
+}>;
+
 export class ProfileManager {
 	private storageProvider: StorageProvider;
 	public profile: PreferencesProfile;
@@ -118,6 +125,10 @@ export class ProfileManager {
 		// TODO: 定期的にクラウドの値をフェッチ
 	}
 
+	private isAccountDependentKey<K extends keyof PREF>(key: K): boolean {
+		return (PREF_DEF as PreferencesDefinition)[key].accountDependent === true;
+	}
+
 	private rewriteRawState<K extends keyof PREF>(key: K, value: ValueOf<K>) {
 		const v = JSON.parse(JSON.stringify(value)); // deep copy 兼 vueのプロキシ解除
 		this.r[key].value = this.s[key] = v;
@@ -129,7 +140,7 @@ export class ProfileManager {
 		this.rewriteRawState(key, value);
 
 		const record = this.getMatchedRecordOf(key);
-		if (parseCond(record[0]).account == null && PREF_DEF[key].accountDependent) {
+		if (parseCond(record[0]).account == null && this.isAccountDependentKey(key)) {
 			this.profile.preferences[key].push([makeCond({
 				account: `${host}/${$i!.id}`,
 			}), value, {}]);
@@ -186,9 +197,10 @@ export class ProfileManager {
 
 	private genStates() {
 		const states = {} as { [K in keyof PREF]: ValueOf<K> };
-		for (const key in PREF_DEF) {
+		for (const _key in PREF_DEF) {
+			const key = _key as keyof PREF;
 			const record = this.getMatchedRecordOf(key);
-			states[key] = record[1];
+			(states[key] as any) = record[1];
 		}
 
 		return states;
@@ -196,7 +208,8 @@ export class ProfileManager {
 
 	private async fetchCloudValues() {
 		const needs = [] as { key: keyof PREF; cond: Cond; }[];
-		for (const key in PREF_DEF) {
+		for (const _key in PREF_DEF) {
+			const key = _key as keyof PREF;
 			const record = this.getMatchedRecordOf(key);
 			if (record[2].sync) {
 				needs.push({
@@ -208,7 +221,8 @@ export class ProfileManager {
 
 		const cloudValues = await this.storageProvider.cloudGets({ needs });
 
-		for (const key in PREF_DEF) {
+		for (const _key in PREF_DEF) {
+			const key = _key as keyof PREF;
 			const record = this.getMatchedRecordOf(key);
 			if (record[2].sync && Object.hasOwn(cloudValues, key) && cloudValues[key] !== undefined) {
 				const cloudValue = cloudValues[key];
@@ -290,7 +304,7 @@ export class ProfileManager {
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (PREF_DEF[key].accountDependent) throw new Error('already account-dependent');
+		if (this.isAccountDependentKey(key)) throw new Error('already account-dependent');
 		if (this.isAccountOverrided(key)) return;
 
 		const records = this.profile.preferences[key];
@@ -303,7 +317,7 @@ export class ProfileManager {
 
 	public clearAccountOverride<K extends keyof PREF>(key: K) {
 		if ($i == null) return;
-		if (PREF_DEF[key].accountDependent) throw new Error('cannot clear override for this account-dependent property');
+		if (this.isAccountDependentKey(key)) throw new Error('cannot clear override for this account-dependent property');
 
 		const records = this.profile.preferences[key];
 
@@ -327,7 +341,7 @@ export class ProfileManager {
 		const record = this.getMatchedRecordOf(key);
 
 		const existing = await this.storageProvider.cloudGet({ key, cond: record[0] });
-		if (existing != null) {
+		if (existing != null && !deepEqual(existing.value, record[1])) {
 			const { canceled, result } = await os.select({
 				title: i18n.ts.preferenceSyncConflictTitle,
 				text: i18n.ts.preferenceSyncConflictText,
@@ -377,7 +391,8 @@ export class ProfileManager {
 	public rewriteProfile(profile: PreferencesProfile) {
 		this.profile = profile;
 		const states = this.genStates();
-		for (const key in states) {
+		for (const _key in states) {
+			const key = _key as keyof PREF;
 			this.rewriteRawState(key, states[key]);
 		}
 
