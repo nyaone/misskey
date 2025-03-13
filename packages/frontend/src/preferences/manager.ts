@@ -25,7 +25,7 @@ type PREF = typeof PREF_DEF;
 type ValueOf<K extends keyof PREF> = PREF[K]['default'];
 type Account = string; // <host>/<userId>
 
-type Cond = Partial<{
+type Scope = Partial<{
 	server: string | null; // 将来のため
 	account: Account | null;
 	device: string | null; // 将来のため
@@ -35,33 +35,33 @@ type ValueMeta = Partial<{
 	sync: boolean;
 }>;
 
-type PrefRecord<K extends keyof PREF> = [cond: Cond, value: ValueOf<K>, meta: ValueMeta];
+type PrefRecord<K extends keyof PREF> = [scope: Scope, value: ValueOf<K>, meta: ValueMeta];
 
-function parseCond(cond: Cond): {
+function parseScope(scope: Scope): {
 	server: string | null;
 	account: Account | null;
 	device: string | null;
 } {
 	return {
-		server: cond.server ?? null,
-		account: cond.account ?? null,
-		device: cond.device ?? null,
+		server: scope.server ?? null,
+		account: scope.account ?? null,
+		device: scope.device ?? null,
 	};
 }
 
-function makeCond(cond: Partial<{
+function makeScope(scope: Partial<{
 	server: string | null;
 	account: Account | null;
 	device: string | null;
-}>): Cond {
-	const c = {} as Cond;
-	if (cond.server != null) c.server = cond.server;
-	if (cond.account != null) c.account = cond.account;
-	if (cond.device != null) c.device = cond.device;
+}>): Scope {
+	const c = {} as Scope;
+	if (scope.server != null) c.server = scope.server;
+	if (scope.account != null) c.account = scope.account;
+	if (scope.device != null) c.device = scope.device;
 	return c;
 }
 
-export function isSameCond(a: Cond, b: Cond): boolean {
+export function isSameScope(a: Scope, b: Scope): boolean {
 	// null と undefined (キー無し) は区別したくないので == で比較
 	// eslint-disable-next-line eqeqeq
 	return a.server == b.server && a.account == b.account && a.device == b.device;
@@ -80,9 +80,9 @@ export type PreferencesProfile = {
 
 export type StorageProvider = {
 	save: (ctx: { profile: PreferencesProfile; }) => void;
-	cloudGets: <K extends keyof PREF>(ctx: { needs: { key: K; cond: Cond; }[] }) => Promise<Partial<Record<K, ValueOf<K>>>>;
-	cloudGet: <K extends keyof PREF>(ctx: { key: K; cond: Cond; }) => Promise<{ value: ValueOf<K>; } | null>;
-	cloudSet: <K extends keyof PREF>(ctx: { key: K; cond: Cond; value: ValueOf<K>; }) => Promise<void>;
+	cloudGets: <K extends keyof PREF>(ctx: { needs: { key: K; scope: Scope; }[] }) => Promise<Partial<Record<K, ValueOf<K>>>>;
+	cloudGet: <K extends keyof PREF>(ctx: { key: K; scope: Scope; }) => Promise<{ value: ValueOf<K>; } | null>;
+	cloudSet: <K extends keyof PREF>(ctx: { key: K; scope: Scope; value: ValueOf<K>; }) => Promise<void>;
 };
 
 export type PreferencesDefinition = Record<string, {
@@ -91,9 +91,10 @@ export type PreferencesDefinition = Record<string, {
 	serverDependent?: boolean;
 }>;
 
-export class ProfileManager {
+export class PreferencesManager {
 	private storageProvider: StorageProvider;
 	public profile: PreferencesProfile;
+	public cloudReady: Promise<void>;
 
 	/**
 	 * static / state の略 (static が予約語のため)
@@ -120,7 +121,7 @@ export class ProfileManager {
 			this.r[key] = ref(this.s[key]);
 		}
 
-		this.fetchCloudValues();
+		this.cloudReady = this.fetchCloudValues();
 
 		// TODO: 定期的にクラウドの値をフェッチ
 	}
@@ -140,8 +141,8 @@ export class ProfileManager {
 		this.rewriteRawState(key, value);
 
 		const record = this.getMatchedRecordOf(key);
-		if (parseCond(record[0]).account == null && this.isAccountDependentKey(key)) {
-			this.profile.preferences[key].push([makeCond({
+		if (parseScope(record[0]).account == null && this.isAccountDependentKey(key)) {
+			this.profile.preferences[key].push([makeScope({
 				account: `${host}/${$i!.id}`,
 			}), value, {}]);
 			this.save();
@@ -154,7 +155,7 @@ export class ProfileManager {
 		if (record[2].sync) {
 			// awaitの必要なし
 			// TODO: リクエストを間引く
-			this.storageProvider.cloudSet({ key, cond: record[0], value: record[1] });
+			this.storageProvider.cloudSet({ key, scope: record[0], value: record[1] });
 		}
 	}
 
@@ -207,14 +208,14 @@ export class ProfileManager {
 	}
 
 	private async fetchCloudValues() {
-		const needs = [] as { key: keyof PREF; cond: Cond; }[];
+		const needs = [] as { key: keyof PREF; scope: Scope; }[];
 		for (const _key in PREF_DEF) {
 			const key = _key as keyof PREF;
 			const record = this.getMatchedRecordOf(key);
 			if (record[2].sync) {
 				needs.push({
 					key,
-					cond: record[0],
+					scope: record[0],
 				});
 			}
 		}
@@ -226,7 +227,7 @@ export class ProfileManager {
 			const record = this.getMatchedRecordOf(key);
 			if (record[2].sync && Object.hasOwn(cloudValues, key) && cloudValues[key] !== undefined) {
 				const cloudValue = cloudValues[key];
-				if (cloudValue !== this.s[key]) {
+				if (!deepEqual(cloudValue, record[1])) {
 					this.rewriteRawState(key, cloudValue);
 					record[1] = cloudValue;
 					console.log('cloud fetched', key, cloudValue);
@@ -241,7 +242,7 @@ export class ProfileManager {
 	public static newProfile(): PreferencesProfile {
 		const data = {} as PreferencesProfile['preferences'];
 		for (const key in PREF_DEF) {
-			data[key] = [[makeCond({}), PREF_DEF[key].default, {}]];
+			data[key] = [[makeScope({}), PREF_DEF[key].default, {}]];
 		}
 		return {
 			id: uuid(),
@@ -258,7 +259,7 @@ export class ProfileManager {
 		for (const key in PREF_DEF) {
 			const records = profileLike.preferences[key];
 			if (records == null || records.length === 0) {
-				data[key] = [[makeCond({}), PREF_DEF[key].default, {}]];
+				data[key] = [[makeScope({}), PREF_DEF[key].default, {}]];
 				continue;
 			} else {
 				data[key] = records;
@@ -288,18 +289,18 @@ export class ProfileManager {
 	public getMatchedRecordOf<K extends keyof PREF>(key: K): PrefRecord<K> {
 		const records = this.profile.preferences[key];
 
-		if ($i == null) return records.find(([cond, v]) => parseCond(cond).account == null)!;
+		if ($i == null) return records.find(([scope, v]) => parseScope(scope).account == null)!;
 
-		const accountOverrideRecord = records.find(([cond, v]) => parseCond(cond).account === `${host}/${$i!.id}`);
+		const accountOverrideRecord = records.find(([scope, v]) => parseScope(scope).account === `${host}/${$i!.id}`);
 		if (accountOverrideRecord) return accountOverrideRecord;
 
-		const record = records.find(([cond, v]) => parseCond(cond).account == null);
+		const record = records.find(([scope, v]) => parseScope(scope).account == null);
 		return record!;
 	}
 
 	public isAccountOverrided<K extends keyof PREF>(key: K): boolean {
 		if ($i == null) return false;
-		return this.profile.preferences[key].some(([cond, v]) => parseCond(cond).account === `${host}/${$i!.id}`) ?? false;
+		return this.profile.preferences[key].some(([scope, v]) => parseScope(scope).account === `${host}/${$i!.id}`) ?? false;
 	}
 
 	public setAccountOverride<K extends keyof PREF>(key: K) {
@@ -308,7 +309,7 @@ export class ProfileManager {
 		if (this.isAccountOverrided(key)) return;
 
 		const records = this.profile.preferences[key];
-		records.push([makeCond({
+		records.push([makeScope({
 			account: `${host}/${$i!.id}`,
 		}), this.s[key], {}]);
 
@@ -321,7 +322,7 @@ export class ProfileManager {
 
 		const records = this.profile.preferences[key];
 
-		const index = records.findIndex(([cond, v]) => parseCond(cond).account === `${host}/${$i!.id}`);
+		const index = records.findIndex(([scope, v]) => parseScope(scope).account === `${host}/${$i!.id}`);
 		if (index === -1) return;
 
 		records.splice(index, 1);
@@ -340,7 +341,7 @@ export class ProfileManager {
 
 		const record = this.getMatchedRecordOf(key);
 
-		const existing = await this.storageProvider.cloudGet({ key, cond: record[0] });
+		const existing = await this.storageProvider.cloudGet({ key, scope: record[0] });
 		if (existing != null && !deepEqual(existing.value, record[1])) {
 			const { canceled, result } = await os.select({
 				title: i18n.ts.preferenceSyncConflictTitle,
@@ -370,7 +371,7 @@ export class ProfileManager {
 		this.save();
 
 		// awaitの必要性は無い
-		this.storageProvider.cloudSet({ key, cond: record[0], value: this.s[key] });
+		this.storageProvider.cloudSet({ key, scope: record[0], value: this.s[key] });
 
 		return { enabled: true };
 	}

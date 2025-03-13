@@ -66,9 +66,9 @@ const routes: RouteDef[] = [{
 		name: 'privacy',
 		component: page(() => import('@/pages/settings/privacy.vue')),
 	}, {
-		path: '/emoji-picker',
-		name: 'emojiPicker',
-		component: page(() => import('@/pages/settings/emoji-picker.vue')),
+		path: '/emoji-palette',
+		name: 'emoji-palette',
+		component: page(() => import('@/pages/settings/emoji-palette.vue')),
 	}, {
 		path: '/drive',
 		name: 'drive',
@@ -105,10 +105,6 @@ const routes: RouteDef[] = [{
 		path: '/theme',
 		name: 'theme',
 		component: page(() => import('@/pages/settings/theme.vue')),
-	}, {
-		path: '/appearance',
-		name: 'appearance',
-		component: page(() => import('@/pages/settings/appearance.vue')),
 	}, {
 		path: '/navbar',
 		name: 'navbar',

@@ -1329,6 +1329,15 @@ preferenceSyncConflictText: "同期が有効にされた設定項目は設定値
 preferenceSyncConflictChoiceServer: "サーバーの設定値"
 preferenceSyncConflictChoiceDevice: "デバイスの設定値"
 preferenceSyncConflictChoiceCancel: "同期の有効化をキャンセル"
+paste: "ペースト"
+emojiPalette: "絵文字パレット"
+postForm: "投稿フォーム"
+
+_emojiPalette:
+  palettes: "パレット"
+  enableSyncBetweenDevicesForPalettes: "パレットのデバイス間同期を有効にする"
+  paletteForMain: "メインで使用するパレット"
+  paletteForReaction: "リアクションで使用するパレット"
 
 _settings:
   driveBanner: "ドライブの管理と設定、使用量の確認、ファイルをアップロードする際の設定を行えます。"
@@ -1339,7 +1348,7 @@ _settings:
   serviceConnection: "サービス連携"
   serviceConnectionBanner: "外部のアプリ・サービスと連携するためのアクセストークンやWebhookの管理と設定が行えます。"
   accountData: "アカウントのデータ"
-  accountDataBanner: "アカウントのデータをエクスポート/インポートして管理できます。"
+  accountDataBanner: "アカウントデータのアーカイブをエクスポート/インポートして管理できます。"
   muteAndBlockBanner: "非表示にするコンテンツの設定や、特定のユーザーからのアクションを制限する設定と管理を行えます。"
   accessibilityBanner: "クライアントの視覚や動作に関するパーソナライズを行い、より最適に使用できるように設定できます。"
   privacyBanner: "コンテンツの公開範囲、見つけやすさ、フォローの承認制などアカウントのプライバシーに関する設定を行えます。"
