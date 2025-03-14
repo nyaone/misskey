@@ -38,7 +38,7 @@ import type { SuperMenuDef } from '@/components/MkSuperMenu.vue';
 import { i18n } from '@/i18n.js';
 import MkInfo from '@/components/MkInfo.vue';
 import MkSuperMenu from '@/components/MkSuperMenu.vue';
-import { signout, $i } from '@/account.js';
+import { $i } from '@/i.js';
 import { clearCache } from '@/utility/clear-cache.js';
 import { instance } from '@/instance.js';
 import { definePage, provideMetadataReceiver, provideReactiveMetadata } from '@/page.js';
@@ -47,6 +47,7 @@ import { useRouter } from '@/router/supplier.js';
 import { searchIndexes } from '@/utility/autogen/settings-search-index.js';
 import { enableAutoBackup, getPreferencesProfileMenu } from '@/preferences/utility.js';
 import { store } from '@/store.js';
+import { signout } from '@/signout.js';
 
 const SETTING_INDEX = searchIndexes; // TODO: lazy load
 
@@ -140,11 +141,6 @@ const menuDef = computed<SuperMenuDef[]>(() => [{
 		text: i18n.ts.drive,
 		to: '/settings/drive',
 		active: currentPage.value?.route.name === 'drive',
-	}, {
-		icon: 'ti ti-badges',
-		text: i18n.ts.roles,
-		to: '/settings/roles',
-		active: currentPage.value?.route.name === 'roles',
 	}, {
 		icon: 'ti ti-ban',
 		text: i18n.ts.muteAndBlock,
