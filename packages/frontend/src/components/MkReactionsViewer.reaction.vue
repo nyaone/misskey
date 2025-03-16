@@ -12,7 +12,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 	@click="toggleReaction()"
 	@contextmenu.prevent.stop="menu"
 >
-	<MkReactionIcon :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
+	<MkReactionIcon style="pointer-events: none;" :class="prefer.s.limitWidthOfReaction ? $style.limitWidth : ''" :reaction="reaction" :emojiUrl="note.reactionEmojis[reaction.substring(1, reaction.length - 1)]"/>
 	<span :class="$style.count">{{ count }}</span>
 </button>
 </template>
@@ -35,6 +35,7 @@ import * as sound from '@/utility/sound.js';
 import { checkReactionPermissions } from '@/utility/check-reaction-permissions.js';
 import { customEmojisMap } from '@/custom-emojis.js';
 import { prefer } from '@/preferences.js';
+import { DI } from '@/di.js';
 
 const props = defineProps<{
 	reaction: string;
@@ -43,7 +44,7 @@ const props = defineProps<{
 	note: Misskey.entities.Note;
 }>();
 
-const mock = inject<boolean>('mock', false);
+const mock = inject(DI.mock, false);
 
 const emit = defineEmits<{
 	(ev: 'reactionToggled', emoji: string, newCount: number): void;

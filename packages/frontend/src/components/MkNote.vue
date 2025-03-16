@@ -76,12 +76,13 @@ SPDX-License-Identifier: AGPL-3.0-only
 							:emojiUrls="appearNote.emojis"
 							:enableEmojiMenu="true"
 							:enableEmojiMenuReaction="true"
+							class="_selectable"
 						/>
 						<div v-if="translating || translation" :class="$style.translation">
 							<MkLoading v-if="translating" mini/>
 							<div v-else-if="translation">
 								<b>{{ i18n.tsx.translatedFrom({ x: translation.sourceLang }) }}: </b>
-								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
+								<Mfm :text="translation.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis" class="_selectable"/>
 							</div>
 						</div>
 					</div>
@@ -223,6 +224,7 @@ import { focusPrev, focusNext } from '@/utility/focus.js';
 import { getAppearNote } from '@/utility/get-appear-note.js';
 import { prefer } from '@/preferences.js';
 import { getPluginHandlers } from '@/plugin.js';
+import { DI } from '@/di.js';
 
 const props = withDefaults(defineProps<{
 	note: Misskey.entities.Note;
@@ -233,7 +235,7 @@ const props = withDefaults(defineProps<{
 	mock: false,
 });
 
-provide('mock', props.mock);
+provide(DI.mock, props.mock);
 
 const emit = defineEmits<{
 	(ev: 'reaction', emoji: string): void;
