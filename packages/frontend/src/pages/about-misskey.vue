@@ -122,7 +122,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { nextTick, onBeforeUnmount, ref, shallowRef, computed } from 'vue';
+import { nextTick, onBeforeUnmount, ref, useTemplateRef, computed } from 'vue';
 import { version } from '@@/js/config.js';
 import FormLink from '@/components/form/link.vue';
 import FormSection from '@/components/form/section.vue';
@@ -391,7 +391,7 @@ const easterEggEmojis = ref<{
 	emoji: string
 }[]>([]);
 const easterEggEngine = ref<{ stop: () => void } | null>(null);
-const containerEl = shallowRef<HTMLElement>();
+const containerEl = useTemplateRef('containerEl');
 
 function iconLoaded() {
 	const emojis = prefer.s.emojiPalettes[0].emojis;
