@@ -4,9 +4,8 @@ SPDX-License-Identifier: AGPL-3.0-only
 -->
 
 <template>
-<MkStickyContainer>
-	<template #header><MkPageHeader :actions="headerActions" :tabs="headerTabs"/></template>
-	<MkSpacer :contentMax="550">
+<MkPageWithAnimBg>
+	<MkSpacer :contentMax="550" :marginMax="50">
 		<MkLoading v-if="uiPhase === 'fetching'"/>
 		<MkExtensionInstaller v-else-if="uiPhase === 'confirm' && data" :extension="data" @confirm="install()" @cancel="close_()">
 			<template #additionalInfo>
@@ -38,7 +37,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</div>
 		</div>
 	</MkSpacer>
-</MkStickyContainer>
+</MkPageWithAnimBg>
 </template>
 
 <script lang="ts" setup>
@@ -58,6 +57,7 @@ import { parseThemeCode, installTheme } from '@/theme.js';
 import { unisonReload } from '@/utility/unison-reload.js';
 import { i18n } from '@/i18n.js';
 import { definePage } from '@/page.js';
+import MkPageWithAnimBg from '@/components/MkPageWithAnimBg.vue';
 
 const uiPhase = ref<'fetching' | 'confirm' | 'error'>('fetching');
 const errorKV = ref<{
@@ -231,10 +231,6 @@ const urlParams = new URLSearchParams(window.location.search);
 url.value = urlParams.get('url');
 hash.value = urlParams.get('hash');
 fetch();
-
-const headerActions = computed(() => []);
-
-const headerTabs = computed(() => []);
 
 definePage(() => ({
 	title: i18n.ts._externalResourceInstaller.title,
