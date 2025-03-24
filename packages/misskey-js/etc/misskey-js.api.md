@@ -7,7 +7,7 @@
 import type { AuthenticationResponseJSON } from '@simplewebauthn/types';
 import { EventEmitter } from 'eventemitter3';
 import { Options } from 'reconnecting-websocket';
-import type { PublicKeyCredentialRequestOptionsJSON as PublicKeyCredentialRequestOptionsJSON_2 } from '@simplewebauthn/types';
+import type { PublicKeyCredentialRequestOptionsJSON } from '@simplewebauthn/types';
 import _ReconnectingWebSocket from 'reconnecting-websocket';
 
 // Warning: (ae-forgotten-export) The symbol "components" needs to be exported by the entry point index.d.ts
@@ -3311,12 +3311,12 @@ type SigninFlowResponse = {
 } | {
     finished: false;
     next: 'passkey';
-    authRequest: PublicKeyCredentialRequestOptionsJSON_2;
+    authRequest: PublicKeyCredentialRequestOptionsJSON;
 };
 
 // @public (undocumented)
 type SigninWithPasskeyInitResponse = {
-    option: PublicKeyCredentialRequestOptionsJSON_2;
+    option: PublicKeyCredentialRequestOptionsJSON;
     context: string;
 };
 
@@ -3355,7 +3355,6 @@ type SignupRequest = {
     'g-recaptcha-response'?: string | null;
     'turnstile-response'?: string | null;
     'm-captcha-response'?: string | null;
-    'testcaptcha-response'?: string | null;
 };
 
 // @public (undocumented)
