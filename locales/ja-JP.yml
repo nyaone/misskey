@@ -1333,6 +1333,8 @@ postForm: "投稿フォーム"
 textCount: "文字数"
 information: "情報"
 chat: "チャット"
+migrateOldSettings: "旧設定情報を移行"
+migrateOldSettings_description: "通常これは自動で行われていますが、何らかの理由により上手く移行されなかった場合は手動で移行処理をトリガーできます。現在の設定情報は上書きされます。"
 
 _chat:
   noMessagesYet: "まだメッセージはありません"
@@ -1358,6 +1360,7 @@ _chat:
   searchMessages: "メッセージを検索"
   home: "ホーム"
   muteThisRoom: "このルームをミュート"
+  deleteRoom: "ルームを削除"
   cannotChatWithTheUser: "このユーザーとのチャットを開始できません"
   cannotChatWithTheUser_description: "チャットが使えない状態になっているか、相手がチャットを開放していません。"
   chatWithThisUser: "チャットする"
@@ -1400,6 +1403,7 @@ _settings:
   timelineAndNote: "タイムラインとノート"
   makeEveryTextElementsSelectable: "全てのテキスト要素を選択可能にする"
   makeEveryTextElementsSelectable_description: "有効にすると、一部のシチュエーションでのユーザビリティが低下する場合があります。"
+  showNavbarSubButtons: "ナビゲーションバーに副ボタンを表示"
 
 _preferencesProfile:
   profileName: "プロファイル名"

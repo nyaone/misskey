@@ -588,6 +588,20 @@ export const searchIndexes: SearchIndexItem[] = [
 		icon: 'ti ti-dots',
 	},
 	{
+		id: '9bNikHWzQ',
+		children: [
+			{
+				id: 'appYJbpkK',
+				label: i18n.ts._settings.showNavbarSubButtons,
+				keywords: ['navbar', 'sidebar', 'toggle', 'button', 'sub'],
+			},
+		],
+		label: i18n.ts.navbar,
+		keywords: ['navbar', 'menu', 'sidebar'],
+		path: '/settings/navbar',
+		icon: 'ti ti-list',
+	},
+	{
 		id: '3icEvyv2D',
 		children: [
 			{
