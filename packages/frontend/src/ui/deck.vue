@@ -221,32 +221,6 @@ async function deleteProfile() {
 
 </script>
 
-<style>
-html,
-body {
-	width: 100%;
-	height: 100%;
-	position: fixed;
-	top: 0;
-	left: 0;
-	overscroll-behavior: none;
-}
-
-body {
-	/* NOTE: htmlにも overflow: clip を設定したいところだが、設定すると何故か少なくともChromeで html が main thread scrolling になりパフォーマンスが(多分)落ちる */
-	overflow: clip;
-}
-
-#misskey_app {
-	width: 100%;
-	height: 100%;
-	overflow: clip;
-	position: absolute;
-	top: 0;
-	left: 0;
-}
-</style>
-
 <style lang="scss" module>
 .transition_menuDrawerBg_enterActive,
 .transition_menuDrawerBg_leaveActive {
