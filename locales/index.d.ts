@@ -5509,7 +5509,7 @@ export interface Locale extends ILocale {
          */
         "thisUserAllowsChatOnlyFromFollowers": string;
         /**
-         * このユーザーはフォローしているユーザーからのみチャットを受け付けています。
+         * このユーザーは、このユーザーがフォローしているユーザーからのみチャットを受け付けています。
          */
         "thisUserAllowsChatOnlyFromFollowing": string;
         /**
@@ -10146,7 +10146,7 @@ export interface Locale extends ILocale {
          */
         "introduction": string;
         /**
-         * 画面の右にある + を押して、いつでもカラムを追加できます。
+         * カラムを追加するには、画面の + をクリックします。
          */
         "introduction2": string;
         /**
