@@ -1715,6 +1715,10 @@ export interface Locale extends ILocale {
      */
     "withFileAntenna": string;
     /**
+     * センシティブなチャンネルのノートを非表示
+     */
+    "hideNotesInSensitiveChannel": string;
+    /**
      * ブラウザへのプッシュ通知を有効にする
      */
     "enableServiceworker": string;
@@ -5374,6 +5378,10 @@ export interface Locale extends ILocale {
      * 上
      */
     "top": string;
+    /**
+     * 埋め込み
+     */
+    "embed": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -7353,6 +7361,14 @@ export interface Locale extends ILocale {
          * 数値が大きいほどUI上で先頭に表示されます。
          */
         "descriptionOfDisplayOrder": string;
+        /**
+         * アサイン状態を移行先アカウントにも引き継ぐ
+         */
+        "preserveAssignmentOnMoveAccount": string;
+        /**
+         * オンにすると、このロールが付与されたアカウントが移行された際に、移行先アカウントにもこのロールが引き継がれるようになります。
+         */
+        "preserveAssignmentOnMoveAccount_description": string;
         /**
          * モデレーターのメンバー編集を許可
          */
