@@ -5168,6 +5168,7 @@ export type components = {
       gtlAvailable: boolean;
       ltlAvailable: boolean;
       canPublicNote: boolean;
+      canEditNote: boolean;
       mentionLimit: number;
       canInvite: boolean;
       inviteLimit: number;
@@ -5196,8 +5197,8 @@ export type components = {
       canImportFollowing: boolean;
       canImportMuting: boolean;
       canImportUserLists: boolean;
-      canEditNote: boolean;
-      canChat: boolean;
+      /** @enum {string} */
+      chatAvailability: 'available' | 'readonly' | 'unavailable';
     };
     ReversiGameLite: {
       /** Format: id */

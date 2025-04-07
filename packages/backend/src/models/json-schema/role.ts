@@ -180,6 +180,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
+		canEditNote: {
+			type: 'boolean',
+			optional: false, nullable: false,
+		},
 		mentionLimit: {
 			type: 'integer',
 			optional: false, nullable: false,
@@ -292,13 +296,10 @@ export const packedRolePoliciesSchema = {
 			type: 'boolean',
 			optional: false, nullable: false,
 		},
-		canEditNote: {
-			type: 'boolean',
+		chatAvailability: {
+			type: 'string',
 			optional: false, nullable: false,
-		},
-		canChat: {
-			type: 'boolean',
-			optional: false, nullable: false,
+			enum: ['available', 'readonly', 'unavailable'],
 		},
 	},
 } as const;
