@@ -5413,6 +5413,10 @@ export interface Locale extends ILocale {
      * フォルダを作って整理することもできます。
      */
     "driveAboutTip": string;
+    /**
+     * スクロールして閉じる
+     */
+    "scrollToClose": string;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5713,6 +5717,10 @@ export interface Locale extends ILocale {
          * ひっぱって更新
          */
         "enablePullToRefresh": string;
+        /**
+         * マウスでは、ホイールを押し込みながらドラッグします。
+         */
+        "enablePullToRefresh_description": string;
         "_chat": {
             /**
              * 送信者の名前を表示
