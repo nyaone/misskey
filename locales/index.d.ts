@@ -5425,6 +5425,22 @@ export interface Locale extends ILocale {
      * オフにする
      */
     "turnItOff": string;
+    /**
+     * 絵文字ミュート
+     */
+    "emojiMute": string;
+    /**
+     * 絵文字ミュート解除
+     */
+    "emojiUnmute": string;
+    /**
+     * {x}をミュート
+     */
+    "muteX": ParameterizedString<"x">;
+    /**
+     * {x}のミュートを解除
+     */
+    "unmuteX": ParameterizedString<"x">;
     "_chat": {
         /**
          * まだメッセージはありません
@@ -5713,6 +5729,14 @@ export interface Locale extends ILocale {
          * アイコンをスクロールに追従させる
          */
         "useStickyIcons": string;
+        /**
+         * 高品質な画像のプレースホルダを表示
+         */
+        "enableHighQualityImagePlaceholders": string;
+        /**
+         * UIのアニメーション
+         */
+        "uiAnimations": string;
         /**
          * ナビゲーションバーに副ボタンを表示
          */

@@ -202,6 +202,9 @@ export const PREF_DEF = {
 	useStickyIcons: {
 		default: true,
 	},
+	enableHighQualityImagePlaceholders: {
+		default: true,
+	},
 	showFixedPostForm: {
 		default: false,
 	},
@@ -341,6 +344,9 @@ export const PREF_DEF = {
 	},
 	plugins: {
 		default: [] as Plugin[],
+	},
+	mutingEmojis: {
+		default: [] as string[],
 	},
 
 	'sound.masterVolume': {
