@@ -893,7 +893,11 @@ async function post(ev?: MouseEvent) {
 			clear();
 		}
 
-		globalEvents.emit('notePosted', res.createdNote);
+		if (props.updateMode) {
+			globalEvents.emit('noteUpdated', res.updatedNote);
+		} else {
+			globalEvents.emit('notePosted', res.createdNote);
+		}
 
 		nextTick(() => {
 			deleteDraft();

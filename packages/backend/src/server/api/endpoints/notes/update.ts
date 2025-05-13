@@ -11,6 +11,7 @@ import { DI } from '@/di-symbols.js';
 import { GetterService } from '@/server/api/GetterService.js';
 import { MAX_NOTE_TEXT_LENGTH } from '@/const.js';
 import { ApiError } from '@/server/api/error.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import { NoteUpdateService } from '@/core/NoteUpdateService.js';
 
 export const meta = {
@@ -25,6 +26,18 @@ export const meta = {
 		duration: ms('1hour'),
 		max: 10,
 		minInterval: ms('1sec'),
+	},
+
+	res: {
+		type: 'object',
+		optional: false, nullable: false,
+		properties: {
+			updatedNote: {
+				type: 'object',
+				optional: false, nullable: false,
+				ref: 'Note',
+			},
+		},
 	},
 
 	errors: {
@@ -81,6 +94,8 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 		private driveFilesRepository: DriveFilesRepository,
 
 		private getterService: GetterService,
+
+		private noteEntityService: NoteEntityService,
 		private noteUpdateService: NoteUpdateService,
 	) {
 		super(meta, paramDef, async (ps, me) => {
@@ -112,7 +127,9 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 
 			if (note.text === ps.text && note.cw === ps.cw && note.fileIds === fileIds) {
 				// The same as old note, nothing to do
-				return;
+				return {
+					updatedNote: await this.noteEntityService.pack(note, me),
+				};
 			}
 
 			await this.noteUpdateService.update(await this.usersRepository.findOneByOrFail({ id: note.userId }), note, {
@@ -121,6 +138,10 @@ export default class extends Endpoint<typeof meta, typeof paramDef> { // eslint-
 				updatedAt: new Date(),
 				files,
 			}, false, me);
+
+			return {
+				updatedNote: await this.noteEntityService.pack(note, me),
+			};
 		});
 	}
 }

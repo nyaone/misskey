@@ -167,6 +167,10 @@ if (!store.s.realtimeMode) {
 	});
 }
 
+// useGlobalEvent('noteUpdated', (note) => {
+// 	paginator.updateItem(note.id, () => note);
+// });
+
 useGlobalEvent('noteDeleted', (noteId) => {
 	paginator.removeItem(noteId);
 });

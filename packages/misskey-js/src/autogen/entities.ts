@@ -527,6 +527,7 @@ export type NotesTranslateRequest = operations['notes___translate']['requestBody
 export type NotesTranslateResponse = operations['notes___translate']['responses']['200']['content']['application/json'];
 export type NotesUnrenoteRequest = operations['notes___unrenote']['requestBody']['content']['application/json'];
 export type NotesUpdateRequest = operations['notes___update']['requestBody']['content']['application/json'];
+export type NotesUpdateResponse = operations['notes___update']['responses']['200']['content']['application/json'];
 export type NotesUserListTimelineRequest = operations['notes___user-list-timeline']['requestBody']['content']['application/json'];
 export type NotesUserListTimelineResponse = operations['notes___user-list-timeline']['responses']['200']['content']['application/json'];
 export type NotificationsCreateRequest = operations['notifications___create']['requestBody']['content']['application/json'];
