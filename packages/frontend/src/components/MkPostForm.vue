@@ -895,6 +895,7 @@ async function post(ev?: MouseEvent) {
 
 		if (props.updateMode) {
 			globalEvents.emit('noteUpdated', res.updatedNote);
+			console.log("event-emit", "noteUpdated", res, res.updatedNote);
 		} else {
 			globalEvents.emit('notePosted', res.createdNote);
 		}
