@@ -168,7 +168,6 @@ if (!store.s.realtimeMode) {
 }
 
 useGlobalEvent('noteUpdated', (note) => {
-	console.log("event-catch", "noteUpdated", note);
 	paginator.updateItem(note.id, () => note);
 });
 
