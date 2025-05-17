@@ -603,13 +603,13 @@ const setCurrentNoteInfo = (state: ShowingNoteHistoryState) => {
 };
 
 const fullHistoryWithLatest = computed(() =>
-	appearNote.value.updatedAt ? [{
-		createdAt: appearNote.value.updatedAt,
-		text: appearNote.value.text,
-		cw: appearNote.value.cw,
+	appearNote.updatedAt ? [{
+		createdAt: appearNote.updatedAt,
+		text: appearNote.text,
+		cw: appearNote.cw,
 		displayText: i18n.ts.latestVersion,
 		clearState: true,
-	}, ...appearNote.value.history
+	}, ...appearNote.history!
 		.map(h => ({
 			...h,
 			displayText: null,
@@ -618,8 +618,8 @@ const fullHistoryWithLatest = computed(() =>
 	] : [],
 );
 
-function historyMenu(viaKeyboard = false): void {
-	const currentNoteUpdatedAtDate = new Date(showingNoteHistoryRef.value?.createdAt || appearNote.value.updatedAt).getTime();
+function historyMenu(): void {
+	const currentNoteUpdatedAtDate = new Date(showingNoteHistoryRef.value?.createdAt || appearNote.updatedAt!).getTime();
 	const menu = fullHistoryWithLatest.value
 		.sort((h1, h2) => new Date(h2.createdAt).getTime() - new Date(h1.createdAt).getTime())
 		.map(h => ({
@@ -627,9 +627,7 @@ function historyMenu(viaKeyboard = false): void {
 			text: h.displayText || new Date(h.createdAt).toISOString(),
 			action: () => setCurrentNoteInfo(h.clearState ? null : h),
 		}));
-	os.popupMenu(menu, historyMenuButton.value, {
-		viaKeyboard,
-	}).then(focus);
+	os.popupMenu(menu, historyMenuButton.value).then(focus);
 }
 
 async function clip(): Promise<void> {
