@@ -2335,6 +2335,10 @@ export interface Locale extends ILocale {
      */
     "sound": string;
     /**
+     * 通知音の設定
+     */
+    "notificationSoundSettings": string;
+    /**
      * 聴く
      */
     "listen": string;
@@ -5449,6 +5453,10 @@ export interface Locale extends ILocale {
      * {x}のミュートを解除
      */
     "unmuteX": ParameterizedString<"x">;
+    /**
+     * 中止
+     */
+    "abort": string;
     "_chat": {
         /**
          * まだメッセージはありません
