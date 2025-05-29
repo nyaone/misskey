@@ -9711,7 +9711,7 @@ export interface Locale extends ILocale {
          */
         "excludeInactiveUsers": string;
         /**
-         * インポートした人による返信をTLに含むようにする
+         * 返信をTLに含むかの情報がファイルにない場合に、インポートした人による返信をTLに含むようにする
          */
         "withReplies": string;
     };
