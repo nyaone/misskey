@@ -155,7 +155,7 @@ describe('/drive/files/create', () => {
 			fileContent: Buffer.from('a'.repeat(1000 * 1000)),
 		});
 		expect(result.statusCode).toBe(200);
-		expect(result.body.name).toBe(name + '.unknown');
+		expect(result.body.name).toBe(name);
 		expect(result.body.comment).toBe(comment);
 		expect(result.body.isSensitive).toBe(true);
 		expect(result.body.folderId).toBe(folder.id);
@@ -191,7 +191,7 @@ describe('/drive/files/create', () => {
 			fileContent: Buffer.from('a'.repeat(10)),
 		});
 		expect(result.statusCode).toBe(200);
-		expect(result.body.name).toBe(name + '.unknown');
+		expect(result.body.name).toBe(name);
 		expect(result.body.comment).toBe(comment);
 		expect(result.body.isSensitive).toBe(true);
 		expect(result.body.folderId).toBe(folder.id);
