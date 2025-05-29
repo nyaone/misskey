@@ -209,6 +209,8 @@ export type ReactiveNoteData = {
 	pollChoices: NonNullable<Misskey.entities.Note['poll']>['choices'];
 };
 
+const noReaction = Symbol();
+
 export function useNoteCapture(props: {
 	note: Misskey.entities.Note;
 	parentNote: Misskey.entities.Note | null;
@@ -242,7 +244,7 @@ export function useNoteCapture(props: {
 	noteEvents.on(`updated:${note.id}`, onUpdated);
 
 	// 操作がダブっていないかどうかを簡易的に記録するためのMap
-	const reactionUserMap = new Map<Misskey.entities.User['id'], string>();
+	const reactionUserMap = new Map<Misskey.entities.User['id'], string | typeof noReaction>();
 	let latestPollVotedKey: string | null = null;
 
 	function onReacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
@@ -268,8 +270,9 @@ export function useNoteCapture(props: {
 	function onUnreacted(ctx: { userId: Misskey.entities.User['id']; reaction: string; emoji?: { name: string; url: string; }; }): void {
 		const normalizedName = ctx.reaction.replace(/^:(\w+):$/, ':$1@.:');
 
-		if (!reactionUserMap.has(ctx.userId)) return;
-		reactionUserMap.delete(ctx.userId);
+		// 確実に一度リアクションされて取り消されている場合のみ処理をとめる（APIで初回読み込み→Streamでアップデート等の場合、reactionUserMapに情報がないため）
+		if (reactionUserMap.has(ctx.userId) && reactionUserMap.get(ctx.userId) === noReaction) return;
+		reactionUserMap.set(ctx.userId, noReaction);
 
 		const currentCount = $note.reactions[normalizedName] || 0;
 
