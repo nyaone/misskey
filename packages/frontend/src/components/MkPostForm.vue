@@ -138,6 +138,7 @@ import { getPluginHandlers } from '@/plugin.js';
 import { DI } from '@/di.js';
 import { globalEvents } from '@/events.js';
 import { checkDragDataType, getDragData } from '@/drag-and-drop.js';
+import { noteEvents } from '@/composables/use-note-capture.js';
 
 const $i = ensureSignin();
 
@@ -896,6 +897,7 @@ async function post(ev?: MouseEvent) {
 
 		if (props.updateMode) {
 			globalEvents.emit('noteUpdated', res.updatedNote);
+			noteEvents.emit(`updated:${res.updatedNote.id}`, res);
 		} else {
 			globalEvents.emit('notePosted', res.createdNote);
 		}
