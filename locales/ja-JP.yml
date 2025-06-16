@@ -3274,3 +3274,5 @@ _imageEffector:
     stripe: "ストライプ"
     polkadot: "ポルカドット"
     checker: "チェッカー"
+    blockNoise: "ブロックノイズ"
+    tearing: "ティアリング"

@@ -432,7 +432,7 @@ defineExpose({
 	background: var(--MI_THEME-panel);
 }
 
-.note {
+.note:not(:empty) {
 	border-bottom: solid 0.5px var(--MI_THEME-divider);
 }
 
