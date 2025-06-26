@@ -5493,6 +5493,16 @@ export interface Locale extends ILocale {
      * 低くすると画質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、画質は低下します。
      */
     "defaultImageCompressionLevel_description": string;
+    "_order": {
+        /**
+         * 新しい順
+         */
+        "newest": string;
+        /**
+         * 古い順
+         */
+        "oldest": string;
+    };
     "_chat": {
         /**
          * まだメッセージはありません
@@ -11985,6 +11995,10 @@ export interface Locale extends ILocale {
         };
     };
     "_uploader": {
+        /**
+         * 画像の編集
+         */
+        "editImage": string;
         /**
          * {x}に圧縮
          */
