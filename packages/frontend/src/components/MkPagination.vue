@@ -6,11 +6,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 <template>
 <component :is="prefer.s.enablePullToRefresh && pullToRefresh ? MkPullToRefresh : 'div'" :refresher="() => paginator.reload()" @contextmenu.prevent.stop="onContextmenu">
 	<div>
-		<div v-if="props.withControl" :class="$style.control">
-			<MkSelect v-model="order" :class="$style.order" :items="[{ label: i18n.ts._order.newest, value: 'newest' }, { label: i18n.ts._order.oldest, value: 'oldest' }]">
-			</MkSelect>
-			<MkButton iconOnly @click="paginator.reload()"><i class="ti ti-refresh"></i></MkButton>
-		</div>
+		<MkPaginationControl v-if="props.withControl" v-model:order="order" v-model:date="date" style="margin-bottom: 10px" @reload="paginator.reload()"/>
 
 		<!-- :css="prefer.s.animation" にしたいけどバグる(おそらくvueのバグ) https://github.com/misskey-dev/misskey/issues/16078 -->
 		<Transition
@@ -58,7 +54,7 @@ import { i18n } from '@/i18n.js';
 import { prefer } from '@/preferences.js';
 import { usePagination } from '@/composables/use-pagination.js';
 import MkPullToRefresh from '@/components/MkPullToRefresh.vue';
-import MkSelect from '@/components/MkSelect.vue';
+import MkPaginationControl from '@/components/MkPaginationControl.vue';
 import * as os from '@/os.js';
 
 type Paginator = ReturnType<typeof usePagination<T['endpoint']>>;
@@ -76,16 +72,18 @@ const props = withDefaults(defineProps<{
 });
 
 const order = ref<'newest' | 'oldest'>(props.pagination.order ?? 'newest');
+const date = ref<number | null>(null);
 
 const paginator: Paginator = usePagination({
 	ctx: props.pagination,
 });
 
-watch(order, (newOrder) => {
+watch([order, date], () => {
 	paginator.updateCtx({
 		...props.pagination,
-		order: newOrder,
-		initialDirection: newOrder === 'oldest' ? 'newer' : 'older',
+		order: order.value,
+		initialDirection: order.value === 'oldest' ? 'newer' : 'older',
+		initialDate: date.value,
 	});
 }, { immediate: false });
 
@@ -121,17 +119,6 @@ defineExpose({
 .transition_fade_enterFrom,
 .transition_fade_leaveTo {
 	opacity: 0;
-}
-
-.control {
-	display: flex;
-	align-items: center;
-	margin-bottom: 10px;
-}
-
-.order {
-	flex: 1;
-	margin-right: 8px;
 }
 
 .more {
