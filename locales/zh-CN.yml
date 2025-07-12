@@ -2806,6 +2806,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "添加日期"
   attachedNotes: "附加到的帖子"
+  usage: "使用"
   thisPageCanBeSeenFromTheAuthor: "此页只能被该文件的上传者查看。"
 _externalResourceInstaller:
   title: "从外部站点安装"
@@ -3182,7 +3183,7 @@ drafts: "草稿"
 _drafts:
   select: "选择草稿"
   cannotCreateDraftAnymore: "已超过可创建的草稿数量。"
-  cannotCreateDraftOfRenote: "无法创建转帖草稿。"
+  cannotCreateDraft: "此内容无法创建草稿。"
   delete: "删除草稿"
   deleteAreYouSure: "要删除草稿吗？"
   noDrafts: "没有草稿"

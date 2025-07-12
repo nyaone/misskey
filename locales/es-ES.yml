@@ -2806,6 +2806,7 @@ _fileViewer:
   url: "URL"
   uploadedAt: "Subido el"
   attachedNotes: "Notas adjuntas"
+  usage: "Utilizado"
   thisPageCanBeSeenFromTheAuthor: "Esta página solo puede ser vista por el autor."
 _externalResourceInstaller:
   title: "Instalar desde sitio externo"
@@ -3182,7 +3183,7 @@ drafts: "Borrador"
 _drafts:
   select: "Seleccionar borradores"
   cannotCreateDraftAnymore: "Se ha superado el número de borradores que se pueden crear."
-  cannotCreateDraftOfRenote: "No se pueden crear borradores de renotas."
+  cannotCreateDraft: "No se pueden crear borradores con este contenido."
   delete: "Eliminar borrador"
   deleteAreYouSure: "¿Quieres borrar el borrador?"
   noDrafts: "No hay borradores disponibles."
