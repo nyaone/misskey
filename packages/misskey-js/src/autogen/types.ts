@@ -9388,6 +9388,9 @@ export interface operations {
                         proxyRemoteFiles: boolean;
                         signToActivityPubGet: boolean;
                         allowExternalApRedirect: boolean;
+                        enableRemoteNotesCleaning: boolean;
+                        remoteNotesCleaningExpiryDaysForEachNotes: number;
+                        remoteNotesCleaningMaxProcessingDurationInMinutes: number;
                     };
                 };
             };
@@ -12617,6 +12620,9 @@ export interface operations {
                     proxyRemoteFiles?: boolean;
                     signToActivityPubGet?: boolean;
                     allowExternalApRedirect?: boolean;
+                    enableRemoteNotesCleaning?: boolean;
+                    remoteNotesCleaningExpiryDaysForEachNotes?: number;
+                    remoteNotesCleaningMaxProcessingDurationInMinutes?: number;
                 };
             };
         };
