@@ -391,6 +391,7 @@ const patrons = [
 	'東雲 琥珀',
 	'ほとラズ',
 	'スズカケン',
+	'蒼井よみこ',
 ];
 
 const thereIsTreasure = ref($i && !claimedAchievements.includes('foundTreasure'));
