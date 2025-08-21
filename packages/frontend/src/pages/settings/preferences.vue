@@ -724,6 +724,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 									<option value="reload">{{ i18n.ts._serverDisconnectedBehavior.reload }}</option>
 									<option value="dialog">{{ i18n.ts._serverDisconnectedBehavior.dialog }}</option>
 									<option value="quiet">{{ i18n.ts._serverDisconnectedBehavior.quiet }}</option>
+									<option :value="null">什么都不做</option>
 								</MkSelect>
 							</MkPreferenceContainer>
 						</SearchMarker>

@@ -190,7 +190,7 @@ export const PREF_DEF = definePreferences({
 		}[],
 	},
 	serverDisconnectedBehavior: {
-		default: 'quiet' as 'quiet' | 'reload' | 'dialog',
+		default: null as null | 'quiet' | 'reload' | 'dialog',
 	},
 	nsfw: {
 		default: 'respect' as 'respect' | 'force' | 'ignore',
