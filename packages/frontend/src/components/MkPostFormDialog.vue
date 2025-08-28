@@ -58,7 +58,7 @@ async function _close() {
 	modal.value?.close();
 }
 
-function onEsc(ev: KeyboardEvent) {
+function onEsc() {
 	_close();
 }
 

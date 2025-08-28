@@ -53,7 +53,7 @@ async function post() {
 
 const headerActions = computed(() => [{
 	icon: 'ti ti-dots',
-	label: i18n.ts.more,
+	text: i18n.ts.more,
 	handler: (ev: MouseEvent) => {
 		os.popupMenu([{
 			text: i18n.ts.embed,
