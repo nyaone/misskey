@@ -63,6 +63,8 @@
 		"misskey-reversi": "workspace:*",
 		"photoswipe": "5.4.4",
 		"punycode.js": "2.3.1",
+		"qr-code-styling": "1.9.2",
+		"qr-scanner": "1.4.2",
 		"rollup": "4.50.1",
 		"sanitize-html": "2.17.0",
 		"sass": "1.92.1",
@@ -76,7 +78,7 @@
 		"tsconfig-paths": "4.2.0",
 		"typescript": "5.9.2",
 		"v-code-diff": "1.13.1",
-		"vite": "7.1.4",
+		"vite": "7.1.5",
 		"vue": "3.5.21",
 		"vuedraggable": "next",
 		"wanakana": "5.3.1"
