@@ -1031,6 +1031,10 @@ export interface Locale extends ILocale {
      */
     "processing": string;
     /**
+     * 準備中
+     */
+    "preprocessing": string;
+    /**
      * プレビュー
      */
     "preview": string;
@@ -5283,6 +5287,10 @@ export interface Locale extends ILocale {
      */
     "draft": string;
     /**
+     * 下書きと予約投稿
+     */
+    "draftsAndScheduledNotes": string;
+    /**
      * リアクションする際に確認する
      */
     "confirmOnReact": string;
@@ -5510,6 +5518,14 @@ export interface Locale extends ILocale {
      */
     "defaultImageCompressionLevel_description": string;
     /**
+     * デフォルトの圧縮度
+     */
+    "defaultCompressionLevel": string;
+    /**
+     * 低くすると品質を保てますが、ファイルサイズは増加します。<br>高くするとファイルサイズを減らせますが、品質は低下します。
+     */
+    "defaultCompressionLevel_description": string;
+    /**
      * 分
      */
     "inMinutes": string;
@@ -5541,6 +5557,56 @@ export interface Locale extends ILocale {
      * ユーザー指定ノートを作成
      */
     "createUserSpecifiedNote": string;
+    /**
+     * 投稿を予約
+     */
+    "schedulePost": string;
+    /**
+     * {x}に投稿を予約します
+     */
+    "scheduleToPostOnX": ParameterizedString<"x">;
+    /**
+     * {x}に投稿が予約されています
+     */
+    "scheduledToPostOnX": ParameterizedString<"x">;
+    /**
+     * 予約
+     */
+    "schedule": string;
+    /**
+     * 予約
+     */
+    "scheduled": string;
+    "_compression": {
+        "_quality": {
+            /**
+             * 高品質
+             */
+            "high": string;
+            /**
+             * 中品質
+             */
+            "medium": string;
+            /**
+             * 低品質
+             */
+            "low": string;
+        };
+        "_size": {
+            /**
+             * サイズ大
+             */
+            "large": string;
+            /**
+             * サイズ中
+             */
+            "medium": string;
+            /**
+             * サイズ小
+             */
+            "small": string;
+        };
+    };
     "_order": {
         /**
          * 新しい順
@@ -7895,6 +7961,10 @@ export interface Locale extends ILocale {
              * サーバーサイドのノートの下書きの作成可能数
              */
             "noteDraftLimit": string;
+            /**
+             * 予約投稿の同時作成可能数
+             */
+            "scheduledNoteLimit": string;
             /**
              * ウォーターマーク機能の使用可否
              */
@@ -10291,6 +10361,14 @@ export interface Locale extends ILocale {
          */
         "pollEnded": string;
         /**
+         * 予約ノートが投稿されました
+         */
+        "scheduledNotePosted": string;
+        /**
+         * 予約ノートの投稿に失敗しました
+         */
+        "scheduledNotePostFailed": string;
+        /**
          * 新しい投稿
          */
         "newNote": string;
@@ -12603,6 +12681,18 @@ export interface Locale extends ILocale {
          * 下書き一覧
          */
         "listDrafts": string;
+        /**
+         * 投稿予約
+         */
+        "schedule": string;
+        /**
+         * 予約投稿一覧
+         */
+        "listScheduledNotes": string;
+        /**
+         * 予約解除
+         */
+        "cancelSchedule": string;
     };
     /**
      * 二次元コード
