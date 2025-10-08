@@ -111,8 +111,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canImportUserLists: false,
 	chatAvailability: 'available',
 	uploadableFileTypes: [
-		'text/plain',
-		'text/csv',
+		'text/*',
 		'application/json',
 		'image/*',
 		'video/*',
