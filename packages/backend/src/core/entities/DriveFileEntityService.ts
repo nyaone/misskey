@@ -77,12 +77,13 @@ export class DriveFileEntityService {
 	}
 
 	@bindThis
-	private getProxiedUrl(url: string, mode?: 'static' | 'avatar'): string {
+	private getProxiedUrl(url: string, mode?: 'static' | 'avatar', host?: string | null): string {
 		return appendQuery(
 			`${this.config.mediaProxy}/${mode ?? 'image'}.webp`,
 			query({
 				url,
 				...(mode ? { [mode]: '1' } : {}),
+				...(host ? { host } : {}),
 			}),
 		);
 	}
@@ -95,14 +96,14 @@ export class DriveFileEntityService {
 			return this.videoProcessingService.getExternalVideoThumbnailUrl(file.webpublicUrl ?? file.url);
 		} else if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
 			// 動画ではなくリモートかつメディアプロキシ
-			return this.getProxiedUrl(file.uri, 'static');
+			return this.getProxiedUrl(file.uri, 'static', file.userHost);
 		}
 
 		if (file.uri != null && file.isLink && this.meta.proxyRemoteFiles) {
 			// リモートかつ期限切れはローカルプロキシを試みる
 			// 従来は/files/${thumbnailAccessKey}にアクセスしていたが、
 			// /filesはメディアプロキシにリダイレクトするようにしたため直接メディアプロキシを指定する
-			return this.getProxiedUrl(file.uri, 'static');
+			return this.getProxiedUrl(file.uri, 'static', file.userHost);
 		}
 
 		const url = file.webpublicUrl ?? file.url;
@@ -114,7 +115,7 @@ export class DriveFileEntityService {
 	public getPublicUrl(file: MiDriveFile, mode?: 'avatar'): string { // static = thumbnail
 		// リモートかつメディアプロキシ
 		if (file.uri != null && file.userHost != null && this.config.externalMediaProxyEnabled) {
-			return this.getProxiedUrl(file.uri, mode);
+			return this.getProxiedUrl(file.uri, mode, file.userHost);
 		}
 
 		// リモートかつ期限切れはローカルプロキシを試みる
@@ -123,7 +124,7 @@ export class DriveFileEntityService {
 
 			if (key && !key.match('/')) {	// 古いものはここにオブジェクトストレージキーが入ってるので除外
 				const url = `${this.config.url}/files/${key}`;
-				if (mode === 'avatar') return this.getProxiedUrl(file.uri, 'avatar');
+				if (mode === 'avatar') return this.getProxiedUrl(file.uri, 'avatar', file.userHost);
 				return url;
 			}
 		}
@@ -131,7 +132,7 @@ export class DriveFileEntityService {
 		const url = file.webpublicUrl ?? file.url;
 
 		if (mode === 'avatar') {
-			return this.getProxiedUrl(url, 'avatar');
+			return this.getProxiedUrl(url, 'avatar', file.userHost);
 		}
 		return url;
 	}
