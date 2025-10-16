@@ -176,7 +176,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 </template>
 
 <script lang="ts" setup>
-import { ref } from 'vue';
+import { onMounted, ref } from 'vue';
 import * as Misskey from 'misskey-js';
 import MkReactionIcon from '@/components/MkReactionIcon.vue';
 import MkButton from '@/components/MkButton.vue';
@@ -230,6 +230,28 @@ function getActualReactedUsersCount(notification: Misskey.entities.Notification)
 	if (notification.type !== 'reaction:grouped') return 0;
 	return new Set(notification.reactions.map((reaction) => reaction.user.id)).size;
 }
+
+// 因为 Misskey 将通知消息迁移到 Redis 后无法在关注状态改变后清理关注请求，
+// 即使通过了这个消息也会一直存在，比较恼人，所以需要额外追加一个前端的检查以减少骚扰。
+// （实现思路来自 @linca:mat.stelpolva.moe ，非常感谢）
+const checkIfFollowRequestDone = async () => {
+	if (props.notification.type === 'receiveFollowRequest' && ('user' in props.notification)) {
+		// 获取目标用户的信息
+		const currentUserStatus = await misskeyApi('users/show', {
+			userId: props.notification.user.id,
+		});
+		// 根据 hasPendingFollowRequestToYou 字段判断是否正在申请关注当前用户
+		if (currentUserStatus && !currentUserStatus.hasPendingFollowRequestToYou) {
+			// 没有等待处理的关注请求，说明已经处理过了
+			followRequestDone.value = true;
+		}
+	}
+}
+
+// 组件挂载的时候执行一次状态检测
+onMounted(() => {
+	checkIfFollowRequestDone();
+});
 </script>
 
 <style lang="scss" module>
