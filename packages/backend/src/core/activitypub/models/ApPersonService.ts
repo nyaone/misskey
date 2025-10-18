@@ -377,7 +377,7 @@ export class ApPersonService implements OnModuleInit {
 					movedToUri: person.movedTo,
 					movedAt: person.movedTo ? new Date() : null,
 					alsoKnownAs: person.alsoKnownAs,
-					isExplorable: person.discoverable,
+					isExplorable: person.discoverable === true,
 					username: person.preferredUsername,
 					usernameLower: person.preferredUsername?.toLowerCase(),
 					host,
@@ -569,7 +569,7 @@ export class ApPersonService implements OnModuleInit {
 			isLocked: person.manuallyApprovesFollowers,
 			movedToUri: person.movedTo ?? null,
 			alsoKnownAs: person.alsoKnownAs ?? null,
-			isExplorable: person.discoverable,
+			isExplorable: person.discoverable === true,
 			...(await this.resolveAvatarAndBanner(exist, person.icon, person.image).catch(() => ({}))),
 		} as Partial<MiRemoteUser> & Pick<MiRemoteUser, 'isBot' | 'isCat' | 'isLocked' | 'movedToUri' | 'alsoKnownAs' | 'isExplorable'>;
 
