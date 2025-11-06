@@ -305,13 +305,6 @@ export async function mainBoot() {
 			});
 		}
 
-		if ('Notification' in window) {
-			// 許可を得ていなかったらリクエスト
-			if (Notification.permission === 'default') {
-				Notification.requestPermission();
-			}
-		}
-
 		if (store.s.realtimeMode) {
 			const stream = useStream();
 
