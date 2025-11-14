@@ -40,7 +40,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			</SearchMarker>
 
 			<SearchMarker :keywords="['security', 'key', 'passkey']">
-				<MkFolder>
+				<MkFolder :defaultOpen="true">
 					<template #icon><i class="ti ti-key"></i></template>
 					<template #label><SearchLabel>{{ i18n.ts.securityKeyAndPasskey }}</SearchLabel></template>
 					<div class="_gaps_s">
