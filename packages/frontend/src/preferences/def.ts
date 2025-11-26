@@ -216,7 +216,7 @@ export const PREF_DEF = definePreferences({
 		default: !prefersReducedMotion,
 	},
 	animatedMfm: {
-		default: !prefersReducedMotion,
+		default: true,
 	},
 	advancedMfm: {
 		default: true,
@@ -234,7 +234,7 @@ export const PREF_DEF = definePreferences({
 		default: false,
 	},
 	disableShowingAnimatedImages: {
-		default: prefersReducedMotion,
+		default: false,
 	},
 	emojiStyle: {
 		default: 'twemoji', // twemoji / fluentEmoji / native

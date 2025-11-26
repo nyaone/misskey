@@ -15,6 +15,8 @@
 - Fix: 投稿フォームのリセットボタンで注釈がリセットされない問題を修正
 - Fix: PlayのAiScriptバージョン判定（v0.x系・v1.x系の判定）が正しく動作しない問題を修正  
   (Cherry-picked from https://github.com/MisskeyIO/misskey/pull/1129)
+- Fix: フォロー申請をキャンセルする際の確認ダイアログの文言が不正確な問題を修正
+- Fix: 初回読み込み時にエラーになることがある問題を修正
 
 ### Server
 - Enhance: `clips/my-favorites` APIがページネーションに対応しました
