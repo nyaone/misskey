@@ -1,9 +1,7 @@
 services:
   web:
     build: .
-    # restart: always 
-    # image: nyaone/misskey:latest 
-    container_name: misskey_web 
+    restart: always
     links:
       - db
       - redis
@@ -27,8 +25,7 @@ services:
 
   redis:
     restart: always
-    image: redis:alpine
-    container_name: misskey_redis
+    image: redis:7-alpine
     networks:
       - internal_network
     volumes:
@@ -40,12 +37,11 @@ services:
 
   db:
     restart: always
-    image: postgres:15-alpine
-    container_name: misskey_db
+    image: postgres:18-alpine
     networks:
       - internal_network
     env_file:
-      - ./.config/docker.env 
+      - .config/docker.env
     volumes:
       - ./db:/var/lib/postgresql/data
     healthcheck:
@@ -97,6 +93,6 @@ services:
 #      - ./meili_data:/meili_data
 
 networks:
-  internal_network: 
+  internal_network:
     internal: true
-  external_network: 
+  external_network:
