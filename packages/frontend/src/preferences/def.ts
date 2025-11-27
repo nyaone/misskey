@@ -216,7 +216,7 @@ export const PREF_DEF = definePreferences({
 		default: !prefersReducedMotion,
 	},
 	animatedMfm: {
-		default: true,
+		default: !prefersReducedMotion,
 	},
 	advancedMfm: {
 		default: true,
