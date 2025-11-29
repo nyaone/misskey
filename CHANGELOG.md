@@ -1,3 +1,16 @@
+## 2025.11.2
+
+### General
+-
+
+### Client
+-
+
+### Server
+- Enhance: メモリ使用量を削減しました
+- Enhance: ActivityPubアクティビティを送信する際のパフォーマンス向上
+
+
 ## 2025.11.1
 
 ### Client
