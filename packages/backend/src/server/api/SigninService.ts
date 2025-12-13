@@ -48,11 +48,21 @@ export class SigninService {
 
 			this.globalEventService.publishMainStream(user.id, 'signin', await this.signinEntityService.pack(record));
 
+			const messageHTML = '<p>您的账号出现了一次新的登录。如果您无法识别此次登录，请立刻更新您的账号安全信息，包括修改密码。</p>';
+
+			const additionalInfo = [];
+			if (request.ip) {
+				additionalInfo.push(`登录IP地址: ${request.ip}`);
+			}
+			if (request.headers['user-agent']) {
+				additionalInfo.push(`使用的设备: ${request.headers['user-agent']}`);
+			}
+
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 			if (profile.email && profile.emailVerified) {
-				this.emailService.sendEmail(profile.email, 'New login / ログインがありました',
-					'There is a new login. If you do not recognize this login, update the security status of your account, including changing your password. / 新しいログインがありました。このログインに心当たりがない場合は、パスワードを変更するなど、アカウントのセキュリティ状態を更新してください。',
-					'There is a new login. If you do not recognize this login, update the security status of your account, including changing your password. / 新しいログインがありました。このログインに心当たりがない場合は、パスワードを変更するなど、アカウントのセキュリティ状態を更新してください。');
+				this.emailService.sendEmail(profile.email, '新的登录',
+					messageHTML + additionalInfo.length ? (`<hr><p>登录详细信息：</p><ul>` + additionalInfo.map(info => `<li>${info}</li>`).join('') + '</ul>') : '',
+					'您的账号出现了一次新的登录。如果您无法识别此次登录，请立刻更新您的账号安全信息，包括修改密码。');
 			}
 		});
 
