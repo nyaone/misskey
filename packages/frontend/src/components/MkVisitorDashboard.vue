@@ -26,7 +26,7 @@ SPDX-License-Identifier: AGPL-3.0-only
 			<div class="_gaps_s" :class="$style.mainActions">
 				<MkButton :class="$style.mainAction" full rounded gradate data-cy-signup style="margin-right: 12px;" @click="signup()">{{ i18n.ts.joinThisServer }}</MkButton>
 				<!-- <MkButton :class="$style.mainAction" full rounded link to="https://misskey-hub.net/servers/">{{ i18n.ts.exploreOtherServers }}</MkButton> -->
-				<MkButton v-if="instance.disableRegistration" :class="$style.mainAction" full rounded link to="https://docs.nya.one/join/#%E9%82%80%E8%AF%B7">获得邀请码</MkButton>
+				<MkButton v-if="instance.disableRegistration" :class="$style.mainAction" full rounded link to="https://join.nya.one">获得邀请码</MkButton>
 				<MkButton :class="$style.mainAction" full rounded data-cy-signin @click="signin()">{{ i18n.ts.login }}</MkButton>
 			</div>
 		</div>
