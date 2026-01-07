@@ -61,7 +61,7 @@ export class SigninService {
 			const profile = await this.userProfilesRepository.findOneByOrFail({ userId: user.id });
 			if (profile.email && profile.emailVerified) {
 				this.emailService.sendEmail(profile.email, '新的登录',
-					messageHTML + additionalInfo.length ? (`<hr><p>登录详细信息：</p><ul>` + additionalInfo.map(info => `<li>${info}</li>`).join('') + '</ul>') : '',
+					messageHTML + (additionalInfo.length ? `<hr><p>登录详细信息：</p><ul>` + additionalInfo.map(info => `<li>${info}</li>`).join('') + '</ul>' : ''),
 					'您的账号出现了一次新的登录。如果您无法识别此次登录，请立刻更新您的账号安全信息，包括修改密码。');
 			}
 		});
