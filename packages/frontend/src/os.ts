@@ -654,6 +654,7 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 	align?: string;
 	width?: number;
 	onClosing?: () => void;
+	onClosed?: () => void;
 }): Promise<void> {
 	if (!(anchorElement instanceof HTMLElement)) {
 		anchorElement = null;
@@ -672,6 +673,7 @@ export function popupMenu(items: (MenuItem | null)[], anchorElement?: HTMLElemen
 				resolve();
 				dispose();
 				returnFocusTo = null;
+				options?.onClosed?.();
 			},
 			closing: () => {
 				options?.onClosing?.();
@@ -780,7 +782,7 @@ export function chooseFileFromPc(
 	});
 }
 
-export function launchUploader(
+export async function launchUploader(
 	files: File[],
 	options?: {
 		folderId?: string | null;
@@ -788,9 +790,10 @@ export function launchUploader(
 		features?: UploaderFeatures;
 	},
 ): Promise<Misskey.entities.DriveFile[]> {
-	return new Promise(async (res, rej) => {
+	return new Promise((res, rej) => {
 		if (files.length === 0) return rej();
-		const { dispose } = await popupAsyncWithDialog(import('@/components/MkUploaderDialog.vue').then(x => x.default), {
+		let dispose: () => void;
+		popupAsyncWithDialog(import('@/components/MkUploaderDialog.vue').then(x => x.default), {
 			files: markRaw(files),
 			folderId: options?.folderId,
 			multiple: options?.multiple,
@@ -801,7 +804,7 @@ export function launchUploader(
 				res(driveFiles);
 			},
 			closed: () => dispose(),
-		});
+		}).then(d => dispose = d.dispose, rej);
 	});
 }
 

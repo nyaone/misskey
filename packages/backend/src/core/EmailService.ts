@@ -368,7 +368,7 @@ export class EmailService {
 				valid: true,
 				reason: null,
 			};
-		} catch (error) {
+		} catch (_) {
 			return {
 				valid: false,
 				reason: 'network',
