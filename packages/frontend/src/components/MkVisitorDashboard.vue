@@ -95,7 +95,7 @@ function signup() {
 	});
 }
 
-function showMenu(ev: MouseEvent) {
+function showMenu(ev: PointerEvent) {
 	openInstanceMenu(ev);
 }
 </script>
