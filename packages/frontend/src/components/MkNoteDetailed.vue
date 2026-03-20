@@ -129,6 +129,20 @@ SPDX-License-Identifier: AGPL-3.0-only
 					<div v-if="appearNote.renote" :class="$style.quote"><MkNoteSimple :note="appearNote.renote" :class="$style.quoteNote"/></div>
 				</div>
 				<MkA v-if="appearNote.channel && !inChannel" :class="$style.channel" :to="`/channels/${appearNote.channel.id}`"><i class="ti ti-device-tv"></i> {{ appearNote.channel.name }}</MkA>
+
+				<div v-if="showingNoteHistoryRef" :class="$style.translation">
+					<b><MkTime :time="showingNoteHistoryRef.createdAt"/>: </b>
+					<div v-if="showingNoteHistoryRef.cw">
+						<p :class="$style.cw">
+							<Mfm style="margin-right: 8px;" :text="showingNoteHistoryRef.cw" :author="appearNote.user" :nyaize="'respect'"/>
+						</p>
+						<hr/>
+					</div>
+					<div v-if="showingNoteHistoryRef.text">
+						<Mfm :text="showingNoteHistoryRef.text" :author="appearNote.user" :nyaize="'respect'" :emojiUrls="appearNote.emojis"/>
+					</div>
+				</div>
+
 			</div>
 			<footer>
 				<div :class="$style.noteFooterInfo">
