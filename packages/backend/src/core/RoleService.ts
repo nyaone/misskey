@@ -48,6 +48,7 @@ export type RolePolicies = {
 	canSearchUsers: boolean;
 	canUseTranslator: boolean;
 	canHideAds: boolean;
+	canCreateChannel: boolean;
 	driveCapacityMb: number;
 	maxFileSizeMb: number;
 	alwaysMarkNsfw: boolean;
@@ -90,6 +91,7 @@ export const DEFAULT_POLICIES: RolePolicies = {
 	canSearchUsers: true,
 	canUseTranslator: true,
 	canHideAds: false,
+	canCreateChannel: true,
 	driveCapacityMb: 100,
 	maxFileSizeMb: 30,
 	alwaysMarkNsfw: false,
@@ -413,6 +415,7 @@ export class RoleService implements OnApplicationShutdown, OnModuleInit {
 			canSearchUsers: calc('canSearchUsers', vs => vs.some(v => v === true)),
 			canUseTranslator: calc('canUseTranslator', vs => vs.some(v => v === true)),
 			canHideAds: calc('canHideAds', vs => vs.some(v => v === true)),
+			canCreateChannel: calc('canCreateChannel', vs => vs.some(v => v === true)),
 			driveCapacityMb: calc('driveCapacityMb', vs => Math.max(...vs)),
 			maxFileSizeMb: calc('maxFileSizeMb', vs => Math.max(...vs)),
 			alwaysMarkNsfw: calc('alwaysMarkNsfw', vs => vs.some(v => v === true)),

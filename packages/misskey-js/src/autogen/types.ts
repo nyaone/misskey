@@ -5340,6 +5340,7 @@ export type components = {
             canSearchUsers: boolean;
             canUseTranslator: boolean;
             canHideAds: boolean;
+            canCreateChannel: boolean;
             driveCapacityMb: number;
             maxFileSizeMb: number;
             uploadableFileTypes: string[];
@@ -24463,41 +24464,7 @@ export interface operations {
                     [name: string]: unknown;
                 };
                 content: {
-                    'application/json': {
-                        rp: {
-                            id?: string;
-                        };
-                        user: {
-                            id: string;
-                            name: string;
-                            displayName: string;
-                        };
-                        challenge: string;
-                        pubKeyCredParams: {
-                            type: string;
-                            alg: number;
-                        }[];
-                        timeout: number | null;
-                        excludeCredentials: {
-                            id: string;
-                            type: string;
-                            transports: ('ble' | 'cable' | 'hybrid' | 'internal' | 'nfc' | 'smart-card' | 'usb')[];
-                        }[] | null;
-                        authenticatorSelection: {
-                            /** @enum {string} */
-                            authenticatorAttachment: 'cross-platform' | 'platform';
-                            requireResidentKey: boolean;
-                            /** @enum {string} */
-                            userVerification: 'discouraged' | 'preferred' | 'required';
-                        } | null;
-                        /** @enum {string|null} */
-                        attestation: 'direct' | 'enterprise' | 'indirect' | 'none' | null;
-                        extensions: {
-                            appid: string | null;
-                            credProps: boolean | null;
-                            hmacCreateSecret: boolean | null;
-                        } | null;
-                    };
+                    'application/json': Record<string, never>;
                 };
             };
             /** @description Client error */
