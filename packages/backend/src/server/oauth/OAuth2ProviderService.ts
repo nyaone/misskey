@@ -430,8 +430,11 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 			throw new InvalidRequestError('client_id must be provided');
 		}
 
-		// Prepare client information
+		// Nya: Prepare client information for both occasions
 		let clientInfo: ClientInformation | null = null;
+		// Nya: Token of app will inherit the app's permission,
+		// so it's very dangerous to show only the request ones here (if the app has more).
+		let includedPermissions = requestedScope;
 
 		// Nya: Check App table to use already registered applications
 		const clientApp = await this.appsRepository.findOneBy({ id: clientId });
@@ -447,6 +450,8 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 					throw new InvalidRequestError(`request scope exceeds authority: ${s}`);
 				}
 			}
+
+			includedPermissions = clientApp.permission;
 
 			clientInfo = {
 				id: clientId,
@@ -488,7 +493,7 @@ export class OAuth2ProviderService implements OnApplicationShutdown {
 			clientId: clientInfo.id,
 			redirectUri: redirectUriValue,
 			state,
-			requestedScope,
+			requestedScope: includedPermissions,
 			codeChallenge,
 			codeChallengeMethod,
 		};
