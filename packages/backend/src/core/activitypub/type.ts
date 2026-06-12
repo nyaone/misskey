@@ -35,6 +35,8 @@ export interface IObject {
 	tag?: IObject | IObject[];
 	sensitive?: boolean;
 	updated?: string;
+	width?: number;
+	height?: number;
 }
 
 /**

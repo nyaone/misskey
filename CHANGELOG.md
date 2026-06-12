@@ -21,10 +21,13 @@
 
 ### Server
 - Enhance: リモートノートクリーニングジョブのスキップ処理のパフォーマンス改善
+- Fix: backend バンドルで `@tensorflow/tfjs-node` を external に含めず、起動時に `@mapbox/node-pre-gyp` の `find()` が backend の package.json を誤検出して `is not node-pre-gyp ready` エラーを永続的に吐く問題を修正
+- Fix: MemoryKVCacheのキャッシュGC処理において、更新されたキャッシュが期限切れにならないことがある問題を修正
 - Fix: PerUserDriveChart がシステム所有ファイル (userId が null) の更新で `"group"` の非NULL制約違反によりクラッシュする問題を修正 (#17498)
 - Enhance: リモートノートクリーニングジョブの削除対象検索処理のパフォーマンス改善
 - Fix: センシティブメディア自動検出周りの依存関係・ファイルの解決に失敗する問題を修正
 - Fix: フォロワー限定投稿を指名投稿で引用した際に、引用した投稿の公開範囲が意図せず変更される問題を修正
+- Enhance: ActivityPub の画像添付に width/height を含めるように
 
 ## 2026.5.4
 
