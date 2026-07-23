@@ -35,7 +35,8 @@ function formatMedian<T>(
 ) {
 	const formatted = row.formatValue(value);
 	if (row.showMedianMad === false) return formatted;
-	return `${formatted} <br> ± ${row.formatValue(spread)}`;
+	// eslint-disable-next-line no-irregular-whitespace
+	return `${formatted} <br> ± ${row.formatValue(spread)}`; // nbspにすること
 }
 
 function formatDelta<T>(
@@ -77,7 +78,7 @@ export function renderMetricComparisonTable<T>(
 	if (lines.length === 0) return '**(No significant changes)**';
 
 	return [
-		'| Metric | @ Base | @ Head | Δ | MAD |',
+		'| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |',
 		'| --- | ---: | ---: | ---: | ---: |',
 		...lines,
 		...(omitted ? ['', '<small><i>Only metrics showing significant changes are displayed.</i></small>'] : []),

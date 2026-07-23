@@ -151,8 +151,8 @@ test('renders one frontend diagnostics markdown report from bundle and browser d
 	const markdown = await renderReport('https://example.invalid/html');
 
 	await expect(markdown).toMatchFileSnapshot('./__snapshots__/report.md');
-	expect(markdown).toContain('| Metric | @ Base | @ Head | Δ | MAD |');
-	expect(markdown).not.toContain('| Metric | @ Base | @ Head | Δ | MAD | Result |');
+	expect(markdown).toContain('| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |');
+	expect(markdown).not.toContain('| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD | Result |');
 	expect(markdown).toContain('<summary>Requests by resource type</summary>');
 	expect(markdown).toContain('## 📦 Bundle Stats');
 });
@@ -177,8 +177,8 @@ test('renders the difference of independent medians instead of the paired median
 
 	const row = requireMetricRow(await renderReport(null, { base, head }), 'Requests');
 
-	expect(row).toContain('100 <br> ± 0');
-	expect(row).toContain('200 <br> ± 0');
+	expect(row).toContain('100 <br> ± 0');
+	expect(row).toContain('200 <br> ± 0');
 	expect(row).toContain('$\\color{orange}{\\text{+100}}$<br>$\\color{orange}{\\text{+100\\\\%}}$');
 	expect(row).toContain('| 0 |');
 	expect(row.split('|')).toHaveLength(7);
@@ -268,7 +268,7 @@ test('colours absolute and relative deltas together when the row is significant'
 
 	const row = requireMetricRow(await renderReport(null, { base, head }), 'Encoded network');
 
-	expect(row).toContain('100 MB <br> ± 0 B');
+	expect(row).toContain('100 MB <br> ± 0 B');
 	expect(row).toContain('$\\color{orange}{\\text{+20 KB}}$<br>$\\color{orange}{\\text{+0\\\\%}}$');
 	expect(row).toContain('| 0 B |');
 	expect(row.split('|')).toHaveLength(7);

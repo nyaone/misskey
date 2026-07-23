@@ -20,7 +20,8 @@ function categoryValue(report: HeapSnapshotReport, category: HeapSnapshotCategor
 }
 
 function swatch(category: HeapSnapshotCategory) {
-	return `$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label}**`;
+	// eslint-disable-next-line no-irregular-whitespace
+	return `$\\color{${heapSnapshotCategory[category].color}}{\\rule{8pt}{8pt}}$ **${heapSnapshotCategory[category].label.replaceAll(' ', ' ')}**`; // nbspにすること
 }
 
 /**

@@ -80,8 +80,8 @@ test('reports the difference of medians and leaves a paired-looking PSS delta un
 	});
 	const row = findMetricRow(markdown, 'PSS');
 
-	expect(row).toContain('295.8 MB <br> ± 2.9 MB');
-	expect(row).toContain('296.3 MB <br> ± 3.4 MB');
+	expect(row).toContain('295.8 MB <br> ± 2.9 MB');
+	expect(row).toContain('296.3 MB <br> ± 3.4 MB');
 	expect(row).toContain('$\\text{+0.5 MB}$');
 	expect(row).toContain('4.5 MB');
 	expect(row.split('|')).toHaveLength(7);
@@ -131,6 +131,6 @@ test('renders an unavailable percentage when the base median is zero', async () 
 	});
 
 	expect(findMetricRow(markdown, 'External')).toContain('<br>-');
-	expect(markdown).toContain('| Metric | @ Base | @ Head | Δ | MAD |');
-	expect(markdown).not.toContain('| Metric | @ Base | @ Head | Δ | MAD | Result |');
+	expect(markdown).toContain('| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |');
+	expect(markdown).not.toContain('| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD | Result |');
 });

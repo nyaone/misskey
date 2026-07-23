@@ -411,7 +411,8 @@ export class Paginator<
 	public releaseQueue(): void {
 		if (this.aheadQueue.length === 0) return; // これやらないと余計なre-renderが走る
 		for (const item of this.aheadQueue) {
-			item._shouldAnimateIn_ = true;
+			item._shouldAnimateIn_ = false; // 一気に入るときは挿入アニメーションさせない
+			item._shouldAnimateOut_ = false;
 		}
 		this.unshiftItems(this.aheadQueue);
 		this.aheadQueue = [];

@@ -88,7 +88,7 @@ describe('renderHeapSnapshotTable', () => {
 		const categoryRow = lines.find(line => line.includes('**Code**'));
 
 		expect(lines.slice(0, 2)).toStrictEqual([
-			'| Metric | @ Base | @ Head | Δ | MAD |',
+			'| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |',
 			'| --- | ---: | ---: | ---: | ---: |',
 		]);
 		expect(table).not.toContain('Result');

@@ -33,7 +33,7 @@ export function formatNumber(value: number) {
 }
 
 export function formatBytes(value: number) {
-	if (value === 0) return '0 B';
+	if (value === 0) return '0 B'; // nbspにすること
 	const units = ['B', 'KB', 'MB', 'GB'];
 	let unitIndex = 0;
 	let size = value;
@@ -43,7 +43,8 @@ export function formatBytes(value: number) {
 	}
 
 	const maximumFractionDigits = size >= 10 || unitIndex === 0 ? 0 : 1;
-	return `${numberFormatter.format(Number(size.toFixed(maximumFractionDigits)))} ${units[unitIndex]}`;
+	// eslint-disable-next-line no-irregular-whitespace
+	return `${numberFormatter.format(Number(size.toFixed(maximumFractionDigits)))} ${units[unitIndex]}`; // nbspにすること
 }
 
 /**
@@ -75,9 +76,9 @@ export function formatSecondsAsMs(value: number | null | undefined) {
 export function formatColoredDelta(delta: number, text: (value: number) => string, colorThreshold = 0) {
 	if (delta === 0) return text(0);
 	const sign = delta > 0 ? '+' : '-';
-	if (Math.abs(delta) < colorThreshold) return `$\\text{${sign}${escapeLatex(text(Math.abs(delta)))}}$`;
+	if (Math.abs(delta) < colorThreshold) return `$\\text{${sign}${escapeLatex(text(Math.abs(delta))).replaceAll(' ', '~')}}$`; // "1 B"とかで1とBの間で自動改行させないためnbsp(~)にする
 	const color = delta > 0 ? 'orange' : 'green';
-	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text(Math.abs(delta)))}}}$`;
+	return `$\\color{${color}}{\\text{${sign}${escapeLatex(text(Math.abs(delta))).replaceAll(' ', '~')}}}$`; // "1 B"とかで1とBの間で自動改行させないためnbsp(~)にする
 }
 
 export function formatDeltaBytes(deltaBytes: number, colorThreshold = 0) {

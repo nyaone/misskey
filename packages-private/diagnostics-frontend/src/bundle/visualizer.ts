@@ -194,7 +194,7 @@ export function renderVisualizerSummaryTable(base: ReturnType<typeof collectVisu
 		...metrics.map((key) => `<td>${calcAndFormatDeltaBytes(base.metrics[key], head.metrics[key], 1000)}</td>`),
 		'</tr>',
 		'<tr>',
-		'<th><b>Δ (%)</b></th>',
+		'<th><b>Δ&nbsp;(%)</b></th>',
 		...summary.map((key) => `<td>${calcAndFormatDeltaPercent(base.summary[key], head.summary[key], 0.1)}</td>`),
 		...metrics.map((key) => `<td>${calcAndFormatDeltaPercent(base.metrics[key], head.metrics[key], 0.1)}</td>`),
 		'</tr>',
