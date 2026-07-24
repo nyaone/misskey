@@ -33,7 +33,7 @@ describe('renderMetricComparisonTable', () => {
 		expect(table.split('\n')).toStrictEqual([
 			'| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |',
 			'| --- | ---: | ---: | ---: | ---: |',
-			'| <strong>Metric</strong> | 100 units <br> ± 0 units | 120 units <br> ± 0 units | $\\color{orange}{\\text{+20 units}}$<br>$\\color{orange}{\\text{+20\\\\%}}$ | 0 units |',
+			'| <strong>Metric</strong> | 100 units <br> ± 0 units | 120 units <br> ± 0 units | $\\color{orange}{\\text{+20~units}}$<br>$\\color{orange}{\\text{+20\\\\%}}$ | 0 units |',
 		]);
 	});
 
@@ -52,7 +52,7 @@ describe('renderMetricComparisonTable', () => {
 		expect(table.split('\n')).toStrictEqual([
 			'| Metric | @&nbsp;Base | @&nbsp;Head | Δ | MAD |',
 			'| --- | ---: | ---: | ---: | ---: |',
-			'| <strong>Metric</strong> | 100 units | 120 units | $\\color{orange}{\\text{+20 units}}$ | 0 units |',
+			'| <strong>Metric</strong> | 100 units | 120 units | $\\color{orange}{\\text{+20~units}}$ | 0 units |',
 			'| | | | | |',
 		]);
 	});
@@ -62,7 +62,7 @@ describe('renderMetricComparisonTable', () => {
 		const head = samples(109, 109, 109);
 		const table = renderMetricComparisonTable(base, head, [defaultRow]);
 
-		expect(table).toContain('$\\text{+9 units}$<br>$\\text{+9\\\\%}$');
+		expect(table).toContain('$\\text{+9~units}$<br>$\\text{+9\\\\%}$');
 		expect(table).not.toContain('\\color{');
 		expect(renderMetricComparisonTable(base, head, [defaultRow], {
 			onlySignificantChanges: true,
@@ -85,7 +85,7 @@ describe('renderMetricComparisonTable', () => {
 			{ onlySignificantChanges: true },
 		);
 
-		expect(table).toContain('$\\color{orange}{\\text{+10 units}}$');
+		expect(table).toContain('$\\color{orange}{\\text{+10~units}}$');
 		expect(table).toContain('$\\color{orange}{\\text{+10\\\\%}}$');
 	});
 
@@ -106,11 +106,11 @@ describe('renderMetricComparisonTable', () => {
 			[defaultRow],
 		);
 
-		expect(inside).toContain('$\\text{+9 units}$');
+		expect(inside).toContain('$\\text{+9~units}$');
 		expect(inside).not.toContain('\\color{');
-		expect(boundary).toContain('$\\text{+30 units}$');
+		expect(boundary).toContain('$\\text{+30~units}$');
 		expect(boundary).not.toContain('\\color{');
-		expect(outside).toContain('$\\color{orange}{\\text{+31 units}}$');
+		expect(outside).toContain('$\\color{orange}{\\text{+31~units}}$');
 		expect(outside).toContain('$\\color{orange}{\\text{+31\\\\%}}$');
 	});
 
@@ -121,7 +121,7 @@ describe('renderMetricComparisonTable', () => {
 			[defaultRow],
 		);
 
-		expect(table).toContain('$\\color{green}{\\text{-20 units}}$');
+		expect(table).toContain('$\\color{green}{\\text{-20~units}}$');
 		expect(table).toContain('$\\color{green}{\\text{-16.7\\\\%}}$');
 	});
 
@@ -132,7 +132,7 @@ describe('renderMetricComparisonTable', () => {
 			[defaultRow],
 		);
 
-		expect(table).toContain('$\\color{orange}{\\text{+20 units}}$<br>-');
+		expect(table).toContain('$\\color{orange}{\\text{+20~units}}$<br>-');
 	});
 
 	test('propagates the minimum sample contract', () => {

@@ -251,7 +251,7 @@ test('renders a directional encoded byte delta at the absolute threshold', async
 
 	const row = requireMetricRow(await renderReport(null, { base, head }), 'Encoded network');
 
-	expect(row).toContain('$\\color{orange}{\\text{+10 KB}}$');
+	expect(row).toContain('$\\color{orange}{\\text{+10 KB}}$');
 });
 
 test('colours absolute and relative deltas together when the row is significant', async () => {
@@ -268,9 +268,9 @@ test('colours absolute and relative deltas together when the row is significant'
 
 	const row = requireMetricRow(await renderReport(null, { base, head }), 'Encoded network');
 
-	expect(row).toContain('100 MB <br> ± 0 B');
-	expect(row).toContain('$\\color{orange}{\\text{+20 KB}}$<br>$\\color{orange}{\\text{+0\\\\%}}$');
-	expect(row).toContain('| 0 B |');
+	expect(row).toContain('100 MB <br> ± 0 B');
+	expect(row).toContain('$\\color{orange}{\\text{+20 KB}}$<br>$\\color{orange}{\\text{+0\\\\%}}$');
+	expect(row).toContain('| 0 B |');
 	expect(row.split('|')).toHaveLength(7);
 });
 

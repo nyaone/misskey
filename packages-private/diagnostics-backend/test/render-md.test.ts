@@ -64,7 +64,7 @@ test('throws when filtering leaves fewer than two heap snapshots per side', asyn
 	})).toThrow('At least two samples per side are required');
 });
 
-test('reports the difference of medians and leaves a paired-looking PSS delta uncoloured', async () => {
+test('omits a paired-looking PSS delta that stays within observed noise', async () => {
 	const base = replacePssSamples(await loadFixture('base'), [290_000, 292_900, 295_800, 298_700, 301_600]);
 	const head = replacePssSamples(await loadFixture('head'), [292_900, 296_300, 298_700, 301_600, 290_000]);
 
@@ -78,16 +78,10 @@ test('reports the difference of medians and leaves a paired-looking PSS delta un
 		baseHeapSnapshotUrl: 'https://example.invalid/base',
 		headHeapSnapshotUrl: 'https://example.invalid/head',
 	});
-	const row = findMetricRow(markdown, 'PSS');
 
-	expect(row).toContain('295.8 MB <br> ± 2.9 MB');
-	expect(row).toContain('296.3 MB <br> ± 3.4 MB');
-	expect(row).toContain('$\\text{+0.5 MB}$');
-	expect(row).toContain('4.5 MB');
-	expect(row.split('|')).toHaveLength(7);
-	expect(row).not.toMatch(/within noise|increase|decrease|inconclusive/);
-	expect(row).not.toContain('\\color{orange}');
-	expect(findMetricRow(markdown, 'USS')).not.toContain('\\color{orange}');
+	expect(markdown).not.toContain('| **PSS** |');
+	expect(markdown).toContain('<small><i>Only metrics showing significant changes are displayed.</i></small>');
+	expect(markdown).not.toContain('⚠️ **Warning**: Memory usage (PSS)');
 });
 
 test('keeps the convergence warning without suppressing table colour or the PSS warning', async () => {
