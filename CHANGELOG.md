@@ -12,11 +12,14 @@
   - Node.js のセキュリティアップデートに伴い、最低動作バージョンを 22.22.2 / 24.17.0 / 26.4.0 に引き上げました。
   - Docker Image は Node.js 26.4.0-trixie に更新されています。
 - バックエンドで画像処理に用いているライブラリ sharp のシステム要件の変更により、**SSE4.2 命令セットをサポートしていない x86_64 CPU では Misskey が正しく動作しなくなります**。仮想マシンに Misskey をデプロイしている場合や、古いハードウェアをお使いの場合は、アップデート前にお使いの環境をご確認ください。なお、ARM64 など x86_64 ではない環境においてはこの変更による影響はありません。
+- YAMLパーサーをアップデートし、より厳格なチェックが行われるようになりました。起動時にconfigの読み取りで構文エラーが発生する可能性があります。\
+  例えば `allowPrivateNetworks` を 2026.6.0 までの `example.yml` の構文を元に記述している場合は、配列の閉じ括弧のインデントを上げるか、リスト表示に書き換える必要があります。詳しくは https://github.com/misskey-dev/misskey/pull/17701 をご覧ください。
 
 ### General
 - Feat: コントロールパネルから二要素認証を解除できるように
 - Feat: 条件に一致したURLプレビューのサムネイルを隠すことができるように  
   (Based on https://github.com/MisskeyIO/misskey/pull/214)
+- Enhance: 依存関係の更新
 
 ### Client
 - 2025.4.0 以前の設定情報の移行処理が削除されました
@@ -31,6 +34,7 @@
   - Fix: 一部の画像をビューワーで読み込んだ際に正しく表示されない問題を修正
 - Enhance: ファイルアップロード前にプレビューできるように
 - Enhance: タブがバックグラウンドの間は必要ない定期更新処理を停止するように
+- Enhance: 翻訳の更新
 - Fix: 「画像を新しいタブで開く」が機能しなくなっていた問題を修正
 - Fix: デバイスタイプをスマートフォンに固定している状態で画面幅が広いとき、画面左上のアイコンが表示されない問題を修正
 - Fix: チャットでIMEの変換を確定するEnterでメッセージが送信されてしまうことがある問題を修正
@@ -44,21 +48,12 @@
 - Fix: ノートの詳細表示で削除された引用元が表示されない問題を修正
 
 ### Server
-- Feat: OpenTelemetryサポート
-  - 詳細な設定はconfigファイルを参照してください。
-  - Sentryとの併用も可能です。Sentry併用時は、PostgreSQL Query と Redis command は Sentry で計装されます。
-  - 以下の自動計装をサポートしています。（計装対象にする項目は設定可能）
-    - PostgreSQL query
-    - Redis command
-    - 全ての受信HTTPリクエスト
-    - 全ての送信HTTPリクエスト
-    - ジョブキュー（エンキュー元のトレースを含む）
 - Feat: ログ基盤の刷新
   - API内部エラーのログに構造化属性と正規化したエラー情報を付与し、認証情報を自動的に秘匿するように（従来形式の表示は維持）
   - ログ全体の既定出力レベルとドメインごとの出力レベルを設定できるように
   - バックエンドのログを1行JSON形式で出力できるように
-  - OpenTelemetryのTrace ContextをJSON形式のログへ関連付けられるように
-  - HTTPのAccess logをstatus class単位で出力できるように（開発時のリクエスト・レスポンス本文、OpenTelemetryのTrace Contextにも対応）
+  - SentryのTrace ContextをJSON形式のログへ関連付けられるように
+  - HTTPのAccess logをstatus class単位で出力できるように（開発時のリクエスト・レスポンス本文、SentryのTrace Contextにも対応）
 - Enhance: Sentry バックエンドの自動計装を `sentryForBackend.disabledIntegrations` で個別に無効化できるように
 - Enhance: センシティブメディアの判定を外部サービス ([sensitive-detector](https://github.com/misskey-dev/sensitive-detector)) に分離し、`nsfwjs` / `@tensorflow/tfjs(-node)` の同梱と NSFW 判定モデルを廃止 (#16804)
 - Enhance: Node.js 22.22.2以降、24.17.0以降、26.4.0以降をサポートするように
@@ -71,6 +66,8 @@
 - Fix: フォロワー限定投稿へのリプライをホーム投稿に出来る問題を修正
 - Fix: ファイルをアップロードするAPIにて、処理終了後に一時ファイルが削除されないことがある問題を修正
 - Fix: 初期設定で作成したアカウント以外でアカウント作成APIが使用できない問題を修正
+- Fix: フォロー中のチャンネルを再度フォローした際にALREADY_FOLLOWINGエラーを返すように
+- Fix: セキュリティに関する修正
 
 ## 2026.6.0
 
