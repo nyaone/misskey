@@ -6,6 +6,8 @@ on:
       - nyaone
       - nyadev
   pull_request:
+    branches-ignore:
+      - master
 
 env:
   NODE_ENV: production
