@@ -1,3 +1,15 @@
+## 2026.9.2
+
+### General
+-
+
+### Client
+-
+
+### Server
+- Fix: HTTP Signaturesの`(request-target)`にクエリ文字列が含まれない問題を修正
+
+
 ## 2026.9.1
 
 ### General
