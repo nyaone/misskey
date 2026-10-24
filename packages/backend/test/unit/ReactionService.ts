@@ -213,7 +213,7 @@ describe('ReactionService', () => {
 				':localonly:',
 			);
 
-			assert.strictEqual(inserted[0].reaction, '❤');
+			assert.strictEqual(inserted[0].reaction, '⭐');
 		});
 	});
 });
