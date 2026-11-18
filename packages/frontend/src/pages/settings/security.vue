@@ -80,6 +80,9 @@ import XTrustedExternalWebsites from './security.trusted-external-websites.vue';
 import * as os from '@/os.js';
 import { misskeyApi } from '@/utility/misskey-api.js';
 import { i18n } from '@/i18n.js';
+import { cloudBackup } from '@/preferences/utility.js';
+import { signout } from '@/signout.js';
+import { store } from '@/store.js';
 import { definePage } from '@/page.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
@@ -126,10 +129,23 @@ async function regenerateToken() {
 	const auth = await os.authenticateDialog();
 	if (auth.canceled) return;
 
-	misskeyApi('i/regenerate-token', {
+	os.waiting();
+
+	// トークンが消えるので先にバックアップを終わらせる
+	if (store.s.enablePreferencesAutoCloudBackup) {
+		try {
+			await cloudBackup();
+		} catch {
+			// nop
+		}
+	}
+
+	await misskeyApi('i/regenerate-token', {
 		password: auth.result.password,
 		token: auth.result.token,
 	});
+
+	await signout(false);
 }
 
 function saveTrustedExternalWebsites(trustedExternalWebsites: string[]) {
