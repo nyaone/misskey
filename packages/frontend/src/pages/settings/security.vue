@@ -86,7 +86,6 @@ import { store } from '@/store.js';
 import { definePage } from '@/page.js';
 import MkFeatureBanner from '@/components/MkFeatureBanner.vue';
 import { Paginator } from '@/utility/paginator.js';
-import { store } from '@/store.js';
 
 const paginator = markRaw(new Paginator('i/signin-history', {
 	limit: 5,
