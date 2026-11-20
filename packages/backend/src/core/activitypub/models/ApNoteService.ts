@@ -17,6 +17,7 @@ import type { MiEmoji } from '@/models/Emoji.js';
 import type { MiDriveFile } from '@/models/DriveFile.js';
 import { NoteCreateService } from '@/core/NoteCreateService.js';
 import { NoteUpdateService } from '@/core/NoteUpdateService.js';
+import { NoteEntityService } from '@/core/entities/NoteEntityService.js';
 import type Logger from '@/logger.js';
 import { IdService } from '@/core/IdService.js';
 import { PollService } from '@/core/PollService.js';
@@ -78,6 +79,7 @@ export class ApNoteService {
 		private pollService: PollService,
 		private noteCreateService: NoteCreateService,
 		private noteUpdateService: NoteUpdateService,
+		private noteEntityService: NoteEntityService,
 		private apDbResolverService: ApDbResolverService,
 		private apLoggerService: ApLoggerService,
 	) {
@@ -243,10 +245,18 @@ export class ApNoteService {
 		// リプライ
 		const reply: MiNote | null = note.inReplyTo
 			? await this.resolveNote(note.inReplyTo, { resolver })
-				.then(x => {
+				.then(async x => {
 					if (x == null) {
 						this.logger.warn('Specified inReplyTo, but not found');
 						throw new Error('inReplyTo not found');
+					}
+
+					// ローカルのリプライ先(および投票先)をactorが閲覧できない場合は存在しないものとして扱う
+					// (localOnlyのノートはリモートユーザーからは参照できない)
+					// リモートのノートの公開範囲は配送元サーバーが判断するため、ここではチェックしない
+					if (x.userHost === null && (x.localOnly || !(await this.noteEntityService.isVisibleForMe(x, actor.id)))) {
+						this.logger.warn('Specified inReplyTo, but not visible to the actor');
+						throw new StatusError('inReplyTo not found', 404, 'inReplyTo not found');
 					}
 
 					return x;
@@ -269,6 +279,7 @@ export class ApNoteService {
 				try {
 					const res = await this.resolveNote(uri);
 					if (res == null) return { status: 'permerror' };
+					if (res.userHost === null && res.localOnly) return { status: 'permerror' };
 					return { status: 'ok', res };
 				} catch (e) {
 					return {
